@@ -1,0 +1,40 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.*
+
+# IDE files
+*.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Laravel cache and storage
+/storage/
+bootstrap/cache/
+
+# npm debug log
+npm-debug.log*
+
+# Coverage reports
+coverage/
+
+# Build output
+/dist/
+build/
+out/
+
+# Misc
+*.bak
+*.tmp
+*.swp
+*.lock
