@@ -19,31 +19,31 @@ export interface AppConfig {
 }
 
 export const config: AppConfig = {
-	port: parseInt(process.env.PORT || "3000", 10),
-	nodeEnv: process.env.NODE_ENV || "development",
+	port: parseInt(process.env.PORT || '3001', 10),
+	nodeEnv: process.env.NODE_ENV || 'development',
 	jwtSecret:
-		process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production",
+		process.env.JWT_SECRET || 'null',
 	database: {
-		host: process.env.DB_HOST || "localhost",
-		port: parseInt(process.env.DB_PORT || "3306", 10),
-		username: process.env.DB_USERNAME || "root",
-		password: process.env.DB_PASSWORD || "",
-		database: process.env.DB_NAME || "avenir_bank",
+		host: process.env.DB_HOST || 'localhost',
+		port: parseInt(process.env.DB_PORT || '3306', 10),
+		username: process.env.DB_USERNAME || 'root',
+		password: process.env.DB_PASSWORD || '',
+		database: process.env.DB_NAME || 'avenir_bank',
 	},
 };
 
 // Validation de la configuration
-export function validateConfig(): void {
-	const requiredEnvVars = ["JWT_SECRET"];
+// export function validateConfig(): void {
+// 	const requiredEnvVars = ["JWT_SECRET"];
 
-	for (const envVar of requiredEnvVars) {
-		if (!process.env[envVar] && config.nodeEnv === "production") {
-			throw new Error(`Missing required environment variable: ${envVar}`);
-		}
-	}
-}
+// 	for (const envVar of requiredEnvVars) {
+// 		if (!process.env[envVar] && config.nodeEnv === "production") {
+// 			throw new Error(`Variable ${envVar} manquante`);
+// 		}
+// 	}
+// }
 
-// Valide la configuration au chargement
-if (config.nodeEnv === "production") {
-	validateConfig();
-}
+// // Valide la configuration au chargement
+// if (config.nodeEnv === "production") {
+// 	validateConfig();
+// }

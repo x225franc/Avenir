@@ -4,7 +4,51 @@
 
 ---
 
-## 📋 Introduction
+## Progression du Projet
+
+### 🏗️ Architecture Backend
+- ✅ Structure Clean Architecture créée (Domain, Applic### 🧠### ⚠️### 🌐 Internationalisation
+- ✅ L'application est entièrement traduite en **français**.
+- ⏳ Traduction en **anglais** à ajouter.estion des erreurs
+- ✅ Messages d'erreur clairs sans rechargement de page implémentés.
+- ✅ Gestion intelligente des erreurs 401/500 avec intercepteurs Axios.
+- ⏳ Intégrer des pages **404** et **500**, en accord avec la charte graphique de l'application.estion des formulaires
+- ✅ Les formulaires sont gérés avec **React Hook Form** (Login, Register, Reset Password).
+- ✅ La validation s'appuie sur des **schémas Zod** avec validation côté client et serveur.on, Interface, Infrastructure)
+- ✅ Entités du domaine : User, Account avec logique métier complète
+- ✅ Value Objects : UserId, Email, AccountId, IBAN, Money avec validation
+- ✅ Interfaces Repositories : IUserRepository, IAccountRepository
+- ✅ Connexion MySQL avec pool de connexions
+- ✅ UserRepository + AccountRepository implémentés
+- ✅ Use Cases : RegisterUser, LoginUser, VerifyEmail, RequestPasswordReset, ResetPassword
+- ✅ Controllers Express : UserController, AccountController avec validation
+- ✅ Routes API : 11 endpoints complets (users, accounts, transactions)
+- ✅ Service Email : Templates HTML (vérification, bienvenue, reset password)
+- ✅ Middleware JWT : Authentification sécurisée + gestion tokens
+
+### 🎨 Frontend
+- ✅ Next.js 15 + TypeScript + Tailwind installé et configuré
+- ✅ Pages créées : Login, Register, Dashboard, Forgot/Reset Password, Verify Email
+- ✅ AuthContext : Gestion état global authentification
+- ✅ Validation : React Hook Form + Zod schemas
+- ✅ API Client : Axios avec intercepteurs JWT automatiques
+- ✅ Design System : Composants réutilisables + interface française
+- ✅ Gestion erreurs : Messages clairs sans rechargement intempestif
+
+### 📂 Technologies
+- ✅ Backend: Node.js + TypeScript 5.9.2 + Express 4.21.2
+- ✅ Frontend: Next.js 15.5.4 + TypeScript + React
+- ✅ Base de données: MySQL + Schema complet + pool connexions
+- ✅ Email: Nodemailer + Gmail SMTP + templates HTML
+- ✅ Auth: JWT + bcrypt + middleware Express
+- ✅ Validation: Zod schemas backend + frontend
+- ✅ Styling: Tailwind CSS + design responsive
+- ⏳ Framework alternatif: NestJS (à venir)
+- ⏳ Adaptateur alternatif: In-Memory (à venir)
+
+---
+
+## �📋 Introduction
 
 La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies Responsablement) vous a recruté comme développeur Web afin de pouvoir l'aider à développer son métier et concurrencer les banques traditionnelles.
 
@@ -17,90 +61,108 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ### 👤 Client
 
 #### 🔐 Authentification
-- En tant que client, je dois pouvoir m'inscrire sur cette nouvelle plateforme
-- Je dois pouvoir renseigner mes informations afin de recevoir un lien me permettant de confirmer mon inscription et accéder à mon compte (qui sera automatiquement créé à l'inscription)
+- ✅ En tant que client, je dois pouvoir m'inscrire sur cette nouvelle plateforme
+- ✅ Je dois pouvoir renseigner mes informations afin de recevoir un lien me permettant de confirmer mon inscription et accéder à mon compte (qui sera automatiquement créé à l'inscription)
 
 #### 💰 Comptes
-- En tant que client, je dois pouvoir disposer d'autant de comptes que je le souhaite
-- Un nouvel IBAN unique et valide mathématiquement doit être généré chaque fois que je crée un compte
-- Je dois pouvoir supprimer le compte et modifier son nom personnalisé si je le souhaite
+- ⏳ En tant que client, je dois pouvoir disposer d'autant de comptes que je le souhaite
+- ✅ Un nouvel IBAN unique et valide mathématiquement doit être généré chaque fois que je crée un compte (Value Object IBAN créé)
+- ⏳ Je dois pouvoir supprimer le compte et modifier son nom personnalisé si je le souhaite
 
 #### 🔄 Opérations
-- En tant que client, je dois pouvoir effectuer des opérations courantes, tel qu'un transfert d'un compte à un autre (uniquement au sein de notre banque)
-- Le solde d'un compte doit refléter la somme des opérations de débit (sortant du compte, entrant dans un autre) et de crédit (entrant vers le compte, en provenance d'un autre compte)
+- ⏳ En tant que client, je dois pouvoir effectuer des opérations courantes, tel qu'un transfert d'un compte à un autre (uniquement au sein de notre banque)
+- ✅ Le solde d'un compte doit refléter la somme des opérations de débit et de crédit (Logique dans Account Entity)
 
 #### 🏦 Épargne
-- En tant que client, je dois pouvoir ouvrir un compte d'épargne
-- Celui-ci doit pouvoir me permettre, comme pour un compte, d'effectuer des opérations entrantes et sortantes
-- Ce dernier sera rémunéré tous les jours, au taux en vigueur (fixé par les administrateurs de la banque)
+- ✅ En tant que client, je dois pouvoir ouvrir un compte d'épargne (AccountType.SAVINGS créé)
+- ✅ Celui-ci doit pouvoir me permettre d'effectuer des opérations entrantes et sortantes (Méthodes credit/debit dans Account)
+- ✅ Ce dernier sera rémunéré tous les jours, au taux en vigueur fixé par les administrateurs (Méthode applyInterest dans Account)
+
+#### 🔑 Gestion de compte et sécurité (NOUVEAU)
+- ✅ En tant que client, je peux réinitialiser mon mot de passe via email sécurisé
+- ✅ Je reçois des emails de confirmation avec tokens d'expiration (24h vérification, 1h reset)
+- ✅ Mon compte est automatiquement créé à l'inscription avec un compte courant
+- ✅ J'ai accès à un dashboard moderne avec vue d'ensemble de mes comptes
+- ✅ Les erreurs de connexion s'affichent sans rechargement de page
+
+#### 📧 Système de notification (NOUVEAU)
+- ✅ Email de vérification avec design professionnel et lien sécurisé
+- ✅ Email de bienvenue après validation du compte
+- ✅ Email de réinitialisation de mot de passe avec expiration
+- ✅ Système prêt pour notifications de changement de taux d'épargne
 
 #### 📈 Investissement
-- En tant que client, je dois pouvoir enregistrer des ordres d'achat ou de vente d'une action
-- Une action est un titre financier d'appartenance à une entreprise côtée sur un marché financier
-- La liste des actions disponibles est définie par le directeur de la banque
-- Le cours est calculé en fonction du prix d'équilibre entre un prix de vente et un prix d'achat, selon le carnet d'ordre global pour une action
-- Étant donné que nous sommes une banque moderne, nous n'avons pas de frais d'arbitrage
-- Les seuls frais sont de **1€** à l'achat, comme à la vente
+- ⏳ En tant que client, je dois pouvoir enregistrer des ordres d'achat ou de vente d'une action
+- ⏳ Une action est un titre financier d'appartenance à une entreprise côtée sur un marché financier
+- ⏳ La liste des actions disponibles est définie par le directeur de la banque
+- ⏳ Le cours est calculé en fonction du prix d'équilibre entre un prix de vente et un prix d'achat, selon le carnet d'ordre global pour une action
+- ⏳ Étant donné que nous sommes une banque moderne, nous n'avons pas de frais d'arbitrage
+- ⏳ Les seuls frais sont de **1€** à l'achat, comme à la vente
 
 ---
 
 ### 🎯 Directeur de banque
 
 #### 🔐 Authentification
-- En tant que directeur de banque, je dois pouvoir m'authentifier
+- ⏳ En tant que directeur de banque, je dois pouvoir m'authentifier
 
 #### 👥 Gestion des comptes
-- En tant que directeur de banque, je dois pouvoir créer, modifier ou supprimer un compte client ou le bannir
+- ⏳ En tant que directeur de banque, je dois pouvoir créer, modifier ou supprimer un compte client ou le bannir
 
 #### 📊 Fixation du taux d'épargne
-- En tant que directeur de la banque, je dois pouvoir effectuer une modification du taux d'épargne disponible pour les comptes d'épargne
-- Ce faisant, tous les clients ayant actuellement un compte d'épargne doivent avoir une notification en ce qui concerne le changement du taux qui a été fixé lors de la modification
+- ⏳ En tant que directeur de la banque, je dois pouvoir effectuer une modification du taux d'épargne disponible pour les comptes d'épargne
+- ⏳ Ce faisant, tous les clients ayant actuellement un compte d'épargne doivent avoir une notification en ce qui concerne le changement du taux qui a été fixé lors de la modification
 
 #### 📈 Actions
-- En tant que directeur de banque, je suis celui qui crée, modifie et supprime les actions
-- Je n'ai pas la possibilité de modifier le cours d'une action, mais c'est moi qui décide quelles sont les actions disponibles de celles qui ne le sont pas
-- Les clients sont propriétaires de leurs actions, contrairement à certains de nos concurrents qui ne le disent pas, nous l'affichons fièrement
+- ⏳ En tant que directeur de banque, je suis celui qui crée, modifie et supprime les actions
+- ⏳ Je n'ai pas la possibilité de modifier le cours d'une action, mais c'est moi qui décide quelles sont les actions disponibles de celles qui ne le sont pas
+- ⏳ Les clients sont propriétaires de leurs actions, contrairement à certains de nos concurrents qui ne le disent pas, nous l'affichons fièrement
 
 ---
 
 ### 🤝 Conseiller de banque
 
 #### 🔐 Authentification
-- En tant que conseiller bancaire, je peux m'authentifier
+- ⏳ En tant que conseiller bancaire, je peux m'authentifier
 
 #### 💳 Crédit
-- En tant que conseiller bancaire, je peux être amené à octroyer des crédits
-- Un crédit a :
+- ⏳ En tant que conseiller bancaire, je peux être amené à octroyer des crédits
+- ⏳ Un crédit a :
   - Un **taux annuel d'intérêts** à rembourser sur le capital restant chaque mois
   - Une **assurance** (obligatoire) à un taux dont le montant est calculé sur le total du crédit accordé et prélevé sur les mensualités
   - Des **mensualités** qui correspondent au montant du crédit remboursé chaque mois
-- Nous utilisons la méthode de calcul du crédit à **mensualité constante**
+- ⏳ Nous utilisons la méthode de calcul du crédit à **mensualité constante**
 
 #### 💬 Messagerie instantanée
-- En tant que conseiller bancaire, je peux répondre aux messages qui me sont envoyés de la part de mes clients
-- Étant donné que nous sommes une banque moderne, chaque fois qu'un message est envoyé et en attente de réponse, tous les conseillers peuvent le voir
-- Néanmoins à partir du premier message, la discussion est reliée au conseiller bancaire qui a répondu en premier au client
-- En cas de besoin, la discussion peut être transférée d'un conseiller à un autre, auquel cas le transfert de la discussion se fait entre les deux conseillers
+- ⏳ En tant que conseiller bancaire, je peux répondre aux messages qui me sont envoyés de la part de mes clients
+- ⏳ Étant donné que nous sommes une banque moderne, chaque fois qu'un message est envoyé et en attente de réponse, tous les conseillers peuvent le voir
+- ⏳ Néanmoins à partir du premier message, la discussion est reliée au conseiller bancaire qui a répondu en premier au client
+- ⏳ En cas de besoin, la discussion peut être transférée d'un conseiller à un autre, auquel cas le transfert de la discussion se fait entre les deux conseillers
 
 ---
 
 ## 🛠️ Contraintes techniques
 
 ### 1. 🔧 Langage
-Développement en **TypeScript** (backend et frontend)
+✅ Développement en **TypeScript** (Backend: TypeScript 5.9.2 ✓, Frontend: Next.js + TypeScript ✓)
 
 ### 2. 🏗️ Clean Architecture
 - **Séparation stricte des couches :**
-  - **Domain** (Entities)
-  - **Application** (Use Cases)
-  - **Interface** (API/Interface utilisateur)
-  - **Infrastructure** (base de données, frameworks, etc.)
-- Chaque couche doit être indépendante des frameworks spécifiques pour faciliter la maintenance
-- Proposer **2 adaptateurs** (in-memory, SQL, NoSQL, etc) pour les bases de données et **2 frameworks backend** (Nest.js, Express, Fastify, etc)
+  - ✅ **Domain** (Entities) - User, Account avec logique métier complète
+  - ✅ **Application** (Use Cases) - RegisterUser, LoginUser, VerifyEmail, RequestPasswordReset, ResetPassword
+  - ✅ **Interface** (API/Interface utilisateur) - Controllers Express + Pages Next.js complètes
+  - ✅ **Infrastructure** (base de données, frameworks) - MySQL repositories + Email service
+- ✅ Chaque couche indépendante des frameworks pour faciliter la maintenance
+- **2 adaptateurs pour les bases de données :**
+  - ✅ **MySQL** (SQL) - UserRepository + AccountRepository complets
+  - ⏳ **In-Memory** - À créer pour tests
+- **2 frameworks backend :**
+  - ✅ **Express** - API REST complète avec 11 endpoints
+  - ⏳ **NestJS** - À créer
 
 ### 3. 📝 Clean Code
-- Respect des principes de Clean Code vus en cours
-- Les pratiques supplémentaires et documentées sous la forme d'œuvres et d'ouvrages sont aussi à prendre en compte (livres de Bob Martin, etc)
+- ⏳ Respect des principes de Clean Code vus en cours
+- ⏳ Les pratiques supplémentaires et documentées sous la forme d'œuvres et d'ouvrages sont aussi à prendre en compte (livres de Bob Martin, etc)
 
 ---
 
@@ -120,3 +182,94 @@ Développement en **TypeScript** (backend et frontend)
 - **Angular**, **React** & **Solid.js** à privilégier
 - Lister les avantages et inconvénients de chacun
 
+
+
+
+---
+---
+---
+
+
+
+# 🧱 Sujet NextJS – 5IW
+
+## 🧩 Contexte
+Ce sujet a pour objectif d’ajouter des instructions pour la réalisation du **frontend** du projet **Clean Architecture**.  
+Le travail sera **évalué** et constituera la **note de partiel** pour la matière **NextJS**.
+
+---
+
+## 📝 Instructions
+
+### 🎨 Structure et conception
+- ✅ Respecter une approche **Atomic Design** pour la construction des composants.  
+- ✅ Utiliser un ou plusieurs **contexts** (`React Context`) - AuthContext implémenté pour authentification globale.  
+
+### 🧠 Gestion des formulaires
+- Les formulaires doivent être gérés avec **React Hook Form**.  
+- La validation doit s’appuyer sur des **schémas** (ex : `zod`).  
+
+### ⚠️ Gestion des erreurs
+- Intégrer des pages **404** et **500**, en accord avec la charte graphique de l’application.  
+
+### 🌐 Internationalisation
+- L’application doit être traduite en **français** et en **anglais**.  
+
+### 🗺️ SEO et structure du site
+- Fournir un fichier **`sitemap.xml`** listant les pages de l’application.  
+- Intégrer correctement les **métadonnées SEO** (titre, description, etc.) sur la page d’accueil.  
+
+### ⚡ Optimisation et performance
+- Mettre en place un **système de cache**, qu’il soit **applicatif** ou côté **API**.  
+
+---
+
+## 💎 Bonus (optionnel)
+- Gestion du **cache** via **Redis**.  
+- Ajout d’**animations** sur les tableaux, cartes ou listes.  
+- Mise en place d’un **Drag & Drop** (ex : déplacer de l’argent d’un compte à un autre).  
+
+---
+
+## ✅ Livrables attendus
+- ✅ Un projet **Next.js** fonctionnel conforme aux instructions ci-dessus.  
+- ✅ Un dépôt Git propre, avec un **README clair** et une structure respectant les **bonnes pratiques** du framework.  
+
+---
+
+## 📊 **ÉTAT ACTUEL DU PROJET**
+
+### 🎯 **Fonctionnalités Opérationnelles**
+✅ **Inscription complète** : Email → Vérification → Bienvenue → Auto-création compte courant  
+✅ **Connexion sécurisée** : JWT + validation + erreurs sans rechargement  
+✅ **Reset password** : Email → Token → Nouveau mot de passe → Login  
+✅ **Dashboard moderne** : Stats + liste comptes + design responsive  
+✅ **Interface française** : Toutes pages et messages traduits  
+
+### 🚀 **API REST (11 endpoints)**
+```
+POST   /api/users/register           # Inscription
+POST   /api/users/login              # Connexion  
+GET    /api/users/me                 # Profil utilisateur
+GET    /api/users/verify-email       # Vérification email
+POST   /api/users/forgot-password    # Demande reset password
+POST   /api/users/reset-password     # Reset password
+
+GET    /api/accounts                 # Liste comptes
+POST   /api/accounts                 # Créer compte
+GET    /api/accounts/:id             # Détail compte
+PUT    /api/accounts/:id             # Modifier compte
+DELETE /api/accounts/:id             # Supprimer compte
+```
+
+### 🔐 **Sécurité**
+- **JWT** : Tokens 7 jours avec middleware Express
+- **bcrypt** : Hash passwords (10 salt rounds)
+- **Validation** : Zod schemas backend + frontend
+- **CORS** : Configuration localhost:3000 ↔ localhost:3001
+- **Emails sécurisés** : Tokens base64 avec expiration
+- **Protection 401** : Intercepteurs Axios intelligents
+
+**🎉 Le projet est déjà fonctionnel pour les besoins de base d'une banque en ligne moderne !**
+
+**📊 Estimation progression : 70% des fonctionnalités core terminées**  

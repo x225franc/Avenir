@@ -18,6 +18,7 @@ export interface UserProps {
 	role: UserRole;
 	emailVerified: boolean;
 	verificationToken?: string | undefined;
+	passwordResetToken?: string | undefined;
 	isBanned: boolean;
 	createdAt: Date;
 	updatedAt: Date;
@@ -32,7 +33,8 @@ export class User {
 		const now = new Date();
 		return new User({
 			...props,
-			id: UserId.generate(),
+			// ID temporaire (sera remplacé par l'auto_increment de MySQL)
+			id: UserId.fromNumber(0),
 			createdAt: now,
 			updatedAt: now,
 		});
@@ -87,6 +89,10 @@ export class User {
 		return this.props.verificationToken;
 	}
 
+	get passwordResetToken(): string | undefined {
+		return this.props.passwordResetToken;
+	}
+
 	get isBanned(): boolean {
 		return this.props.isBanned;
 	}
@@ -100,9 +106,25 @@ export class User {
 	}
 
 	// Business methods
+	public setVerificationToken(token: string): void {
+		this.props.verificationToken = token;
+		this.props.updatedAt = new Date();
+	}
+
 	public verifyEmail(): void {
 		this.props.emailVerified = true;
 		this.props.verificationToken = undefined;
+		this.props.updatedAt = new Date();
+	}
+
+	public setPasswordResetToken(token: string): void {
+		this.props.passwordResetToken = token;
+		this.props.updatedAt = new Date();
+	}
+
+	public resetPassword(newPasswordHash: string): void {
+		this.props.passwordHash = newPasswordHash;
+		this.props.passwordResetToken = undefined;
 		this.props.updatedAt = new Date();
 	}
 
