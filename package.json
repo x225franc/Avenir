@@ -1,0 +1,35 @@
+{
+	"name": "avenir-bank-monorepo",
+	"version": "1.0.0",
+	"description": "Banque AVENIR - Clean Architecture Monorepo",
+	"private": true,
+	"workspaces": [
+		"Interface/api/express",
+		"Interface/api/nestjs",
+		"Interface/web/next",
+		"Interface/web/nuxt"
+	],
+	"scripts": {
+		"build": "npm run build --workspaces",
+		"dev:express": "npm run dev --workspace=Interface/api/express",
+		"dev:nestjs": "npm run dev --workspace=Interface/api/nestjs",
+		"dev:next": "npm run dev --workspace=Interface/web/next",
+		"dev:nuxt": "npm run dev --workspace=Interface/web/nuxt",
+		"install:all": "npm install && npm install --workspaces"
+	},
+	"keywords": [
+		"banking",
+		"clean-architecture",
+		"typescript",
+		"nodejs",
+		"monorepo"
+	],
+	"author": "Avenir",
+	"license": "MIT",
+	"devDependencies": {
+		"typescript": "^5.9.2",
+		"@types/node": "^20.19.18",
+		"ts-node": "^10.9.2",
+		"tsconfig-paths": "^4.2.0"
+	}
+}
