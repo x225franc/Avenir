@@ -4,15 +4,25 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import apiClient from "../../src/lib/api/client";
+import { useAuth } from "../../src/contexts/AuthContext";
 
 export default function VerifyEmailPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const token = searchParams.get("token");
-
+	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [loading, setLoading] = useState(true);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState<string>("");
+
+	useEffect(() => {
+			// Rediriger si authentifié
+			if (isAuthenticated) {
+				router.push("/dashboard");
+				return;
+			}
+		}, [authLoading, isAuthenticated, router]);
+
 
 	useEffect(() => {
 		const verifyEmail = async () => {

@@ -185,6 +185,81 @@ export class AccountController {
 	}
 
 	/**
+	 * PUT /api/accounts/:id
+	 * Mettre à jour un compte
+	 */
+	async update(req: Request, res: Response): Promise<void> {
+		try {
+			const userId = (req as any).user?.userId;
+			const accountId = req.params.id;
+
+			if (!userId) {
+				res.status(401).json({
+					success: false,
+					error: "Non authentifié",
+				});
+				return;
+			}
+
+			const account = await this.accountRepository.findById(
+				new AccountId(accountId)
+			);
+
+			if (!account) {
+				res.status(404).json({
+					success: false,
+					error: "Compte non trouvé",
+				});
+				return;
+			}
+
+			// Vérifier que le compte appartient bien à l'utilisateur
+			if (account.userId.value !== userId) {
+				res.status(403).json({
+					success: false,
+					error: "Accès non autorisé",
+				});
+				return;
+			}
+
+			// Mettre à jour le nom du compte si fourni
+			if (req.body.accountName) {
+				account.updateName(req.body.accountName);
+			}
+
+			// Sauvegarder les modifications
+			await this.accountRepository.save(account);
+
+			// Récupérer le compte mis à jour
+			const updatedAccount = await this.accountRepository.findById(
+				new AccountId(accountId)
+			);
+
+			res.status(200).json({
+				success: true,
+				message: "Compte mis à jour avec succès",
+				data: {
+					id: updatedAccount!.id.value,
+					iban: updatedAccount!.iban.value,
+					name: updatedAccount!.accountName,
+					type: updatedAccount!.accountType,
+					balance: updatedAccount!.balance.amount,
+					currency: updatedAccount!.balance.currency,
+					interestRate: updatedAccount!.interestRate,
+					isActive: updatedAccount!.isActive,
+					createdAt: updatedAccount!.createdAt,
+				},
+			});
+		} catch (error) {
+			console.error("Error in update account:", error);
+			res.status(500).json({
+				success: false,
+				error: "Erreur serveur",
+			});
+		}
+	}
+
+	/**
 	 * DELETE /api/accounts/:id
 	 * Supprimer un compte
 	 */

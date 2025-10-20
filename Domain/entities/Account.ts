@@ -156,6 +156,23 @@ export class Account {
 		this.props.updatedAt = new Date();
 	}
 
+	public updateName(newName: string): void {
+		if (!newName || newName.trim().length === 0) {
+			throw new Error("Account name cannot be empty");
+		}
+
+		if (newName.trim().length < 3) {
+			throw new Error("Account name must be at least 3 characters");
+		}
+
+		if (newName.trim().length > 50) {
+			throw new Error("Account name cannot exceed 50 characters");
+		}
+
+		this.props.accountName = newName.trim();
+		this.props.updatedAt = new Date();
+	}
+
 	public applyInterest(): void {
 		if (this.props.accountType !== AccountType.SAVINGS) {
 			throw new Error("Only savings accounts earn interest");

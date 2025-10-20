@@ -1,8 +1,14 @@
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import { testConnection } from "@infrastructure/database/mysql/connection";
+import { getCronService } from "../../../Infrastructure/jobs/CronService";
 import apiRoutes from "./routes";
 
 const app = express();
@@ -82,6 +88,30 @@ if (require.main === module) {
 			console.log(`🚀 Serveur express tourne sur http://localhost:${PORT}`);
 			console.log(`📊 Health check: http://localhost:${PORT}/health`);
 			console.log(`💾 Base de données connectée`);
+			
+			// Démarrer les tâches planifiées
+			try {
+				const cronService = getCronService();
+				cronService.start();
+				console.log(`⏰ Tâches planifiées démarrées`);
+			} catch (error) {
+				console.error('⚠️ Erreur lors du démarrage des tâches planifiées:', error);
+			}
+		});
+
+		// Gestion propre de l'arrêt du serveur
+		process.on('SIGTERM', () => {
+			console.log('SIGTERM signal received: closing HTTP server');
+			const cronService = getCronService();
+			cronService.stop();
+			process.exit(0);
+		});
+
+		process.on('SIGINT', () => {
+			console.log('SIGINT signal received: closing HTTP server');
+			const cronService = getCronService();
+			cronService.stop();
+			process.exit(0);
 		});
 	});
 }

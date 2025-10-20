@@ -54,10 +54,28 @@ export const accountService = {
 	},
 
 	/**
+	 * Mettre à jour un compte
+	 */
+	async update(accountId: string, data: Partial<CreateAccountDTO>): Promise<ApiResponse<Account>> {
+		const response = await apiClient.put<ApiResponse<Account>>(`/accounts/${accountId}`, data);
+		return response.data;
+	},
+
+	/**
 	 * Supprimer un compte
 	 */
 	async delete(accountId: string): Promise<ApiResponse> {
-		const response = await apiClient.delete<ApiResponse>(`/accounts/${accountId}`);
-		return response.data;
+		try {
+			const response = await apiClient.delete<ApiResponse>(`/accounts/${accountId}`);
+			return response.data;
+		} catch (error: any) {
+			if (error.response?.status === 400) {
+				return {
+					success: false,
+					error: error.response.data?.error || "Erreur lors de la suppression"
+				};
+			}
+			throw error;
+		}
 	},
 };

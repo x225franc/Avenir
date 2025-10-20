@@ -30,6 +30,13 @@ router.get("/", (req, res) => accountController.getAll(req, res));
 router.get("/:id", (req, res) => accountController.getById(req, res));
 
 /**
+ * @route   PUT /api/accounts/:id
+ * @desc    Mettre à jour un compte
+ * @access  Private
+ */
+router.put("/:id", (req, res) => accountController.update(req, res));
+
+/**
  * @route   DELETE /api/accounts/:id
  * @desc    Supprimer un compte
  * @access  Private

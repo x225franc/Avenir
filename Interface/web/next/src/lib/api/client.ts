@@ -2,9 +2,6 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-/**
- * Instance Axios configurée pour l'API
- */
 const apiClient: AxiosInstance = axios.create({
 	baseURL: API_BASE_URL,
 	headers: {
@@ -13,9 +10,6 @@ const apiClient: AxiosInstance = axios.create({
 	timeout: 10000, // 10 secondes
 });
 
-/**
- * Intercepteur pour ajouter le token JWT à chaque requête
- */
 apiClient.interceptors.request.use(
 	(config) => {
 		// Récupérer le token depuis le localStorage
@@ -32,9 +26,6 @@ apiClient.interceptors.request.use(
 	}
 );
 
-/**
- * Intercepteur pour gérer les erreurs globalement
- */
 apiClient.interceptors.response.use(
 	(response) => response,
 	(error: AxiosError) => {
@@ -58,9 +49,6 @@ apiClient.interceptors.response.use(
 
 export default apiClient;
 
-/**
- * Type pour les réponses API standardisées
- */
 export interface ApiResponse<T = any> {
 	success: boolean;
 	data?: T;

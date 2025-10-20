@@ -1,5 +1,4 @@
 /**
- * Barrel export pour tous les Use Cases
  * Facilite l'import dans les controllers
  */
 
@@ -17,6 +16,18 @@ export type { VerifyEmailResult } from "./user/VerifyEmail";
 export { CreateAccount } from "./account/CreateAccount";
 export type { CreateAccountResult } from "./account/CreateAccount";
 
-// Transaction Use Cases
-export { TransferMoney } from "./transaction/TransferMoney";
-export type { TransferMoneyResult } from "./transaction/TransferMoney";
+export { TransferMoney } from "./account/TransferMoney";
+export type { TransferMoneyResult } from "./account/TransferMoney";
+
+// Investment Use Cases
+export { PlaceInvestmentOrder } from "./investment/PlaceInvestmentOrder";
+export type { PlaceInvestmentOrderResult } from "./investment/PlaceInvestmentOrder";
+
+export { CancelInvestmentOrder } from "./investment/CancelInvestmentOrder";
+export type { CancelInvestmentOrderResult } from "./investment/CancelInvestmentOrder";
+
+export { GetAvailableStocks } from "./investment/GetAvailableStocks";
+export type { GetAvailableStocksResult } from "./investment/GetAvailableStocks";
+
+export { GetUserPortfolio } from "./investment/GetUserPortfolio";
+export type { GetUserPortfolioResult } from "./investment/GetUserPortfolio";

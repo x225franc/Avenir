@@ -5,28 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import axios from "axios";
-
-const resetPasswordSchema = z
-	.object({
-		password: z
-			.string()
-			.min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-		confirmPassword: z.string(),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "Les mots de passe ne correspondent pas",
-		path: ["confirmPassword"],
-	});
-
-type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
+import { useAuth } from "@/src/contexts/AuthContext";
+import { resetPasswordSchema, ResetPasswordFormData } from "@/src/lib/validations/schemas";
 
 function ResetPasswordContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const token = searchParams.get("token");
-
+	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
@@ -35,7 +22,7 @@ function ResetPasswordContent() {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<ResetPasswordForm>({
+	} = useForm<ResetPasswordFormData>({
 		resolver: zodResolver(resetPasswordSchema),
 	});
 
@@ -45,7 +32,14 @@ function ResetPasswordContent() {
 		}
 	}, [token]);
 
-	const onSubmit = async (data: ResetPasswordForm) => {
+	useEffect(() => {
+			if (isAuthenticated) {
+				router.push("/dashboard");
+				return;
+			}
+		}, [authLoading, isAuthenticated, router]);
+
+	const onSubmit = async (data: ResetPasswordFormData) => {
 		if (!token) {
 			setError("Token de réinitialisation manquant");
 			return;

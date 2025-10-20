@@ -4,13 +4,20 @@ import { config } from "@infrastructure/config/database";
 /**
  * Configuration du transporteur d'email
  */
-const transporter = nodemailer.createTransport({
+// Configuration du transporteur avec fallback pour le développement
+let transporter: nodemailer.Transporter;
+
+transporter = nodemailer.createTransport({
 	host: process.env.EMAIL_HOST || "smtp.gmail.com",
 	port: parseInt(process.env.EMAIL_PORT || "587", 10),
-	secure: false, // true pour 465, false pour les autres ports
+	secure: false,
+	requireTLS: true,
 	auth: {
 		user: process.env.EMAIL_USER,
 		pass: process.env.EMAIL_PASS,
+	},
+	tls: {
+		rejectUnauthorized: false,
 	},
 });
 
@@ -27,7 +34,9 @@ export class EmailService {
 		verificationToken: string
 	): Promise<boolean> {
 		try {
-			const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${verificationToken}`;
+			const verificationUrl = `${
+				process.env.FRONTEND_URL || "http://localhost:3000"
+			}/verify-email?token=${verificationToken}`;
 
 			const mailOptions = {
 				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
@@ -148,7 +157,9 @@ export class EmailService {
 								</div>
 								
 								<p style="text-align: center; margin-top: 30px;">
-									<a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/login" style="display: inline-block; padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+									<a href="${
+										process.env.FRONTEND_URL || "http://localhost:3000"
+									}/login" style="display: inline-block; padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
 										Accéder à mon compte
 									</a>
 								</p>
@@ -246,7 +257,13 @@ export class EmailService {
 		resetToken: string
 	): Promise<boolean> {
 		try {
-			const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password?token=${resetToken}`;
+			// Vérifier la configuration email
+			if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+				return false;
+			}
+			const resetUrl = `${
+				process.env.FRONTEND_URL || "http://localhost:3000"
+			}/reset-password?token=${resetToken}`;
 
 			const mailOptions = {
 				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,

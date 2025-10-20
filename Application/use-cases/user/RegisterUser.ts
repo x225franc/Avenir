@@ -61,6 +61,7 @@ export class RegisterUser {
 				role: UserRole.CLIENT,
 				emailVerified: false,
 				verificationToken: undefined,
+				passwordResetToken: undefined,
 				isBanned: false,
 			});
 
@@ -90,7 +91,8 @@ export class RegisterUser {
 				});
 
 				await this.accountRepository.save(defaultAccount);
-				console.log(`✅ Compte courant créé automatiquement avec IBAN: ${defaultAccount.iban.value}`);
+				
+				console.log(`✅ Compte courant créé automatiquement avec IBAN: ${defaultAccount.iban.value}, Account ID: ${defaultAccount.id.value}`);
 			} catch (accountError) {
 				console.error(`❌ Erreur création compte courant:`, accountError);
 				// On continue même si la création du compte échoue

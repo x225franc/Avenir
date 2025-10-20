@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { registerSchema, RegisterFormData } from "../../src/lib/validations/schemas";
 import { authService } from "../../src/lib/api/auth.service";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function RegisterPage() {
 	const router = useRouter();
 	const [error, setError] = useState<string>("");
 	const [success, setSuccess] = useState<string>("");
+	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+			// Rediriger si authentifié
+			if (isAuthenticated) {
+				router.push("/dashboard");
+				return;
+			}
+		}, [authLoading, isAuthenticated, router]);
 
 	const {
 		register,

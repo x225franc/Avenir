@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import { useAuth } from "../../src/contexts/AuthContext";
 export default function LoginPage() {
 	const router = useRouter();
 	const { login } = useAuth();
+	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [error, setError] = useState<string>("");
 	const [loading, setLoading] = useState(false);
 
@@ -21,6 +22,14 @@ export default function LoginPage() {
 	} = useForm<LoginFormData>({
 		resolver: zodResolver(loginSchema),
 	});
+
+	useEffect(() => {
+			// Rediriger si authentifié
+			if (isAuthenticated) {
+				router.push("/dashboard");
+				return;
+			}
+		}, [authLoading, isAuthenticated, router]);
 
 	const onSubmit = async (data: LoginFormData) => {
 		setLoading(true);

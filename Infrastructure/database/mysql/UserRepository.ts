@@ -39,19 +39,19 @@ export class UserRepository implements IUserRepository {
 				// Mise à jour
 				await connection.query(
 					`UPDATE users SET 
-            email = ?,
-            password_hash = ?,
-            first_name = ?,
-            last_name = ?,
-            phone = ?,
-            address = ?,
-            role = ?,
-            email_verified = ?,
-            verification_token = ?,
-            password_reset_token = ?,
-            is_banned = ?,
-            updated_at = ?
-            WHERE id = ?`,
+					email = ?,
+					password_hash = ?,
+					first_name = ?,
+					last_name = ?,
+					phone = ?,
+					address = ?,
+					role = ?,
+					email_verified = ?,
+					verification_token = ?,
+					password_reset_token = ?,
+					is_banned = ?,
+					updated_at = ?
+					WHERE id = ?`,
 					[
 						user.email.value,
 						user.passwordHash,

@@ -66,32 +66,6 @@ export default function DashboardPage() {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-			{/* Header */}
-			<header className="bg-white shadow-md">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-4">
-							<h1 className="text-2xl font-bold text-gray-900">
-								🏦 Banque AVENIR
-							</h1>
-						</div>
-						<div className="flex items-center space-x-4">
-							<div className="text-right">
-								<p className="text-sm text-gray-600">Bienvenue</p>
-								<p className="text-sm font-semibold text-gray-900">
-									{user?.firstName} {user?.lastName}
-								</p>
-							</div>
-							<button
-								onClick={handleLogout}
-								className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-							>
-								Déconnexion
-							</button>
-						</div>
-					</div>
-				</div>
-			</header>
 
 			{/* Contenu principal */}
 			<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

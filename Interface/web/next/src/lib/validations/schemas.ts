@@ -1,6 +1,17 @@
 import { z } from "zod";
 
 /**
+ * Schéma de validation pour le mot de passe (réutilisable)
+ */
+export const passwordSchema = z
+	.string()
+	.min(8, "Le mot de passe doit contenir au moins 8 caractères")
+	.regex(
+		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+		"Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre"
+	);
+
+/**
  * Schéma de validation pour l'inscription
  * Utilisé avec React Hook Form
  */
@@ -10,13 +21,7 @@ export const registerSchema = z
 			.string()
 			.min(1, "L'email est requis")
 			.email("Format d'email invalide"),
-		password: z
-			.string()
-			.min(8, "Le mot de passe doit contenir au moins 8 caractères")
-			.regex(
-				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-				"Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre"
-			),
+		password: passwordSchema,
 		confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
 		firstName: z
 			.string()
@@ -94,3 +99,18 @@ export const transferMoneySchema = z.object({
 });
 
 export type TransferMoneyFormData = z.infer<typeof transferMoneySchema>;
+
+/**
+ * Schéma de validation pour la réinitialisation de mot de passe
+ */
+export const resetPasswordSchema = z
+	.object({
+		password: passwordSchema,
+		confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Les mots de passe ne correspondent pas",
+		path: ["confirmPassword"],
+	});
+
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

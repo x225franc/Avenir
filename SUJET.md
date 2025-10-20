@@ -21,39 +21,39 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 - ✅ Je dois pouvoir renseigner mes informations afin de recevoir un lien me permettant de confirmer mon inscription et accéder à mon compte (qui sera automatiquement créé à l'inscription)
 
 #### 💰 Comptes
-- ⏳ En tant que client, je dois pouvoir disposer d'autant de comptes que je le souhaite
+- ✅ En tant que client, je dois pouvoir disposer d'autant de comptes que je le souhaite
 - ✅ Un nouvel IBAN unique et valide mathématiquement doit être généré chaque fois que je crée un compte (Value Object IBAN créé)
-- ⏳ Je dois pouvoir supprimer le compte et modifier son nom personnalisé si je le souhaite
+- ✅ Je dois pouvoir supprimer le compte et modifier son nom personnalisé si je le souhaite
 
 #### 🔄 Opérations
-- ⏳ En tant que client, je dois pouvoir effectuer des opérations courantes, tel qu'un transfert d'un compte à un autre (uniquement au sein de notre banque)
-- ✅ Le solde d'un compte doit refléter la somme des opérations de débit et de crédit (Logique dans Account Entity)
+- ✅ En tant que client, je dois pouvoir effectuer des opérations courantes, tel qu'un transfert d'un compte à un autre
+- ✅ Le solde d'un compte doit refléter la somme des opérations de débit et de crédit
 
 #### 🏦 Épargne
-- ✅ En tant que client, je dois pouvoir ouvrir un compte d'épargne (AccountType.SAVINGS créé)
-- ✅ Celui-ci doit pouvoir me permettre d'effectuer des opérations entrantes et sortantes (Méthodes credit/debit dans Account)
-- ✅ Ce dernier sera rémunéré tous les jours, au taux en vigueur fixé par les administrateurs (Méthode applyInterest dans Account)
+- ✅ En tant que client, je dois pouvoir ouvrir un compte d'épargne
+- ✅ Celui-ci doit pouvoir me permettre d'effectuer des opérations entrantes et sortantes
+- ✅ Ce dernier sera rémunéré tous les jours, au taux en vigueur fixé par les administrateurs
 
-#### 🔑 Gestion de compte et sécurité (NOUVEAU)
+#### 🔑 Gestion de compte et sécurité 
 - ✅ En tant que client, je peux réinitialiser mon mot de passe via email sécurisé
 - ✅ Je reçois des emails de confirmation avec tokens d'expiration (24h vérification, 1h reset)
 - ✅ Mon compte est automatiquement créé à l'inscription avec un compte courant
 - ✅ J'ai accès à un dashboard moderne avec vue d'ensemble de mes comptes
 - ✅ Les erreurs de connexion s'affichent sans rechargement de page
 
-#### 📧 Système de notification (NOUVEAU)
+#### 📧 Système de notification 
 - ✅ Email de vérification avec design professionnel et lien sécurisé
 - ✅ Email de bienvenue après validation du compte
 - ✅ Email de réinitialisation de mot de passe avec expiration
 - ✅ Système prêt pour notifications de changement de taux d'épargne
 
 #### 📈 Investissement
-- ⏳ En tant que client, je dois pouvoir enregistrer des ordres d'achat ou de vente d'une action
+- ✅ En tant que client, je dois pouvoir enregistrer des ordres d'achat ou de vente d'une action
 - ⏳ Une action est un titre financier d'appartenance à une entreprise côtée sur un marché financier
 - ⏳ La liste des actions disponibles est définie par le directeur de la banque
 - ⏳ Le cours est calculé en fonction du prix d'équilibre entre un prix de vente et un prix d'achat, selon le carnet d'ordre global pour une action
 - ⏳ Étant donné que nous sommes une banque moderne, nous n'avons pas de frais d'arbitrage
-- ⏳ Les seuls frais sont de **1€** à l'achat, comme à la vente
+- ✅ Les seuls frais sont de **1€** à l'achat, comme à la vente
 
 ---
 
@@ -81,6 +81,16 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 #### 🔐 Authentification
 - ⏳ En tant que conseiller bancaire, je peux m'authentifier
 
+#### 📰 Actualités
+- ⏳ En tant que conseiller bancaire, je peux consulter les actualités de la banque
+- ⏳ Je peux également recevoir des notifications concernant les mises à jour importantes
+- ⏳ Je peux également créer des actualités pour informer les clients
+
+#### 👥 Gestion des clients
+- ⏳ En tant que conseiller bancaire, je peux uniquement consulter la liste des clients
+- ⏳ Je peux également valider ou refuser les transactions des clients en attente de validation
+
+
 #### 💳 Crédit
 - ⏳ En tant que conseiller bancaire, je peux être amené à octroyer des crédits
 - ⏳ Un crédit a :
@@ -100,20 +110,19 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ## 🛠️ Contraintes techniques
 
 ### 1. 🔧 Langage
-✅ Développement en **TypeScript** (Backend: TypeScript 5.9.2 ✓, Frontend: Next.js + TypeScript ✓)
+ Développement en **TypeScript**
 
 ### 2. 🏗️ Clean Architecture
 - **Séparation stricte des couches :**
-  - ✅ **Domain** (Entities) - User, Account avec logique métier complète
-  - ✅ **Application** (Use Cases) - RegisterUser, LoginUser, VerifyEmail, RequestPasswordReset, ResetPassword
-  - ✅ **Interface** (API/Interface utilisateur) - Controllers Express + Pages Next.js complètes
-  - ✅ **Infrastructure** (base de données, frameworks) - MySQL repositories + Email service
-- ✅ Chaque couche indépendante des frameworks pour faciliter la maintenance
+  -  **Domain** (Entities) - User, Account avec logique métier complète
+  -  **Application** (Use Cases) - RegisterUser, LoginUser, VerifyEmail, RequestPasswordReset, ResetPassword
+  -  **Interface** (API/Interface utilisateur) - Controllers Express + Pages Next.js complètes
+  -  **Infrastructure** (base de données, frameworks) - MySQL repositories + Email service
 - **2 adaptateurs pour les bases de données :**
-  - ✅ **MySQL** (SQL) - UserRepository + AccountRepository complets
-  - ⏳ **In-Memory** - À créer pour tests
+  - ⏳ **MySQL** (SQL) - en cours
+  - ⏳ **Postgres** - À créer pour tests
 - **2 frameworks backend :**
-  - ✅ **Express** - API REST complète avec 11 endpoints
+  - ⏳ **Express** - en cours
   - ⏳ **NestJS** - À créer
 
 ### 3. 📝 Clean Code
@@ -136,7 +145,6 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ### 3. 🖥️ Framework Frontend
 - Utilisation de plusieurs frameworks frontend
 - **Angular**, **React** & **Solid.js** à privilégier
-- Lister les avantages et inconvénients de chacun
 
 ---
 
@@ -147,10 +155,6 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ---
 
 ## 📋 Introduction
-
-La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies Responsablement) vous a recruté comme développeur Web afin de pouvoir l'aider à développer son métier et concurrencer les banques traditionnales afin de pouvoir créer une application Web permettant à ses clients de gérer efficacement leur liquidités, épargne et investissement.
-
----
 
 ## ⚡ Fonctionnalités (18 points)
 
@@ -269,40 +273,3 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 - ✅ Un dépôt Git propre, avec un **README clair** et une structure respectant les **bonnes pratiques** du framework.  
 
 ---
-
-## 📊 **ÉTAT ACTUEL DU PROJET**
-
-### 🎯 **Fonctionnalités Opérationnelles**
-✅ **Inscription complète** : Email → Vérification → Bienvenue → Auto-création compte courant  
-✅ **Connexion sécurisée** : JWT + validation + erreurs sans rechargement  
-✅ **Reset password** : Email → Token → Nouveau mot de passe → Login  
-✅ **Dashboard moderne** : Stats + liste comptes + design responsive  
-✅ **Interface française** : Toutes pages et messages traduits  
-
-### 🚀 **API REST (11 endpoints)**
-```
-POST   /api/users/register           # Inscription
-POST   /api/users/login              # Connexion  
-GET    /api/users/me                 # Profil utilisateur
-GET    /api/users/verify-email       # Vérification email
-POST   /api/users/forgot-password    # Demande reset password
-POST   /api/users/reset-password     # Reset password
-
-GET    /api/accounts                 # Liste comptes
-POST   /api/accounts                 # Créer compte
-GET    /api/accounts/:id             # Détail compte
-PUT    /api/accounts/:id             # Modifier compte
-DELETE /api/accounts/:id             # Supprimer compte
-```
-
-### 🔐 **Sécurité**
-- **JWT** : Tokens 7 jours avec middleware Express
-- **bcrypt** : Hash passwords (10 salt rounds)
-- **Validation** : Zod schemas backend + frontend
-- **CORS** : Configuration localhost:3000 ↔ localhost:3001
-- **Emails sécurisés** : Tokens base64 avec expiration
-- **Protection 401** : Intercepteurs Axios intelligents
-
-**🎉 Le projet est déjà fonctionnel pour les besoins de base d'une banque en ligne moderne !**
-
-**📊 Estimation progression : 70% des fonctionnalités core terminées**  

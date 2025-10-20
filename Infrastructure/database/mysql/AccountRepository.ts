@@ -14,7 +14,6 @@ interface AccountRow extends RowDataPacket {
 	account_name: string;
 	account_type: string;
 	balance: number;
-	interest_rate: number;
 	is_active: number;
 	created_at: Date;
 	updated_at: Date;
@@ -41,14 +40,12 @@ export class AccountRepository implements IAccountRepository {
 				// Mise à jour
 				await connection.execute(
 					`UPDATE accounts 
-					SET account_name = ?, account_type = ?, balance = ?, 
-					interest_rate = ?, updated_at = NOW()
-					WHERE id = ?`,
+					SET account_name = ?, account_type = ?, balance = ?,
+					updated_at = NOW() WHERE id = ?`,
 					[
 						account.accountName,
 						account.accountType,
 						account.balance.amount,
-						account.interestRate || 0,
 						account.id.value,
 					]
 				);
@@ -56,15 +53,14 @@ export class AccountRepository implements IAccountRepository {
 				// Création (l'ID sera auto-généré par MySQL)
 				const [result] = await connection.execute<ResultSetHeader>(
 					`INSERT INTO accounts 
-					(user_id, iban, account_name, account_type, balance, interest_rate, is_active, created_at, updated_at)
-					VALUES (?, ?, ?, ?, ?, ?, TRUE, NOW(), NOW())`,
+					(user_id, iban, account_name, account_type, balance, is_active, created_at, updated_at)
+					VALUES (?, ?, ?, ?, ?, TRUE, NOW(), NOW())`,
 					[
 						account.userId.value,
 						account.iban.value,
 						account.accountName,
 						account.accountType,
 						account.balance.amount,
-						account.interestRate || 0,
 					]
 				);
 
@@ -177,7 +173,6 @@ export class AccountRepository implements IAccountRepository {
 			accountName: row.account_name,
 			accountType: row.account_type as AccountType,
 			balance: new Money(row.balance, "EUR"),
-			interestRate: row.interest_rate > 0 ? row.interest_rate : undefined,
 			isActive: row.is_active === 1,
 			createdAt: row.created_at,
 			updatedAt: row.updated_at,

@@ -39,7 +39,7 @@ export interface CreateAccountDTO {
  */
 export interface TransferMoneyDTO {
 	sourceAccountId: string;
-	destinationIBAN: string;
+	destinationAccountId: string;
 	amount: number;
 	currency: string;
 	description?: string;
@@ -61,4 +61,21 @@ export interface UpdateUserProfileDTO {
 export interface RenameAccountDTO {
 	accountId: string;
 	newName: string;
+}
+
+/**
+ * DTO pour placer un ordre d'investissement
+ */
+export interface PlaceInvestmentOrderDTO {
+	accountId: string;
+	stockId: string;
+	orderType: 'buy' | 'sell';
+	quantity: number;
+}
+
+/**
+ * DTO pour annuler un ordre d'investissement
+ */
+export interface CancelInvestmentOrderDTO {
+	orderId: string;
 }

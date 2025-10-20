@@ -30,7 +30,7 @@ CREATE TABLE `users` (
     `role` ENUM('client', 'advisor', 'director') NOT NULL DEFAULT 'client',
     `email_verified` BOOLEAN DEFAULT FALSE,
     `verification_token` VARCHAR(255),
-    `password_reset_token` VARCHAR(255),
+    `password_reset_token` varchar(255) DEFAULT NULL,
     `is_banned` BOOLEAN DEFAULT FALSE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -46,7 +46,6 @@ CREATE TABLE `accounts` (
     `account_name` VARCHAR(100) NOT NULL,
     `account_type` ENUM('checking', 'savings', 'investment') NOT NULL DEFAULT 'checking',
     `balance` DECIMAL(15,2) DEFAULT 0.00,
-    `interest_rate` DECIMAL(5,4) DEFAULT 0.0000, -- Pour les comptes épargne
     `is_active` BOOLEAN DEFAULT TRUE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -59,13 +58,14 @@ CREATE TABLE `accounts` (
 -- TABLE: transactions (Opérations bancaires)
 -- =============================================
 CREATE TABLE `transactions` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `id` VARCHAR(36) PRIMARY KEY,
     `from_account_id` INT,
     `to_account_id` INT,
     `amount` DECIMAL(15,2) NOT NULL,
-    `transaction_type` ENUM('transfer', 'deposit', 'withdrawal', 'interest', 'fee') NOT NULL,
-    `description` VARCHAR(255),
-    `status` ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    `currency` VARCHAR(3) DEFAULT 'EUR',
+    `type` ENUM('transfer', 'deposit', 'withdrawal', 'interest', 'investment_buy', 'investment_sell') NOT NULL,
+    `description` VARCHAR(500),
+    `status` ENUM('pending', 'completed', 'failed', 'cancelled') DEFAULT 'pending',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`from_account_id`) REFERENCES `accounts`(`id`) ON DELETE SET NULL,
@@ -189,5 +189,5 @@ CREATE TABLE `bank_settings` (
 );
 
 INSERT INTO `bank_settings` (`setting_key`, `setting_value`) VALUES
-('savings_interest_rate', '0.0200'), -- 2% annuel
+('savings_interest_rate', '2.5'), -- 2.5% annuel
 ('investment_fee', '1.00'); -- 1€ de frais par transaction
