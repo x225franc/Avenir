@@ -65,14 +65,61 @@ export default function StocksPage() {
 		// Attendre que l'authentification soit chargée avant de charger les données
 		if (!authLoading) {
 			loadData();
+			// WebSocket (Socket.IO) - connexion pour les mises à jour temps réel
+			const wsUrl = process.env.NEXT_PUBLIC_API_WS_URL || "http://localhost:3001";
+			// Import socket.io-client dynamiquement pour éviter les erreurs de compilation
+			import("socket.io-client").then(({ io }) => {
+				const socket = io(wsUrl, { transports: ["websocket"] });
+
+				socket.on("connect", () => {
+					console.log("🔌 Socket connected (stocks page)", socket.id);
+				});
+
+				socket.on("stock_price_update", (payload: any) => {
+				// Update the stock in local state
+				setStocks((prev) => {
+					const idx = prev.findIndex((s) => s.id === payload.stockId);
+					if (idx === -1) return prev;
+					const updated = [...prev];
+					const old = updated[idx];
+					updated[idx] = {
+						...old,
+						currentPrice: {
+							amount: payload.price,
+							currency: old.currentPrice.currency,
+							formatted: payload.price.toFixed(2) + ' €',
+						},
+					};
+					return updated;
+				});
+
+				// Show a short variation indicator
+				setPriceChanges((prev) => ({
+					...prev,
+					[payload.stockId]: {
+						previousPrice: payload.previousPrice,
+						change: payload.change,
+						direction: payload.change > 0 ? 'up' : (payload.change < 0 ? 'down' : 'neutral'),
+					},
+				}));
+
+			});
+
+			return () => {
+				socket.disconnect();
+			};
 			
 			// Recharger les prix toutes les 30 secondes (synchronisé avec le service backend)
 			const interval = setInterval(() => {
 				refreshStockPrices();
 			}, 30000); // 30 secondes
 			
-			return () => clearInterval(interval);
-		}
+			return () => {
+				socket.disconnect();
+				clearInterval(interval);
+			};
+		});
+	}
 	}, [authLoading, user]);
 
 	const loadData = async () => {

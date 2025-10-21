@@ -4,6 +4,8 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 import express from "express";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -13,6 +15,8 @@ import { stockPriceFluctuationService } from "../../../Application/services/Stoc
 import apiRoutes from "./routes";
 
 const app = express();
+const httpServer = http.createServer(app);
+let io: SocketIOServer | null = null;
 const PORT = process.env.PORT || 3001;
 
 // Middleware de sécurité
@@ -85,7 +89,7 @@ if (require.main === module) {
 			process.exit(1);
 		}
 
-		app.listen(PORT, () => {
+		httpServer.listen(PORT, () => {
 			console.log(`🚀 Serveur express tourne sur http://localhost:${PORT}`);
 			console.log(`📊 Health check: http://localhost:${PORT}/health`);
 			console.log(`💾 Base de données connectée`);
@@ -99,12 +103,44 @@ if (require.main === module) {
 				console.error('⚠️ Erreur lors du démarrage des tâches planifiées:', error);
 			}
 
+			// Démarrer socket.io
+			try {
+				io = new SocketIOServer(httpServer, {
+					cors: {
+						origin: process.env.FRONTEND_URL || "http://localhost:3000",
+						methods: ["GET", "POST"],
+					},
+				});
+
+				io.on("connection", (socket) => {
+					console.log(`🟢 WebSocket connected: ${socket.id}`);
+
+					socket.on("disconnect", () => {
+						console.log(`🔴 WebSocket disconnected: ${socket.id}`);
+					});
+				});
+				console.log("🔌 Socket.IO server started");
+			} catch (error) {
+				console.error('⚠️ Erreur lors du démarrage de Socket.IO:', error);
+			}
+
 			// Démarrer le service de fluctuation des prix des actions
 			try {
 				stockPriceFluctuationService.start();
 				console.log(`📈 Service de fluctuation des prix démarré`);
 			} catch (error) {
 				console.error('⚠️ Erreur lors du démarrage de la fluctuation des prix:', error);
+			}
+
+			// Si le service émet des mises à jour, les diffuser via socket.io
+			try {
+				stockPriceFluctuationService.on("priceUpdated", (payload) => {
+					if (io) {
+						io.emit("stock_price_update", payload);
+					}
+				});
+			} catch (err) {
+				console.error("⚠️ Erreur lors du binding Socket.IO avec la fluctuation:", err);
 			}
 		});
 
@@ -114,6 +150,9 @@ if (require.main === module) {
 			const cronService = getCronService();
 			cronService.stop();
 			stockPriceFluctuationService.stop();
+			if (io) {
+				io.close();
+			}
 			process.exit(0);
 		});
 
@@ -122,6 +161,9 @@ if (require.main === module) {
 			const cronService = getCronService();
 			cronService.stop();
 			stockPriceFluctuationService.stop();
+			if (io) {
+				io.close();
+			}
 			process.exit(0);
 		});
 	});

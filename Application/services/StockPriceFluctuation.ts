@@ -1,5 +1,6 @@
 import { pool } from "@infrastructure/database/mysql/connection";
 import { RowDataPacket } from "mysql2";
+import EventEmitter from "events";
 
 /**
  * Service de fluctuation automatique des prix des actions
@@ -10,7 +11,7 @@ import { RowDataPacket } from "mysql2";
  * Variation : entre -2% et +2% par mise à jour
  * Fréquence : toutes les 30 secondes
  */
-export class StockPriceFluctuationService {
+export class StockPriceFluctuationService extends EventEmitter {
 	private intervalId: NodeJS.Timeout | null = null;
 	private readonly FLUCTUATION_INTERVAL = 30000; // 30 secondes
 	private readonly MIN_VARIATION = -0.01; // -1%
@@ -116,6 +117,21 @@ export class StockPriceFluctuationService {
 			console.log(
 				`${arrow} ${symbol}: ${currentPrice.toFixed(4)}€ → ${finalPrice.toFixed(4)}€ (${variation >= 0 ? '+' : ''}${variationPercent}%)`
 			);
+
+			// Emit real-time update (pour WebSocket)
+			try {
+				this.emit("priceUpdated", {
+					stockId,
+					symbol,
+					price: finalPrice,
+					previousPrice: currentPrice,
+					change: parseFloat(variationPercent),
+					timestamp: new Date().toISOString(),
+				});
+			} catch (err) {
+				// Guard: EventEmitter errors shouldn't break the flow
+				console.debug("Emitter error:", err);
+			}
 		} catch (error) {
 			console.error(`❌ Erreur mise à jour ${symbol}:`, error);
 		}
@@ -130,11 +146,11 @@ export class StockPriceFluctuationService {
 	): Promise<{ price: number; timestamp: Date }[]> {
 		try {
 			const [rows] = await pool.execute<RowDataPacket[]>(
-				`SELECT price, timestamp 
-				 FROM stock_price_history 
-				 WHERE stock_id = ? 
-				 ORDER BY timestamp DESC 
-				 LIMIT ?`,
+                    `SELECT price, timestamp 
+                    FROM stock_price_history 
+                    WHERE stock_id = ? 
+                    ORDER BY timestamp DESC 
+                    LIMIT ?`,
 				[stockId, limit]
 			);
 

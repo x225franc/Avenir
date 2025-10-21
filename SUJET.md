@@ -49,10 +49,9 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 
 #### 📈 Investissement
 - ✅ En tant que client, je dois pouvoir enregistrer des ordres d'achat ou de vente d'une action
-- ⏳ Une action est un titre financier d'appartenance à une entreprise côtée sur un marché financier
-- ⏳ La liste des actions disponibles est définie par le directeur de la banque
-- ⏳ Le cours est calculé en fonction du prix d'équilibre entre un prix de vente et un prix d'achat, selon le carnet d'ordre global pour une action
-- ⏳ Étant donné que nous sommes une banque moderne, nous n'avons pas de frais d'arbitrage
+- ✅ Une action est un titre financier d'appartenance à une entreprise côtée sur un marché financier
+- ✅ Le cours est calculé en fonction du prix d'équilibre entre un prix de vente et un prix d'achat, selon le carnet d'ordre global pour une action
+- ✅ Étant donné que nous sommes une banque moderne, nous n'avons pas de frais d'arbitrage
 - ✅ Les seuls frais sont de **1€** à l'achat, comme à la vente
 
 ---
