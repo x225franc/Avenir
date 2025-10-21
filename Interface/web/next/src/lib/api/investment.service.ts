@@ -25,6 +25,8 @@ export interface InvestmentOrder {
 	userId: string;
 	accountId: string;
 	stockId: string;
+	stockSymbol?: string;
+	companyName?: string;
 	orderType: "buy" | "sell";
 	quantity: number;
 	pricePerShare: {

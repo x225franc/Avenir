@@ -168,7 +168,7 @@ export class Portfolio {
 	 */
 	private recalculatePortfolioValue(): void {
 		let totalValue = Money.zero();
-		let totalGainLoss = Money.zero();
+		let totalGainLossAmount = 0; // Accumulateur en nombre pour gérer les négatifs
 
 		for (const position of this.props.positions.values()) {
 			// Valeur actuelle de la position
@@ -180,19 +180,27 @@ export class Portfolio {
 				position.quantity
 			);
 
-			// Gain/perte de la position
-			position.gainLoss = currentValue.subtract(acquisitionCost);
+			// Gain/perte de la position (peut être négatif)
+			const gainLossAmount = currentValue.amount - acquisitionCost.amount;
+			
+			// Créer un Money avec la valeur absolue et forcer le montant réel (positif ou négatif)
+			position.gainLoss = new Money(Math.abs(gainLossAmount), currentValue.currency);
+			(position.gainLoss as any)._amount = gainLossAmount;
 
 			// Pourcentage de gain/perte
 			position.gainLossPercentage =
 				acquisitionCost.amount > 0
-					? (position.gainLoss.amount / acquisitionCost.amount) * 100
+					? (gainLossAmount / acquisitionCost.amount) * 100
 					: 0;
 
 			// Accumulation pour le portefeuille total
 			totalValue = totalValue.add(currentValue);
-			totalGainLoss = totalGainLoss.add(position.gainLoss);
+			totalGainLossAmount += gainLossAmount; // Accumulation simple des nombres
 		}
+
+		// Créer l'objet Money pour le total des gains/pertes
+		const totalGainLoss = new Money(Math.abs(totalGainLossAmount), totalValue.currency);
+		(totalGainLoss as any)._amount = totalGainLossAmount; // Forcer le montant réel (peut être négatif)
 
 		this.props.totalValue = totalValue;
 		this.props.totalGainLoss = totalGainLoss;

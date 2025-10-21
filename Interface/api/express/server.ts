@@ -9,6 +9,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { testConnection } from "@infrastructure/database/mysql/connection";
 import { getCronService } from "../../../Infrastructure/jobs/CronService";
+import { stockPriceFluctuationService } from "../../../Application/services/StockPriceFluctuation";
 import apiRoutes from "./routes";
 
 const app = express();
@@ -97,6 +98,14 @@ if (require.main === module) {
 			} catch (error) {
 				console.error('⚠️ Erreur lors du démarrage des tâches planifiées:', error);
 			}
+
+			// Démarrer le service de fluctuation des prix des actions
+			try {
+				stockPriceFluctuationService.start();
+				console.log(`📈 Service de fluctuation des prix démarré`);
+			} catch (error) {
+				console.error('⚠️ Erreur lors du démarrage de la fluctuation des prix:', error);
+			}
 		});
 
 		// Gestion propre de l'arrêt du serveur
@@ -104,6 +113,7 @@ if (require.main === module) {
 			console.log('SIGTERM signal received: closing HTTP server');
 			const cronService = getCronService();
 			cronService.stop();
+			stockPriceFluctuationService.stop();
 			process.exit(0);
 		});
 
@@ -111,6 +121,7 @@ if (require.main === module) {
 			console.log('SIGINT signal received: closing HTTP server');
 			const cronService = getCronService();
 			cronService.stop();
+			stockPriceFluctuationService.stop();
 			process.exit(0);
 		});
 	});

@@ -10,6 +10,15 @@ import { accountService, Account } from "../../../src/lib/api/account.service";
 import { Position } from "../../../src/lib/api/investment.service";
 import { NotificationModal } from "../../../components/ui/NotificationModal";
 
+// État pour suivre les variations de prix
+interface PriceChange {
+	[stockId: string]: {
+		previousPrice: number;
+		change: number; // en pourcentage
+		direction: 'up' | 'down' | 'neutral';
+	};
+}
+
 /**
  * Page des actions disponibles pour l'investissement
  */
@@ -22,6 +31,8 @@ export default function StocksPage() {
 	const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
 	const [showOrderModal, setShowOrderModal] = useState(false);
 	const [hasInvestmentAccount, setHasInvestmentAccount] = useState<boolean | null>(null);
+	const [priceChanges, setPriceChanges] = useState<PriceChange>({});
+	const [userPositions, setUserPositions] = useState<Map<string, number>>(new Map()); // stockId -> quantity
 	
 	// États pour la modale d'ordre
 	const [orderType, setOrderType] = useState<"buy" | "sell">("buy");
@@ -54,6 +65,13 @@ export default function StocksPage() {
 		// Attendre que l'authentification soit chargée avant de charger les données
 		if (!authLoading) {
 			loadData();
+			
+			// Recharger les prix toutes les 30 secondes (synchronisé avec le service backend)
+			const interval = setInterval(() => {
+				refreshStockPrices();
+			}, 30000); // 30 secondes
+			
+			return () => clearInterval(interval);
 		}
 	}, [authLoading, user]);
 
@@ -100,11 +118,62 @@ export default function StocksPage() {
 				);
 			}
 
+			// Charger le portefeuille pour connaître les positions actuelles
+			const portfolioResponse = await investmentService.getPortfolio();
+			if (portfolioResponse.success && portfolioResponse.data) {
+				// Créer une Map stockId -> quantity
+				const positionsMap = new Map<string, number>();
+				portfolioResponse.data.positions.forEach(position => {
+					positionsMap.set(position.stockId, position.quantity);
+				});
+				setUserPositions(positionsMap);
+			}
+
 		} catch (err) {
 			console.error("Erreur lors du chargement:", err);
 			setError("Une erreur inattendue s'est produite");
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const refreshStockPrices = async () => {
+		try {
+			// Ne pas afficher de loader lors du rafraîchissement
+			const stocksResponse = await investmentService.getAvailableStocks();
+			if (stocksResponse.success && stocksResponse.data) {
+				const newStocks = stocksResponse.data;
+				const changes: PriceChange = {};
+				
+				// Calculer les variations de prix
+				newStocks.forEach(newStock => {
+					const oldStock = stocks.find(s => s.id === newStock.id);
+					if (oldStock) {
+						const oldPrice = oldStock.currentPrice.amount;
+						const newPrice = newStock.currentPrice.amount;
+						const changePercent = ((newPrice - oldPrice) / oldPrice) * 100;
+						
+						if (changePercent !== 0) {
+							changes[newStock.id] = {
+								previousPrice: oldPrice,
+								change: changePercent,
+								direction: changePercent > 0 ? 'up' : changePercent < 0 ? 'down' : 'neutral'
+							};
+						}
+					}
+				});
+				
+				setStocks(newStocks);
+				setPriceChanges(changes);
+				
+				// Effacer les indicateurs de changement après 5 secondes
+				setTimeout(() => {
+					setPriceChanges({});
+				}, 5000);
+			}
+		} catch (err) {
+			console.error("Erreur lors du rafraîchissement des prix:", err);
+			// Ne pas afficher d'erreur à l'utilisateur pour un simple refresh
 		}
 	};
 
@@ -214,7 +283,7 @@ export default function StocksPage() {
 				showNotificationModal(
 					"success",
 					"Ordre placé avec succès !",
-					`Ordre d'${action} passé avec succès ! ${quantity} action(s) ${selectedStock.companyName} - Total: ${Math.abs(totalCost).toFixed(2)}€`
+					`Ordre ${action === 'achat' ? 'd’achat' : 'de vente'} passé avec succès ! ${quantity} action(s) ${selectedStock.companyName} - Total: ${Math.abs(totalCost).toFixed(2)}€`
 				);
 				
 				// Recharger les données
@@ -434,23 +503,59 @@ export default function StocksPage() {
 												{stock.companyName}
 											</p>
 										</div>
-										<div
-											className={`px-3 py-1 rounded-full text-xs font-medium ${
-												stock.isAvailable
-													? "bg-green-100 text-green-800"
-													: "bg-red-100 text-red-800"
-											}`}
-										>
-											{stock.isAvailable ? "Disponible" : "Indisponible"}
+										<div className='flex flex-col gap-2 items-end'>
+											<div
+												className={`px-3 py-1 rounded-full text-xs font-medium ${
+													stock.isAvailable
+														? "bg-green-100 text-green-800"
+														: "bg-red-100 text-red-800"
+												}`}
+											>
+												{stock.isAvailable ? "Disponible" : "Indisponible"}
+											</div>
+											{userPositions.has(stock.id) && userPositions.get(stock.id)! > 0 && (
+												<div className='px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 flex items-center gap-1'>
+													<svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+													</svg>
+													{userPositions.get(stock.id)} action{userPositions.get(stock.id)! > 1 ? 's' : ''} détenue{userPositions.get(stock.id)! > 1 ? 's' : ''}
+												</div>
+											)}
 										</div>
 									</div>
 
-									{/* Price */}
+									{/* Price with variation indicator */}
 									<div className='mb-6'>
-										<div className='text-3xl font-bold text-gray-900 mb-1'>
-											{stock.currentPrice.formatted}
+										<div className='flex items-center gap-2'>
+											<div className='text-3xl font-bold text-gray-900'>
+												{stock.currentPrice.formatted}
+											</div>
+											{priceChanges[stock.id] && (
+												<div className={`flex items-center px-2 py-1 rounded-full text-sm font-medium ${
+													priceChanges[stock.id].direction === 'up' 
+														? 'bg-green-100 text-green-700' 
+														: 'bg-red-100 text-red-700'
+												}`}>
+													{priceChanges[stock.id].direction === 'up' ? (
+														<svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+														</svg>
+													) : (
+														<svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+														</svg>
+													)}
+													{Math.abs(priceChanges[stock.id].change).toFixed(2)}%
+												</div>
+											)}
 										</div>
-										<div className='text-sm text-gray-500'>Prix par action</div>
+										<div className='text-sm text-gray-500 flex items-center gap-2'>
+											Prix par action
+											<span className="inline-flex items-center">
+												<span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+												<span className="ml-1 text-xs text-gray-400">Live</span>
+											</span>
+										</div>
 									</div>
 
 									{/* Fees Info */}

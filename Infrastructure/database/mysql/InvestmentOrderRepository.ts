@@ -26,6 +26,9 @@ interface InvestmentOrderRow extends RowDataPacket {
 	executed_at: Date | null;
 	created_at: Date;
 	updated_at: Date;
+	// Champs optionnels pour le JOIN avec stocks
+	stock_symbol?: string;
+	company_name?: string;
 }
 
 /**
@@ -118,7 +121,14 @@ export class InvestmentOrderRepository implements IInvestmentOrderRepository {
 
 		try {
 			const [rows] = await connection.execute<InvestmentOrderRow[]>(
-				"SELECT * FROM investment_orders WHERE user_id = ? ORDER BY created_at DESC",
+				`SELECT 
+					io.*,
+					s.symbol as stock_symbol,
+					s.company_name as company_name
+				FROM investment_orders io
+				LEFT JOIN stocks s ON io.stock_id = s.id
+				WHERE io.user_id = ? 
+				ORDER BY io.created_at DESC`,
 				[parseInt(userId.value)]
 			);
 
@@ -291,6 +301,8 @@ export class InvestmentOrderRepository implements IInvestmentOrderRepository {
 			executedAt: row.executed_at || undefined,
 			createdAt: row.created_at,
 			updatedAt: row.updated_at,
+			stockSymbol: row.stock_symbol,
+			companyName: row.company_name,
 		});
 	}
 

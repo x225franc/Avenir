@@ -210,8 +210,13 @@ export default function OrdersPage() {
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap'>
 												<div className='text-sm font-medium text-gray-900'>
-													Action #{order.stockId}
+													{order.stockSymbol || `#${order.stockId}`}
 												</div>
+												{order.companyName && (
+													<div className='text-xs text-gray-500'>
+														{order.companyName}
+													</div>
+												)}
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap'>
 												<span

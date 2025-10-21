@@ -29,6 +29,9 @@ export interface InvestmentOrderProps {
 	executedAt?: Date;
 	createdAt: Date;
 	updatedAt: Date;
+	// Données optionnelles de l'action (pour affichage)
+	stockSymbol?: string;
+	companyName?: string;
 }
 
 /**
@@ -220,6 +223,8 @@ export class InvestmentOrder {
 			userId: this.props.userId.value,
 			accountId: this.props.accountId.value,
 			stockId: this.props.stockId.value,
+			stockSymbol: this.props.stockSymbol,
+			companyName: this.props.companyName,
 			orderType: this.props.orderType,
 			quantity: this.props.quantity,
 			pricePerShare: this.props.pricePerShare.toJSON(),

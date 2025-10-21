@@ -156,6 +156,19 @@ CREATE TABLE `messages` (
     INDEX `idx_to_user` (`to_user_id`)
 );
 
+
+-- =============================================
+-- TABLE: stock_price_history (Historique des prix des actions)
+-- =============================================
+
+CREATE TABLE `stock_price_history` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `stock_id` INT NOT NULL,
+    `price` DECIMAL(10,4) NOT NULL,
+    `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`stock_id`) REFERENCES `stocks`(`id`)
+);
+
 -- =============================================
 -- DONNÉES D'EXEMPLE
 -- =============================================
