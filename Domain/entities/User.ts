@@ -138,6 +138,19 @@ export class User {
 		this.props.updatedAt = new Date();
 	}
 
+	public updateRole(role: UserRole): void {
+		this.props.role = role;
+		this.props.updatedAt = new Date();
+	}
+
+	public setEmailVerified(verified: boolean): void {
+		this.props.emailVerified = verified;
+		if (!verified) {
+			this.props.verificationToken = undefined;
+		}
+		this.props.updatedAt = new Date();
+	}
+
 	public updateProfile(data: {
 		firstName?: string;
 		lastName?: string;

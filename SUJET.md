@@ -59,35 +59,35 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ### 🎯 Directeur de banque
 
 #### 🔐 Authentification
-- ⏳ En tant que directeur de banque, je dois pouvoir m'authentifier
+- ✅ En tant que directeur de banque, je dois pouvoir m'authentifier
 
 #### 👥 Gestion des comptes
-- ⏳ En tant que directeur de banque, je dois pouvoir créer, modifier ou supprimer un compte client ou le bannir
+- ✅ En tant que directeur de banque, je dois pouvoir créer, modifier ou supprimer un compte client ou le bannir
 
 #### 📊 Fixation du taux d'épargne
-- ⏳ En tant que directeur de la banque, je dois pouvoir effectuer une modification du taux d'épargne disponible pour les comptes d'épargne
-- ⏳ Ce faisant, tous les clients ayant actuellement un compte d'épargne doivent avoir une notification en ce qui concerne le changement du taux qui a été fixé lors de la modification
+- ✅ En tant que directeur de la banque, je dois pouvoir effectuer une modification du taux d'épargne disponible pour les comptes d'épargne
+- ✅ Ce faisant, tous les clients ayant actuellement un compte d'épargne doivent avoir une notification en ce qui concerne le changement du taux qui a été fixé lors de la modification
 
 #### 📈 Actions
-- ⏳ En tant que directeur de banque, je suis celui qui crée, modifie et supprime les actions
-- ⏳ Je n'ai pas la possibilité de modifier le cours d'une action, mais c'est moi qui décide quelles sont les actions disponibles de celles qui ne le sont pas
-- ⏳ Les clients sont propriétaires de leurs actions, contrairement à certains de nos concurrents qui ne le disent pas, nous l'affichons fièrement
+- ✅ En tant que directeur de banque, je suis celui qui crée, modifie et supprime les actions
+- ✅ Je n'ai pas la possibilité de modifier le cours d'une action, mais c'est moi qui décide quelles sont les actions disponibles de celles qui ne le sont pas
+- ✅ Les clients sont propriétaires de leurs actions, contrairement à certains de nos concurrents qui ne le disent pas, nous l'affichons fièrement
 
 ---
 
 ### 🤝 Conseiller de banque
 
 #### 🔐 Authentification
-- ⏳ En tant que conseiller bancaire, je peux m'authentifier
+- ✅ En tant que conseiller bancaire, je peux m'authentifier
 
 #### 📰 Actualités
-- ⏳ En tant que conseiller bancaire, je peux consulter les actualités de la banque
-- ⏳ Je peux également recevoir des notifications concernant les mises à jour importantes
-- ⏳ Je peux également créer des actualités pour informer les clients
+- ✅ En tant que conseiller bancaire, je peux consulter les actualités de la banque
+- ✅ Je peux également recevoir des notifications concernant les mises à jour importantes
+- ✅ Je peux également créer des actualités pour informer les clients
 
 #### 👥 Gestion des clients
-- ⏳ En tant que conseiller bancaire, je peux uniquement consulter la liste des clients
-- ⏳ Je peux également valider ou refuser les transactions des clients en attente de validation
+- ✅ En tant que conseiller bancaire, je peux uniquement consulter la liste des clients
+- ✅ Je peux également valider ou refuser les transactions des clients en attente de validation
 
 
 #### 💳 Crédit
@@ -246,7 +246,7 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 - La validation doit s’appuyer sur des **schémas** (ex : `zod`).  
 
 ### ⚠️ Gestion des erreurs
-- Intégrer des pages **404** et **500**, en accord avec la charte graphique de l’application.  
+- ✅ Intégrer des pages **404** et **500**, en accord avec la charte graphique de l’application.  
 
 ### 🌐 Internationalisation
 - L’application doit être traduite en **français** et en **anglais**.  

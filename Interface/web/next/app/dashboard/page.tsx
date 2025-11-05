@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../src/contexts/AuthContext";
-import { accountService, Account } from "../../src/lib/api/account.service";
+import { useAuth } from "../../components/contexts/AuthContext";
+import { accountService, Account } from "../../components/lib/api/account.service";
 
 export default function DashboardPage() {
 	const router = useRouter();

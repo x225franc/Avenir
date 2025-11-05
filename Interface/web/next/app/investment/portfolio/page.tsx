@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../src/contexts/AuthContext";
+import { useAuth } from "../../../components/contexts/AuthContext";
 import {
 	investmentService,
 	Portfolio,
 	Position,
-} from "../../../src/lib/api/investment.service";
+} from "../../../components/lib/api/investment.service";
 
 /**
  * Page du portefeuille d'investissement
@@ -17,15 +17,20 @@ export default function PortfolioPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
+
 	useEffect(() => {
 		if (user) {
-			loadPortfolio();
+			loadPortfolio(true); // premier chargement avec loader
+			const interval = setInterval(() => {
+				loadPortfolio(false); // rafraîchissement invisible
+			}, 5000); // 5 secondes
+			return () => clearInterval(interval);
 		}
 	}, [user]);
 
-	const loadPortfolio = async () => {
+	const loadPortfolio = async (showLoader = false) => {
 		try {
-			setLoading(true);
+			if (showLoader) setLoading(true);
 			setError(null);
 
 			const response = await investmentService.getPortfolio();
@@ -40,7 +45,7 @@ export default function PortfolioPage() {
 			console.error("Erreur lors du chargement:", err);
 			setError("Une erreur inattendue s'est produite");
 		} finally {
-			setLoading(false);
+			if (showLoader) setLoading(false);
 		}
 	};
 
@@ -379,7 +384,7 @@ export default function PortfolioPage() {
 						</p>
 						<div className='mt-6'>
 							<button
-								onClick={loadPortfolio}
+								onClick={() => loadPortfolio(true)}
 								className='inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700'
 							>
 								Réessayer

@@ -109,6 +109,22 @@ export class Transaction {
     this.props.updatedAt = new Date();
   }
 
+  public approve(): void {
+    if (this.props.status !== TransactionStatus.PENDING) {
+      throw new Error("Only pending transactions can be approved");
+    }
+    this.props.status = TransactionStatus.COMPLETED;
+    this.props.updatedAt = new Date();
+  }
+
+  public reject(): void {
+    if (this.props.status !== TransactionStatus.PENDING) {
+      throw new Error("Only pending transactions can be rejected");
+    }
+    this.props.status = TransactionStatus.FAILED;
+    this.props.updatedAt = new Date();
+  }
+
   // Getters
   public getId(): TransactionId {
     return this.props.id;

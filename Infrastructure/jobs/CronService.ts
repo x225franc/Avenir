@@ -1,7 +1,7 @@
 import * as cron from "node-cron";
 import { ApplyDailyInterest } from "../../Application/use-cases/account/ApplyDailyInterest";
 import { AccountRepository } from "../database/mysql/AccountRepository";
-import { MySQLTransactionRepository } from "../database/mysql/TransactionRepository";
+import { TransactionRepository } from "../database/mysql/TransactionRepository";
 import { BankSettingsRepository } from "../database/mysql/BankSettingsRepository";
 
 /**
@@ -14,7 +14,7 @@ export class CronService {
 
   constructor() {
     const accountRepository = new AccountRepository();
-    const transactionRepository = new MySQLTransactionRepository();
+    const transactionRepository = new TransactionRepository();
     const bankSettingsRepository = new BankSettingsRepository();
 
     this.applyDailyInterestUseCase = new ApplyDailyInterest(

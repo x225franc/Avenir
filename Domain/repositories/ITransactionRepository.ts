@@ -23,4 +23,24 @@ export interface ITransactionRepository {
 	 * Trouve toutes les transactions d'un utilisateur
 	 */
 	findByUserId(userId: string): Promise<Transaction[]>;
+
+	/**
+	 * Trouve toutes les transactions
+	 */
+	findAll(): Promise<Transaction[]>;
+
+	/**
+	 * Trouve les transactions par statut
+	 */
+	findByStatus(status: string): Promise<Transaction[]>;
+
+	/**
+	 * Met à jour une transaction existante
+	 */
+	update(transaction: Transaction): Promise<void>;
+
+	/**
+	 * Supprime une transaction
+	 */
+	delete(id: string): Promise<void>;
 }

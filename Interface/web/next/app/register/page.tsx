@@ -3,18 +3,66 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { registerSchema, RegisterFormData } from "../../src/lib/validations/schemas";
-import { authService } from "../../src/lib/api/auth.service";
-import { useAuth } from "@/src/contexts/AuthContext";
+import { registerSchema, RegisterFormData } from "../../components/lib/validations/schemas";
+import { authService } from "../../components/lib/api/auth.service";
+import { useAuth } from "@/components/contexts/AuthContext";
 
 export default function RegisterPage() {
 	const router = useRouter();
+	const pathname = usePathname();
 	const [error, setError] = useState<string>("");
 	const [success, setSuccess] = useState<string>("");
 	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [loading, setLoading] = useState(false);
+
+	// Détecter le type d'utilisateur basé sur l'URL
+	const getUserTypeFromPath = () => {
+		if (pathname.includes('/admin')) return 'director';
+		if (pathname.includes('/advisor')) return 'advisor';
+		return 'client';
+	};
+
+	const userType = getUserTypeFromPath();
+
+	// Configuration des thèmes selon le type d'utilisateur
+	const getThemeConfig = () => {
+		switch (userType) {
+			case 'director':
+				return {
+					title: '🏦 Administration AVENIR',
+					subtitle: 'Créer un compte directeur',
+					gradient: 'from-purple-50 to-purple-100',
+					buttonColor: 'bg-purple-600 hover:bg-purple-700',
+					ringColor: 'focus:ring-purple-500',
+					linkColor: 'text-purple-600 hover:text-purple-700',
+					emoji: '👔'
+				};
+			case 'advisor':
+				return {
+					title: '🏦 Conseillers AVENIR',
+					subtitle: 'Créer un compte conseiller',
+					gradient: 'from-green-50 to-green-100',
+					buttonColor: 'bg-green-600 hover:bg-green-700',
+					ringColor: 'focus:ring-green-500',
+					linkColor: 'text-green-600 hover:text-green-700',
+					emoji: '💼'
+				};
+			default:
+				return {
+					title: '🏦 Banque AVENIR',
+					subtitle: 'Créer votre compte',
+					gradient: 'from-blue-50 to-indigo-100',
+					buttonColor: 'bg-blue-600 hover:bg-blue-700',
+					ringColor: 'focus:ring-blue-500',
+					linkColor: 'text-blue-600 hover:text-blue-700',
+					emoji: '👤'
+				};
+		}
+	};
+
+	const theme = getThemeConfig();
 
 	useEffect(() => {
 			// Rediriger si authentifié
@@ -45,14 +93,19 @@ export default function RegisterPage() {
 				lastName: data.lastName,
 				phoneNumber: data.phoneNumber,
 				address: data.address,
+				role: userType, // Ajouter le rôle basé sur l'URL
 			});
 
 			if (response.success) {
+				const roleMessage = userType === 'director' ? 'directeur' : 
+				userType === 'advisor' ? 'conseiller' : 'client';
 				setSuccess(
-					"Inscription réussie ! Vérifiez votre email pour activer votre compte."
+					`Inscription ${roleMessage} réussie ! Vérifiez votre email pour activer votre compte.`
 				);
 				setTimeout(() => {
-					router.push("/login");
+					// Rediriger vers la page de login correspondante
+					const loginPath = userType === 'client' ? '/login' : `/${userType === 'director' ? 'admin' : userType}/login`;
+					router.push(loginPath);
 				}, 2000);
 			} else {
 				setError(response.error || "Une erreur est survenue lors de l'inscription");
@@ -65,14 +118,13 @@ export default function RegisterPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+		<div className={`min-h-screen flex items-center justify-center bg-gradient-to-br ${theme.gradient} px-4`}>
 			<div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-				{/* Header */}
 				<div className="text-center mb-8">
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">
-						🏦 Banque AVENIR
+						{theme.title}
 					</h1>
-					<p className="text-gray-600">Créer votre compte</p>
+					<p className="text-gray-600">{theme.emoji} {theme.subtitle}</p>
 				</div>
 
 				{/* Messages */}
@@ -98,7 +150,7 @@ export default function RegisterPage() {
 							{...register("email")}
 							type="email"
 							id="email"
-							className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="votre@email.com"
 						/>
 						{errors.email && (
@@ -116,7 +168,7 @@ export default function RegisterPage() {
 								{...register("firstName")}
 								type="text"
 								id="firstName"
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 								placeholder="Jean"
 							/>
 							{errors.firstName && (
@@ -132,7 +184,7 @@ export default function RegisterPage() {
 								{...register("lastName")}
 								type="text"
 								id="lastName"
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 								placeholder="Dupont"
 							/>
 							{errors.lastName && (
@@ -150,7 +202,7 @@ export default function RegisterPage() {
 							{...register("password")}
 							type="password"
 							id="password"
-							className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="••••••••"
 						/>
 						{errors.password && (
@@ -167,7 +219,7 @@ export default function RegisterPage() {
 							{...register("confirmPassword")}
 							type="password"
 							id="confirmPassword"
-							className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="••••••••"
 						/>
 						{errors.confirmPassword && (
@@ -184,7 +236,7 @@ export default function RegisterPage() {
 							{...register("phoneNumber")}
 							type="tel"
 							id="phoneNumber"
-							className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="06 12 34 56 78"
 						/>
 						{errors.phoneNumber && (
@@ -201,7 +253,7 @@ export default function RegisterPage() {
 							{...register("address")}
 							id="address"
 							rows={2}
-							className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="123 Rue de Paris, 75001 Paris"
 						/>
 						{errors.address && (
@@ -213,7 +265,7 @@ export default function RegisterPage() {
 					<button
 						type="submit"
 						disabled={loading}
-						className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+						className={`w-full ${theme.buttonColor} text-white py-3 rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed`}
 					>
 						{loading ? "Inscription en cours..." : "S'inscrire"}
 					</button>
@@ -222,7 +274,10 @@ export default function RegisterPage() {
 				{/* Lien vers connexion */}
 				<p className="mt-6 text-center text-sm text-gray-600">
 					Déjà inscrit ?{" "}
-					<Link href="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+					<Link 
+						href={userType === 'client' ? '/login' : `/${userType === 'director' ? 'admin' : userType}/login`} 
+						className={`${theme.linkColor} font-semibold`}
+					>
 						Se connecter
 					</Link>
 				</p>

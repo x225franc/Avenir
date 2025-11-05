@@ -31,3 +31,13 @@ export type { GetAvailableStocksResult } from "./investment/GetAvailableStocks";
 
 export { GetUserPortfolio } from "./investment/GetUserPortfolio";
 export type { GetUserPortfolioResult } from "./investment/GetUserPortfolio";
+
+// News Use Cases
+export { CreateNews } from "./news/CreateNews";
+export { GetNews } from "./news/GetNews";
+export { UpdateNews } from "./news/UpdateNews";
+export { DeleteNews } from "./news/DeleteNews";
+export type { CreateNewsDTO, CreateNewsResult } from "./news/CreateNews";
+export type { GetNewsResult } from "./news/GetNews";
+export type { UpdateNewsDTO, UpdateNewsResult } from "./news/UpdateNews";
+export type { DeleteNewsResult } from "./news/DeleteNews";

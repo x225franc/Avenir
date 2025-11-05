@@ -1,12 +1,19 @@
 import { Request, Response } from "express";
 import { getCronService } from "../../../../Infrastructure/jobs/CronService";
 import { BankSettingsRepository } from "../../../../Infrastructure/database/mysql/BankSettingsRepository";
+import { AccountRepository } from "../../../../Infrastructure/database/mysql/AccountRepository";
+import { UserRepository } from "../../../../Infrastructure/database/mysql/UserRepository";
+import { UpdateSavingsRate } from "../../../../Application/use-cases/admin/UpdateSavingsRate";
+import { GetSavingsRate } from "../../../../Application/use-cases/admin/GetSavingsRate";
+import { emailService } from "../../../../Infrastructure/services/email.service";
 
 /**
  * Controller pour les tâches administratives (cron jobs, maintenance, etc.)
  */
 export class AdminController {
   private bankSettingsRepository = new BankSettingsRepository();
+  private accountRepository = new AccountRepository();
+  private userRepository = new UserRepository();
   /**
    * POST /api/admin/apply-interest
    * Exécute manuellement l'application des intérêts (pour testing)
@@ -81,11 +88,32 @@ export class AdminController {
   }
 
   /**
-   * POST /api/admin/set-savings-rate
-   * Définit le taux d'épargne global dans bank_settings
+   * PUT /api/admin/savings-rate
+   * Définit le taux d'épargne global et notifie les clients
    */
-  async setSavingsRate(req: Request, res: Response): Promise<void> {
+  async updateSavingsRate(req: Request, res: Response): Promise<void> {
     try {
+      // Vérifier que l'utilisateur est authentifié et est un director
+      const userId = (req as any).user?.userId;
+      const userRole = (req as any).user?.role;
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message: "Non autorisé",
+        });
+        return;
+      }
+
+      // Seuls les directors peuvent modifier le taux
+      if (userRole !== "director") {
+        res.status(403).json({
+          success: false,
+          message: "Accès refusé. Seuls les directeurs peuvent modifier le taux d'épargne.",
+        });
+        return;
+      }
+
       const { rate } = req.body;
 
       if (rate === undefined || rate < 0 || rate > 100) {
@@ -96,14 +124,27 @@ export class AdminController {
         return;
       }
 
-      await this.bankSettingsRepository.setSavingsRate(rate);
+      // Utiliser le use case pour mettre à jour et notifier
+      const updateSavingsRate = new UpdateSavingsRate(
+        this.bankSettingsRepository,
+        this.accountRepository,
+        this.userRepository,
+        emailService
+      );
+
+      const result = await updateSavingsRate.execute(rate);
 
       res.status(200).json({
         success: true,
-        message: `✅ Taux d'épargne mis à ${rate}% pour tous les comptes d'épargne`,
+        message: result.message,
+        data: {
+          oldRate: result.oldRate,
+          newRate: result.newRate,
+          notifiedUsers: result.notifiedUsers,
+        }
       });
     } catch (error) {
-      console.error("Error in setSavingsRate:", error);
+      console.error("Error in updateSavingsRate:", error);
       res.status(500).json({
         success: false,
         message: "❌ Erreur lors de la mise à jour du taux",
@@ -118,13 +159,15 @@ export class AdminController {
    */
   async getSavingsRate(req: Request, res: Response): Promise<void> {
     try {
-      const rate = await this.bankSettingsRepository.getSavingsRate();
+      const getSavingsRate = new GetSavingsRate(this.bankSettingsRepository);
+      const result = await getSavingsRate.execute();
 
       res.status(200).json({
         success: true,
         data: {
-          rate: rate,
-          rateFormatted: `${rate}%`
+          rate: result.rate,
+          rateFormatted: `${result.rate}%`,
+          lastUpdate: result.lastUpdate
         }
       });
     } catch (error) {

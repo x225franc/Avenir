@@ -3,17 +3,65 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { loginSchema, LoginFormData } from "../../src/lib/validations/schemas";
-import { useAuth } from "../../src/contexts/AuthContext";
+import { loginSchema, LoginFormData } from "../../components/lib/validations/schemas";
+import { useAuth } from "../../components/contexts/AuthContext";
 
 export default function LoginPage() {
 	const router = useRouter();
-	const { login } = useAuth();
+	const pathname = usePathname();
+	const { login, user } = useAuth();
 	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [error, setError] = useState<string>("");
 	const [loading, setLoading] = useState(false);
+
+	// Détecter le type d'utilisateur basé sur l'URL
+	const getUserTypeFromPath = () => {
+		if (pathname.includes('/admin')) return 'director';
+		if (pathname.includes('/advisor')) return 'advisor';
+		return 'client';
+	};
+
+	const userType = getUserTypeFromPath();
+
+	// Configuration des thèmes selon le type d'utilisateur
+	const getThemeConfig = () => {
+		switch (userType) {
+			case 'director':
+				return {
+					title: '🏦 Administration AVENIR',
+					subtitle: 'Connexion directeur',
+					gradient: 'from-purple-50 to-purple-100',
+					buttonColor: 'bg-purple-600 hover:bg-purple-700',
+					ringColor: 'focus:ring-purple-500',
+					linkColor: 'text-purple-600 hover:text-purple-700',
+					emoji: '👔'
+				};
+			case 'advisor':
+				return {
+					title: '🏦 Conseillers AVENIR',
+					subtitle: 'Connexion conseiller',
+					gradient: 'from-green-50 to-green-100',
+					buttonColor: 'bg-green-600 hover:bg-green-700',
+					ringColor: 'focus:ring-green-500',
+					linkColor: 'text-green-600 hover:text-green-700',
+					emoji: '💼'
+				};
+			default:
+				return {
+					title: '🏦 Banque AVENIR',
+					subtitle: 'Connectez-vous à votre compte',
+					gradient: 'from-blue-50 to-indigo-100',
+					buttonColor: 'bg-blue-600 hover:bg-blue-700',
+					ringColor: 'focus:ring-blue-500',
+					linkColor: 'text-blue-600 hover:text-blue-700',
+					emoji: '👤'
+				};
+		}
+	};
+
+	const theme = getThemeConfig();
 
 	const {
 		register,
@@ -24,21 +72,32 @@ export default function LoginPage() {
 	});
 
 	useEffect(() => {
-			// Rediriger si authentifié
-			if (isAuthenticated) {
+		// Rediriger si déjà authentifié au chargement de la page
+		if (!authLoading && isAuthenticated && user) {
+			if (user.role === 'director') {
+				router.push("/admin/dashboard");
+			} else if (user.role === 'advisor') {
+				router.push("/advisor/dashboard");
+			} else {
 				router.push("/dashboard");
-				return;
 			}
-		}, [authLoading, isAuthenticated, router]);
+		}
+	}, [authLoading, isAuthenticated, user, router]);
 
 	const onSubmit = async (data: LoginFormData) => {
 		setLoading(true);
 		setError("");
 
 		try {
-			await login(data.email, data.password);
-			// Succès : redirection vers le dashboard
-			router.push("/dashboard");
+			const result = await login(data.email, data.password);
+			// Redirection selon le rôle réel de l'utilisateur
+			if (result.role === 'director') {
+				router.push("/admin/dashboard");
+			} else if (result.role === 'advisor') {
+				router.push("/advisor/dashboard");
+			} else {
+				router.push("/dashboard");
+			}
 		} catch (err: any) {
 			// Afficher l'erreur
 			const errorMessage = err.message || "Email ou mot de passe incorrect";
@@ -50,14 +109,13 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+		<div className={`min-h-screen flex items-center justify-center bg-gradient-to-br ${theme.gradient} px-4`}>
 			<div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-				{/* Header */}
 				<div className="text-center mb-8">
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">
-						🏦 Banque AVENIR
+						{theme.title}
 					</h1>
-					<p className="text-gray-600">Connectez-vous à votre compte</p>
+					<p className="text-gray-600">{theme.emoji} {theme.subtitle}</p>
 				</div>
 
 				{/* Message d'erreur */}
@@ -78,7 +136,7 @@ export default function LoginPage() {
 							{...register("email")}
 							type="email"
 							id="email"
-							className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="votre@email.com"
 						/>
 						{errors.email && (
@@ -95,7 +153,7 @@ export default function LoginPage() {
 							{...register("password")}
 							type="password"
 							id="password"
-							className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 ${theme.ringColor} focus:border-transparent`}
 							placeholder="••••••••"
 						/>
 						{errors.password && (
@@ -117,7 +175,7 @@ export default function LoginPage() {
 					<button
 						type="submit"
 						disabled={loading}
-						className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+						className={`w-full ${theme.buttonColor} text-white py-3 rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed`}
 					>
 						{loading ? "Connexion..." : "Se connecter"}
 					</button>
@@ -126,7 +184,10 @@ export default function LoginPage() {
 				{/* Lien vers inscription */}
 				<p className="mt-6 text-center text-sm text-gray-600">
 					Pas encore de compte ?{" "}
-					<Link href="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
+					<Link 
+						href={userType === 'client' ? '/register' : `/${userType === 'director' ? 'admin' : userType}/register`} 
+						className={`${theme.linkColor} font-semibold`}
+					>
 						S'inscrire
 					</Link>
 				</p>

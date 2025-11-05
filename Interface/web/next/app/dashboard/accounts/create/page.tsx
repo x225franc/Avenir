@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { accountService } from "../../../../src/lib/api/account.service";
-import { useAuth } from "../../../../src/contexts/AuthContext";
+import { accountService } from "../../../../components/lib/api/account.service";
+import { useAuth } from "../../../../components/contexts/AuthContext";
 
 // Schéma de validation
 const createAccountSchema = z.object({

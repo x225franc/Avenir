@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "../../src/contexts/AuthContext";
+import { useAuth } from "../../components/contexts/AuthContext";
 import { useState } from "react";
 
 export default function Header() {
@@ -15,67 +15,134 @@ export default function Header() {
 		setIsMenuOpen(false);
 	};
 
+	// Configuration de navigation selon le rôle
+	const getNavigationConfig = () => {
+		if (!user) return null;
+
+		switch (user.role) {
+			case 'director':
+				return {
+					dashboardPath: '/admin/dashboard',
+					title: 'Administration',
+					color: 'purple',
+					links: [
+						{ href: '/admin/dashboard', label: 'Accueil', icon: '👔' },
+						{ href: '/admin/users', label: 'Utilisateurs', icon: '👥' },
+						{ href: '/admin/news', label: 'Actualités', icon: '📰' },
+						{ href: '/admin/savings', label: 'Epargne', icon: '📊' },
+						{ href: '/admin/investments', label: 'Actions', icon: '📈' },
+					]
+				};
+			case 'advisor':
+				return {
+					dashboardPath: '/advisor/dashboard',
+					title: 'Conseiller',
+					color: 'green',
+					links: [
+						{ href: '/advisor/dashboard', label: 'Accueil', icon: '💼' },
+						{ href: '/advisor/clients', label: 'Clients', icon: '👥' },
+						{ href: '/advisor/transactions', label: 'Transactions', icon: '💳' },
+						{ href: '/advisor/news', label: 'Actualités', icon: '📰' },
+						{ href: '/advisor/messages', label: 'Messages', icon: '💬' },
+					]
+				};
+			default: // client
+				return {
+					dashboardPath: '/dashboard',
+					title: 'Client',
+					color: 'blue',
+					links: [
+						{ href: '/dashboard', label: 'Accueil', icon: '🏠' },
+						{ href: '/dashboard/accounts', label: 'Mes comptes', icon: '💳' },
+						{ href: '/dashboard/transfers', label: 'Virements', icon: '💸' },
+						{ href: '/investment', label: 'Actions', icon: '📈' },
+						{ href: '/news', label: 'Actualités', icon: '📰' },
+					]
+				};
+		}
+	};
+
+	const navConfig = getNavigationConfig();
+
 	return (
 		<header className="bg-white shadow-md sticky top-0 z-50">
 			<nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center h-16">
 					{/* Logo */}
 					<Link
-						href={user ? "/dashboard" : "/"}
-						className="flex items-center space-x-2"
+						href={navConfig?.dashboardPath || (user ? "/dashboard" : "/")}
+						className="flex items-center space-x-3"
 					>
-						<div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+						<div
+							className={`w-10 h-10 bg-gradient-to-r ${
+								navConfig?.color === "purple"
+									? "from-purple-600 to-purple-800"
+									: navConfig?.color === "green"
+									? "from-green-600 to-green-800"
+									: "from-blue-600 to-blue-800"
+							} rounded-lg flex items-center justify-center`}
+						>
 							<span className="text-white font-bold text-xl">A</span>
 						</div>
-						<span className="text-xl font-bold text-gray-900">
-							Banque AVENIR
-						</span>
+						<div className="flex flex-col justify-center">
+							<span className="text-xl font-bold text-gray-900 leading-tight">AVENIR</span>
+							{navConfig?.title && (
+								<div
+									className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${
+										navConfig?.color === "purple"
+											? "bg-purple-100 text-purple-800"
+											: navConfig?.color === "green"
+											? "bg-green-100 text-green-800"
+											: "bg-blue-100 text-blue-800"
+									}`}
+								>
+									{navConfig?.title}
+								</div>
+							)}
+						</div>
 					</Link>
-
 					{/* Navigation Links (desktop) */}
 					<div className="hidden md:flex items-center space-x-8">
-						{user ? (
+						{user && navConfig ? (
 							<>
-								<Link
-									href="/dashboard"
-									className={`text-gray-700 hover:text-blue-600 transition font-medium ${
-										pathname === "/dashboard" ? "text-blue-600" : ""
-									}`}
-								>
-									Tableau de bord
-								</Link>
-								<Link
-									href="/dashboard/accounts"
-									className={`text-gray-700 hover:text-blue-600 transition font-medium ${
-										pathname.startsWith("/dashboard/accounts") ? "text-blue-600" : ""
-									}`}
-								>
-									Mes comptes
-								</Link>
-								<Link
-									href="/dashboard/transfers"
-									className={`text-gray-700 hover:text-blue-600 transition font-medium ${
-										pathname === "/dashboard/transfers" ? "text-blue-600" : ""
-									}`}
-								>
-									Virements
-								</Link>
-								<Link
-									href="/investment"
-									className={`text-gray-700 hover:text-blue-600 transition font-medium ${
-										pathname.startsWith("/investment") ? "text-blue-600" : ""
-									}`}
-								>
-									Investissements
-								</Link>
+								{navConfig.links.map((link: any) => {
+									const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
+									const activeColorClass = 
+										navConfig.color === 'purple' ? 'text-purple-600' :
+										navConfig.color === 'green' ? 'text-green-600' :
+										'text-blue-600';
+									const hoverColorClass = 
+										navConfig.color === 'purple' ? 'hover:text-purple-600' :
+										navConfig.color === 'green' ? 'hover:text-green-600' :
+										'hover:text-blue-600';
+									
+									return (
+										<Link
+											key={link.href}
+											href={link.href}
+											className={`text-gray-700 ${hoverColorClass} transition font-medium flex items-center space-x-1 ${
+												isActive ? activeColorClass : ""
+											}`}
+										>
+											<span>{link.icon}</span>
+											<span>{link.label}</span>
+										</Link>
+									);
+								})}
 								<div className="flex items-center space-x-4">
-									<span className="text-sm text-gray-600">
-										Bienvenue <br />
-										<b>{user.lastName}</b>
-									</span>
+									<div className="text-sm text-gray-600">
+										
+										<div>
+											Bienvenue <b>{user.lastName}</b>
+										</div>
+									</div>
 									<button
 										onClick={handleLogout}
-										className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+										className={`px-4 py-2 text-white rounded-lg transition font-medium ${
+											navConfig.color === 'purple' ? 'bg-purple-600 hover:bg-purple-700' :
+											navConfig.color === 'green' ? 'bg-green-600 hover:bg-green-700' :
+											'bg-blue-600 hover:bg-blue-700'
+										}`}
 									>
 										Déconnexion
 									</button>
@@ -139,52 +206,45 @@ export default function Header() {
 				{/* Mobile Menu */}
 				{isMenuOpen && (
 					<div className="md:hidden mt-2 bg-white rounded-lg shadow-lg p-4 space-y-3">
-						{user ? (
+						{user && navConfig ? (
 							<>
-								<Link
-									href="/dashboard"
-									onClick={() => setIsMenuOpen(false)}
-									className={`block text-gray-700 hover:text-blue-600 font-medium ${
-										pathname === "/dashboard" ? "text-blue-600" : ""
-									}`}
-								>
-									Tableau de bord
-								</Link>
-								<Link
-									href="/dashboard/accounts"
-									onClick={() => setIsMenuOpen(false)}
-									className={`block text-gray-700 hover:text-blue-600 font-medium ${
-										pathname.startsWith("/dashboard/accounts") ? "text-blue-600" : ""
-									}`}
-								>
-									Mes comptes
-								</Link>
-								<Link
-									href="/dashboard/transfers"
-									onClick={() => setIsMenuOpen(false)}
-									className={`block text-gray-700 hover:text-blue-600 font-medium ${
-										pathname === "/dashboard/transfers" ? "text-blue-600" : ""
-									}`}
-								>
-									Virements
-								</Link>
-								<Link
-									href="/investment"
-									onClick={() => setIsMenuOpen(false)}
-									className={`block text-gray-700 hover:text-blue-600 font-medium ${
-										pathname.startsWith("/investment") ? "text-blue-600" : ""
-									}`}
-								>
-									Investissements
-								</Link>
+								{navConfig.links.map((link: any) => {
+									const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
+									const activeColorClass = 
+										navConfig.color === 'purple' ? 'text-purple-600' :
+										navConfig.color === 'green' ? 'text-green-600' :
+										'text-blue-600';
+									const hoverColorClass = 
+										navConfig.color === 'purple' ? 'hover:text-purple-600' :
+										navConfig.color === 'green' ? 'hover:text-green-600' :
+										'hover:text-blue-600';
+									
+									return (
+										<Link
+											key={link.href}
+											href={link.href}
+											onClick={() => setIsMenuOpen(false)}
+											className={`block text-gray-700 ${hoverColorClass} font-medium flex items-center space-x-2 ${
+												isActive ? activeColorClass : ""
+											}`}
+										>
+											<span>{link.icon}</span>
+											<span>{link.label}</span>
+										</Link>
+									);
+								})}
 
 								<div className="pt-3 border-t border-gray-200">
-									<span className="block text-sm text-gray-600 mb-2">
+									<div className="text-sm text-gray-600 mb-3">
 										Bienvenue <b>{user.lastName}</b>
-									</span>
+									</div>
 									<button
 										onClick={handleLogout}
-										className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+										className={`w-full px-4 py-2 text-white rounded-lg transition font-medium ${
+											navConfig.color === 'purple' ? 'bg-purple-600 hover:bg-purple-700' :
+											navConfig.color === 'green' ? 'bg-green-600 hover:bg-green-700' :
+											'bg-blue-600 hover:bg-blue-700'
+										}`}
 									>
 										Déconnexion
 									</button>

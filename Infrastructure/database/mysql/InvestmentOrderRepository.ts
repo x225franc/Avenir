@@ -318,4 +318,30 @@ export class InvestmentOrderRepository implements IInvestmentOrderRepository {
 				throw new Error(`Unknown order status: ${status}`);
 		}
 	}
+
+	/**
+	 * Calcule le nombre net d'actions détenues par tous les utilisateurs
+	 * pour une action donnée (achats - ventes exécutés uniquement)
+	 */
+	async countNetHoldingsByStockId(stockId: StockId): Promise<number> {
+		const connection = await pool.getConnection();
+
+		try {
+			const [rows] = await connection.execute<RowDataPacket[]>(
+				`SELECT 
+                    SUM(CASE WHEN order_type = 'buy' THEN quantity ELSE 0 END) as total_bought,
+                    SUM(CASE WHEN order_type = 'sell' THEN quantity ELSE 0 END) as total_sold
+                FROM investment_orders 
+                WHERE stock_id = ? AND status = 'executed'`,
+				[parseInt(stockId.value)]
+			);
+
+			const totalBought = rows[0]?.total_bought || 0;
+			const totalSold = rows[0]?.total_sold || 0;
+
+			return totalBought - totalSold;
+		} finally {
+			connection.release();
+		}
+	}
 }

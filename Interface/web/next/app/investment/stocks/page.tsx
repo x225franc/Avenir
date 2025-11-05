@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../src/contexts/AuthContext";
+import { useAuth } from "../../../components/contexts/AuthContext";
 import {
 	investmentService,
 	Stock,
-} from "../../../src/lib/api/investment.service";
-import { accountService, Account } from "../../../src/lib/api/account.service";
-import { Position } from "../../../src/lib/api/investment.service";
+} from "../../../components/lib/api/investment.service";
+import { accountService, Account } from "../../../components/lib/api/account.service";
+import { Position } from "../../../components/lib/api/investment.service";
 import { NotificationModal } from "../../../components/ui/NotificationModal";
 
 // État pour suivre les variations de prix
@@ -72,7 +72,7 @@ export default function StocksPage() {
 				const socket = io(wsUrl, { transports: ["websocket"] });
 
 				socket.on("connect", () => {
-					console.log("🔌 Socket connected (stocks page)", socket.id);
+					console.log("🔌 Socket connecté (stocks page)", socket.id);
 				});
 
 				socket.on("stock_price_update", (payload: any) => {

@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../src/contexts/AuthContext";
+import { useAuth } from "../../../components/contexts/AuthContext";
 import {
 	investmentService,
 	InvestmentOrder,
-} from "../../../src/lib/api/investment.service";
+} from "../../../components/lib/api/investment.service";
 
 /**
  * Page d'historique des ordres d'investissement

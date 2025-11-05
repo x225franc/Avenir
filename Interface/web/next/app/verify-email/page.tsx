@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import apiClient from "../../src/lib/api/client";
-import { useAuth } from "../../src/contexts/AuthContext";
+import apiClient from "../../components/lib/api/client";
+import { useAuth } from "../../components/contexts/AuthContext";
 
 export default function VerifyEmailPage() {
 	const router = useRouter();

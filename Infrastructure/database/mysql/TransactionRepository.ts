@@ -21,7 +21,7 @@ interface TransactionRow extends RowDataPacket {
 	updated_at: Date;
 }
 
-export class MySQLTransactionRepository implements ITransactionRepository {
+export class TransactionRepository implements ITransactionRepository {
 	async save(transaction: Transaction): Promise<void> {
 		const query = `
         INSERT INTO transactions (
@@ -65,21 +65,6 @@ export class MySQLTransactionRepository implements ITransactionRepository {
 		return this.mapRowToEntity(rows[0]);
 	}
 
-	async findByAccountId(accountId: string): Promise<Transaction[]> {
-		const query = `
-        SELECT * FROM transactions 
-        WHERE from_account_id = ? OR to_account_id = ?
-        ORDER BY created_at DESC
-    `;
-
-		const [rows] = await pool.execute<TransactionRow[]>(query, [
-			accountId,
-			accountId,
-		]);
-
-		return rows.map((row: TransactionRow) => this.mapRowToEntity(row));
-	}
-
 	async findByUserId(userId: string): Promise<Transaction[]> {
 		const query = `
         SELECT DISTINCT t.* 
@@ -98,6 +83,29 @@ export class MySQLTransactionRepository implements ITransactionRepository {
 		return rows.map((row: TransactionRow) => this.mapRowToEntity(row));
 	}
 
+	async findAll(): Promise<Transaction[]> {
+		const query = `
+        SELECT * FROM transactions 
+        ORDER BY created_at DESC
+    `;
+
+		const [rows] = await pool.execute<TransactionRow[]>(query, []);
+
+		return rows.map((row: TransactionRow) => this.mapRowToEntity(row));
+	}
+
+	async findByStatus(status: string): Promise<Transaction[]> {
+		const query = `
+        SELECT * FROM transactions 
+        WHERE status = ?
+        ORDER BY created_at DESC
+    `;
+
+		const [rows] = await pool.execute<TransactionRow[]>(query, [status]);
+
+		return rows.map((row: TransactionRow) => this.mapRowToEntity(row));
+	}
+
 	private mapRowToEntity(row: TransactionRow): Transaction {
 		return Transaction.reconstitute({
 			id: TransactionId.create(row.id),
@@ -106,11 +114,45 @@ export class MySQLTransactionRepository implements ITransactionRepository {
 				: null,
 			toAccountId: row.to_account_id ? new AccountId(row.to_account_id) : null,
 			amount: new Money(row.amount, row.currency),
-			type: row.type as TransactionType,
-			status: row.status as TransactionStatus,
+			type: row.type.toUpperCase() as TransactionType,
+			status: row.status.toUpperCase() as TransactionStatus,
 			description: row.description,
 			createdAt: new Date(row.created_at),
 			updatedAt: new Date(row.updated_at),
 		});
+	}
+
+	async update(transaction: Transaction): Promise<void> {
+		const query = `
+        UPDATE transactions 
+        SET status = ?, description = ?, updated_at = NOW()
+        WHERE id = ?
+    `;
+
+		await pool.execute(query, [
+			transaction.getStatus(),
+			transaction.getDescription(),
+			transaction.getId().getValue(),
+		]);
+	}
+
+	async delete(id: string): Promise<void> {
+		const query = `DELETE FROM transactions WHERE id = ?`;
+		await pool.execute(query, [id]);
+	}
+
+	async findByAccountId(accountId: string): Promise<Transaction[]> {
+		const query = `
+        SELECT * FROM transactions 
+        WHERE from_account_id = ? OR to_account_id = ?
+        ORDER BY created_at DESC
+    `;
+
+		const [rows] = await pool.execute<TransactionRow[]>(query, [
+			accountId,
+			accountId,
+		]);
+
+		return rows.map((row: TransactionRow) => this.mapRowToEntity(row));
 	}
 }

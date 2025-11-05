@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AccountRepository } from "@infrastructure/database/mysql/AccountRepository";
-import { MySQLTransactionRepository } from "../../../../Infrastructure/database/mysql/TransactionRepository";
+import { TransactionRepository } from "../../../../Infrastructure/database/mysql/TransactionRepository";
 import { DepositMoney } from "../../../../Application/use-cases/account/DepositMoney";
 import { WithdrawMoney } from "../../../../Application/use-cases/account/WithdrawMoney";
 import { Transaction } from "../../../../Domain/entities/Transaction";
@@ -11,13 +11,13 @@ import { AccountId } from "../../../../Domain/value-objects/AccountId";
  */
 export class OperationController {
   private accountRepository: AccountRepository;
-  private transactionRepository: MySQLTransactionRepository;
+  private transactionRepository: TransactionRepository;
   private depositMoneyUseCase: DepositMoney;
   private withdrawMoneyUseCase: WithdrawMoney;
 
   constructor() {
     this.accountRepository = new AccountRepository();
-    this.transactionRepository = new MySQLTransactionRepository();
+    this.transactionRepository = new TransactionRepository();
     this.depositMoneyUseCase = new DepositMoney(
       this.accountRepository,
       this.transactionRepository
@@ -209,7 +209,7 @@ export class OperationController {
       amount: transaction.getAmount().amount,
       currency: transaction.getAmount().currency,
       type: transaction.getType(),
-      status: transaction.getStatus(),
+      status: transaction.getStatus().toLowerCase(),
       description: transaction.getDescription(),
       createdAt: transaction.getCreatedAt(),
     };

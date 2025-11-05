@@ -10,6 +10,7 @@ export interface RegisterUserDTO {
 	lastName: string;
 	phoneNumber?: string;
 	address?: string;
+	role?: "client" | "advisor" | "director";
 }
 
 export interface LoginUserDTO {

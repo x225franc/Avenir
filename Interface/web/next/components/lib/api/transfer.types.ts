@@ -28,7 +28,7 @@ export interface Transaction {
 	toAccountId: string | null;
 	amount: number;
 	currency: string;
-	type: "transfer" | "deposit" | "withdrawal" | "interest";
+	type: "transfer" | "transfer_iban" | "deposit" | "withdrawal" | "interest" | "investment_buy" | "investment_sell";
 	status: "pending" | "completed" | "failed" | "cancelled";
 	description: string | null;
 	createdAt: Date;

@@ -105,6 +105,22 @@ export class AccountRepository implements IAccountRepository {
 	}
 
 	/**
+	 * Trouve un compte par son IBAN (string)
+	 */
+	async findByIban(iban: string): Promise<Account | null> {
+		const [rows] = await pool.execute<AccountRow[]>(
+			"SELECT * FROM accounts WHERE iban = ?",
+			[iban]
+		);
+
+		if (rows.length === 0) {
+			return null;
+		}
+
+		return this.mapRowToAccount(rows[0]);
+	}
+
+	/**
 	 * Trouve tous les comptes d'un utilisateur
 	 */
 	async findByUserId(userId: UserId): Promise<Account[]> {

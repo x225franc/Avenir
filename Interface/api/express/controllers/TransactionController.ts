@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { TransferMoney } from "@application/use-cases";
 import { AccountRepository } from "@infrastructure/database/mysql/AccountRepository";
 import { TransferMoneyDTO } from "@application/dto";
-import { MySQLTransactionRepository } from "../../../../Infrastructure/database/mysql/TransactionRepository";
+import { TransactionRepository } from "../../../../Infrastructure/database/mysql/TransactionRepository";
 import { Transaction } from "../../../../Domain/entities/Transaction";
 import { AccountId } from "../../../../Domain/value-objects/AccountId";
 import { UserId } from "../../../../Domain/value-objects/UserId";
@@ -14,11 +14,11 @@ import { TransactionType } from "../../../../Domain/enums/TransactionType";
  */
 export class TransactionController {
 	private transferMoneyUseCase: TransferMoney;
-	private transactionRepository: MySQLTransactionRepository;
+	private transactionRepository: TransactionRepository;
 
 	constructor() {
 		const accountRepository = new AccountRepository();
-		const transactionRepository = new MySQLTransactionRepository();
+		const transactionRepository = new TransactionRepository();
 		this.transferMoneyUseCase = new TransferMoney(accountRepository, transactionRepository);
 		this.transactionRepository = transactionRepository;
 	}
@@ -154,7 +154,7 @@ export class TransactionController {
 					amount: transaction.getAmount().amount,
 					currency: transaction.getAmount().currency,
 					type: transaction.getType(),
-					status: transaction.getStatus(),
+					status: transaction.getStatus().toLowerCase(),
 					description: transaction.getDescription(),
 					createdAt: transaction.getCreatedAt(),
 					updatedAt: transaction.getUpdatedAt(),
@@ -199,7 +199,7 @@ export class TransactionController {
 					amount: transaction.getAmount().amount,
 					currency: transaction.getAmount().currency,
 					type: transaction.getType(),
-					status: transaction.getStatus(),
+					status: transaction.getStatus().toLowerCase(),
 					description: transaction.getDescription(),
 					createdAt: transaction.getCreatedAt(),
 					updatedAt: transaction.getUpdatedAt(),
@@ -343,6 +343,9 @@ export class TransactionController {
 				return;
 			}
 
+			// Chercher le compte de destination par IBAN dans la base de données
+			const destinationAccount = await accountRepository.findByIban(destinationIban.toUpperCase());
+			
 			// Vérifier le solde
 			const amountMoney = new Money(amount, currency);
 			if (!sourceAccount.hasEnoughBalance(amountMoney)) {
@@ -352,22 +355,45 @@ export class TransactionController {
 				});
 				return;
 			}
-
-			// Pour l'instant, simulons le transfert externe
-			// En production, ceci ferait appel à l'API de la banque partenaire
 			
-			// Débiter le compte source
+			// Débiter immédiatement le compte source
 			sourceAccount.debit(amountMoney);
 			await accountRepository.save(sourceAccount);
 
-			// Créer une transaction de sortie
-			const transaction = Transaction.create(
-				new AccountId(sourceAccountId),
-				null, // Pas de compte destination interne pour un transfert externe
-				amountMoney,
-				TransactionType.WITHDRAWAL,
-				`Virement externe vers ${destinationIban}${description ? ` - ${description}` : ""}`
-			);
+			// Créer UNE SEULE transaction en PENDING pour validation par le conseiller
+			let transaction;
+			let destinationAccountId = null;
+			
+			if (destinationAccount) {
+				// Virement IBAN interne (les deux comptes sont dans notre banque)
+				destinationAccountId = destinationAccount.id.value;
+				
+				// Description automatique avec IBAN source ET destination
+				// Format: "De [IBAN_SOURCE] vers [IBAN_DEST]"
+				const sourceIban = sourceAccount.iban.value;
+				const destIban = destinationIban.toUpperCase();
+				
+				const transactionDescription = `Virement De ${sourceIban} vers ${destIban}`;
+				
+				transaction = Transaction.create(
+					new AccountId(sourceAccountId),
+					new AccountId(destinationAccountId),
+					amountMoney,
+					TransactionType.TRANSFER_IBAN,
+					transactionDescription
+				);
+			} else {
+				// Virement IBAN externe (compte destinataire hors de notre banque)
+				const transactionDescription = `Virement vers ${destinationIban.toUpperCase()}`;
+					
+				transaction = Transaction.create(
+					new AccountId(sourceAccountId),
+					null,
+					amountMoney,
+					TransactionType.TRANSFER_IBAN,
+					transactionDescription
+				);
+			}
 
 			await this.transactionRepository.save(transaction);
 
@@ -377,6 +403,7 @@ export class TransactionController {
 				data: {
 					transactionId: transaction.getId().getValue(),
 					sourceAccountId: sourceAccountId,
+					toAccountId: destinationAccountId,
 					destinationIban: destinationIban.toUpperCase(),
 					amount: amount,
 					currency: currency,

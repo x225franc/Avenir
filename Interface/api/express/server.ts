@@ -113,10 +113,10 @@ if (require.main === module) {
 				});
 
 				io.on("connection", (socket) => {
-					console.log(`🟢 WebSocket connected: ${socket.id}`);
+					console.log(`🟢 WebSocket connecté: ${socket.id}`);
 
 					socket.on("disconnect", () => {
-						console.log(`🔴 WebSocket disconnected: ${socket.id}`);
+						console.log(`🔴 WebSocket déconnecté: ${socket.id}`);
 					});
 				});
 				console.log("🔌 Socket.IO server started");

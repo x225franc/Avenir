@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useAuth } from "@/src/contexts/AuthContext";
-import { resetPasswordSchema, ResetPasswordFormData } from "@/src/lib/validations/schemas";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { resetPasswordSchema, ResetPasswordFormData } from "@/components/lib/validations/schemas";
 
 function ResetPasswordContent() {
 	const router = useRouter();

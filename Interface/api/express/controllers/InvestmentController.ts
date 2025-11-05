@@ -8,7 +8,7 @@ import {
 import { StockRepository } from "@infrastructure/database/mysql/StockRepository";
 import { InvestmentOrderRepository } from "@infrastructure/database/mysql/InvestmentOrderRepository";
 import { AccountRepository } from "@infrastructure/database/mysql/AccountRepository";
-import { MySQLTransactionRepository } from "@infrastructure/database/mysql/TransactionRepository";
+import { TransactionRepository } from "@infrastructure/database/mysql/TransactionRepository";
 import { BankSettingsRepository } from "@infrastructure/database/mysql/BankSettingsRepository";
 import { UserId } from "@domain/value-objects/UserId";
 
@@ -25,7 +25,7 @@ export class InvestmentController {
 		const stockRepository = new StockRepository();
 		const investmentOrderRepository = new InvestmentOrderRepository();
 		const accountRepository = new AccountRepository();
-		const transactionRepository = new MySQLTransactionRepository();
+		const transactionRepository = new TransactionRepository();
 		const bankSettingsRepository = new BankSettingsRepository();
 
 		this.placeInvestmentOrderUseCase = new PlaceInvestmentOrder(

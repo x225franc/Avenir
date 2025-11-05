@@ -50,7 +50,15 @@ export class RegisterUser {
 			// 3. Hasher le mot de passe
 			const hashedPassword = await bcrypt.hash(dto.password, this.SALT_ROUNDS);
 
-			// 4. Créer l'entité User (avec UserRole.CLIENT par défaut)
+			// 4. Déterminer le rôle utilisateur
+			let userRole = UserRole.CLIENT; // Par défaut
+			if (dto.role === "advisor") {
+				userRole = UserRole.ADVISOR;
+			} else if (dto.role === "director") {
+				userRole = UserRole.DIRECTOR;
+			}
+
+			// 5. Créer l'entité User
 			const user = User.create({
 				email,
 				passwordHash: hashedPassword,
@@ -58,17 +66,17 @@ export class RegisterUser {
 				lastName: dto.lastName.trim(),
 				phone: dto.phoneNumber?.trim(),
 				address: dto.address?.trim(),
-				role: UserRole.CLIENT,
+				role: userRole,
 				emailVerified: false,
 				verificationToken: undefined,
 				passwordResetToken: undefined,
 				isBanned: false,
 			});
 
-			// 5. Sauvegarder dans le repository (pour obtenir l'ID réel de MySQL)
+			// 6. Sauvegarder dans le repository (pour obtenir l'ID réel de MySQL)
 			await this.userRepository.save(user);
 
-			// 6. Générer et assigner le token de vérification APRÈS avoir l'ID réel
+			// 7. Générer et assigner le token de vérification APRÈS avoir l'ID réel
 			// Format: userId:timestamp encodé en base64
 			// Le timestamp permet de vérifier l'expiration (24h)
 			const verificationToken = Buffer.from(
@@ -76,29 +84,31 @@ export class RegisterUser {
 			).toString("base64");
 			user.setVerificationToken(verificationToken);
 
-			// 7. Sauvegarder à nouveau pour mettre à jour le token en BDD
+			// 8. Sauvegarder à nouveau pour mettre à jour le token en BDD
 			await this.userRepository.save(user);
 
-			console.log(`✅ Utilisateur créé avec ID: ${user.id.value}, Token: ${verificationToken}`);
+			console.log(`✅ Utilisateur créé avec ID: ${user.id.value}, Rôle: ${userRole}, Token: ${verificationToken}`);
 
-			// 8. Créer automatiquement un compte courant pour le nouveau client
-			try {
-				const defaultAccount = Account.create({
-					userId: user.id,
-					accountName: "Compte Courant",
-					accountType: AccountType.CHECKING,
-					interestRate: undefined,
-				});
+			// 9. Créer automatiquement un compte courant pour les nouveaux clients seulement
+			if (userRole === UserRole.CLIENT) {
+				try {
+					const defaultAccount = Account.create({
+						userId: user.id,
+						accountName: "Compte Courant",
+						accountType: AccountType.CHECKING,
+						interestRate: undefined,
+					});
 
-				await this.accountRepository.save(defaultAccount);
-				
-				console.log(`✅ Compte courant créé automatiquement avec IBAN: ${defaultAccount.iban.value}, Account ID: ${defaultAccount.id.value}`);
-			} catch (accountError) {
-				console.error(`❌ Erreur création compte courant:`, accountError);
-				// On continue même si la création du compte échoue
+					await this.accountRepository.save(defaultAccount);
+					
+					console.log(`✅ Compte courant créé automatiquement avec IBAN: ${defaultAccount.iban.value}, Account ID: ${defaultAccount.id.value}`);
+				} catch (accountError) {
+					console.error(`❌ Erreur création compte courant:`, accountError);
+					// On continue même si la création du compte échoue
+				}
 			}
 
-			// 9. Envoyer l'email de vérification
+			// 10. Envoyer l'email de vérification
 			try {
 				await emailService.sendVerificationEmail(
 					dto.email,

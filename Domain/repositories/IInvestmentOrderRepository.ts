@@ -66,4 +66,10 @@ export interface IInvestmentOrderRepository {
 		limit?: number,
 		offset?: number
 	): Promise<InvestmentOrder[]>;
+
+	/**
+	 * Calcule le nombre net d'actions détenues par tous les utilisateurs pour une action donnée
+	 * (total des achats exécutés - total des ventes exécutées)
+	 */
+	countNetHoldingsByStockId(stockId: StockId): Promise<number>;
 }

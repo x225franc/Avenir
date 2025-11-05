@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS `investment_orders`;
 DROP TABLE IF EXISTS `stocks`;
 DROP TABLE IF EXISTS `credits`;
 DROP TABLE IF EXISTS `messages`;
+DROP TABLE IF EXISTS `news`;
 DROP TABLE IF EXISTS `accounts`;
 DROP TABLE IF EXISTS `users`;
 
@@ -63,7 +64,7 @@ CREATE TABLE `transactions` (
     `to_account_id` INT,
     `amount` DECIMAL(15,2) NOT NULL,
     `currency` VARCHAR(3) DEFAULT 'EUR',
-    `type` ENUM('transfer', 'deposit', 'withdrawal', 'interest', 'investment_buy', 'investment_sell') NOT NULL,
+    `type` ENUM('transfer', 'transfer_iban', 'deposit', 'withdrawal', 'interest', 'investment_buy', 'investment_sell') NOT NULL,
     `description` VARCHAR(500),
     `status` ENUM('pending', 'completed', 'failed', 'cancelled') DEFAULT 'pending',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -108,7 +109,7 @@ CREATE TABLE `investment_orders` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`stock_id`) REFERENCES `stocks`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`stock_id`) REFERENCES `stocks`(`id`) ON DELETE RESTRICT,
     INDEX `idx_user_orders` (`user_id`),
     INDEX `idx_account_orders` (`account_id`),
     INDEX `idx_stock_orders` (`stock_id`)
@@ -167,6 +168,22 @@ CREATE TABLE `stock_price_history` (
     `price` DECIMAL(10,4) NOT NULL,
     `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`stock_id`) REFERENCES `stocks`(`id`)
+);
+
+-- =============================================
+-- TABLE: news (Actualités de la banque)
+-- =============================================
+CREATE TABLE `news` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL,
+    `content` TEXT NOT NULL,
+    `author_id` INT NOT NULL,
+    `published` BOOLEAN DEFAULT FALSE,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    INDEX `idx_author` (`author_id`),
+    INDEX `idx_published` (`published`)
 );
 
 -- =============================================

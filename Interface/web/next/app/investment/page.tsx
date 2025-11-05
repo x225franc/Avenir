@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../../src/contexts/AuthContext";
-import { investmentService } from "../../src/lib/api/investment.service";
+import { useAuth } from "../../components/contexts/AuthContext";
+import { investmentService } from "../../components/lib/api/investment.service";
 
 /**
  * Page d'accueil des investissements

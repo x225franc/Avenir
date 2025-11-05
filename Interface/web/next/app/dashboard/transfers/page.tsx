@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { accountService, Account } from "@/src/lib/api/account.service";
-import { transferService } from "@/src/lib/api/transfer.service";
-import { useAuth } from "@/src/contexts/AuthContext";
+import { accountService, Account } from "@/components/lib/api/account.service";
+import { transferService } from "@/components/lib/api/transfer.service";
+import { useAuth } from "@/components/contexts/AuthContext";
 import Link from "next/link";
 
 const transferSchema = z.object({
