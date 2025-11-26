@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 const forgotPasswordSchema = z.object({
 	email: z
@@ -59,8 +60,9 @@ export default function ForgotPasswordPage() {
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-blue-500 px-4">
 			<div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
 				<div className="text-center mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
-						🔒 Mot de passe oublié
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+						<i className="fi fi-rr-lock"></i>
+						Mot de passe oublié
 					</h1>
 					<p className="text-gray-600">
 						Entrez votre email pour recevoir un lien de réinitialisation
@@ -69,7 +71,10 @@ export default function ForgotPasswordPage() {
 
 				{success ? (
 					<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6">
-						<p className="font-medium">✅ Email envoyé !</p>
+						<p className="font-medium flex items-center gap-2">
+							<i className="fi fi-rr-check-circle"></i>
+							Email envoyé !
+						</p>
 						<p className="text-sm mt-1">
 							Si un compte existe avec cet email, vous recevrez un lien de
 							réinitialisation dans quelques minutes.

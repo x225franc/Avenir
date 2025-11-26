@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { userService, User } from "../../../components/lib/api/user.service";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function AdminUsersPage() {
 	const [users, setUsers] = useState<User[]>([]);
@@ -94,8 +95,9 @@ export default function AdminUsersPage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex justify-between items-center">
 						<div>
-							<h1 className="text-3xl font-bold text-purple-900">
-								🎯 Gestion des Utilisateurs
+							<h1 className="text-3xl font-bold text-purple-900 flex items-center gap-2">
+								<i className="fi fi-rr-users"></i>
+								Gestion des Utilisateurs
 							</h1>
 							<p className="text-purple-600 mt-2">
 								Administrez les comptes utilisateurs et leurs permissions
@@ -103,9 +105,10 @@ export default function AdminUsersPage() {
 						</div>
 						<Link
 							href="/admin/users/create"
-							className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium"
+							className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center gap-2"
 						>
-							➕ Créer un utilisateur
+							<i className="fi fi-rr-plus"></i>
+							Créer un utilisateur
 						</Link>
 					</div>
 				</div>
@@ -165,20 +168,20 @@ export default function AdminUsersPage() {
 											<div className="space-y-1">
 												{user.isBanned ? (
 													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-														🚫 Banni
+														<i className="fi fi-rr-ban"></i> Banni
 													</span>
 												) : (
 													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-														✅ Actif
+														<i className="fi fi-rr-check-circle"></i> Actif
 													</span>
 												)}
 												{user.emailVerified ? (
 													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-														📧 Vérifié
+														<i className="fi fi-rr-envelope-marker"></i> Vérifié
 													</span>
 												) : (
 													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-														⚠️ Non vérifié
+														<i className="fi fi-rr-exclamation"></i> Non vérifié
 													</span>
 												)}
 											</div>
@@ -190,25 +193,29 @@ export default function AdminUsersPage() {
 											<div className="flex space-x-2">
 												<Link
 													href={`/admin/users/${user.id}`}
-													className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+													className="text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center gap-1"
 												>
-													✏️ Modifier
+													<i className="fi fi-rr-edit"></i> Modifier
 												</Link>
 												<button
 													onClick={() => handleBanToggle(user.id, user.isBanned)}
-													className={`text-sm font-medium ${
+													className={`text-sm font-medium flex items-center gap-1 ${
 														user.isBanned
 															? "text-green-600 hover:text-green-800"
 															: "text-orange-600 hover:text-orange-800"
 													}`}
 												>
-													{user.isBanned ? "🔓 Débannir" : "🚫 Bannir"}
+													{user.isBanned ? (
+														<><i className="fi fi-rr-unlock"></i> Débannir</>
+													) : (
+														<><i className="fi fi-rr-ban"></i> Bannir</>
+													)}
 												</button>
 												<button
 													onClick={() => setDeleteModal({ show: true, user })}
-													className="text-red-600 hover:text-red-800 text-sm font-medium"
+													className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1"
 												>
-													🗑️ Supprimer
+													<i className="fi fi-rr-trash"></i> Supprimer
 												</button>
 											</div>
 										</td>

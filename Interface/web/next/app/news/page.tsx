@@ -1,5 +1,6 @@
 "use client";
 
+import '@flaticon/flaticon-uicons/css/all/all.css';
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../components/contexts/AuthContext";
 import { newsService, News } from "../../components/lib/api/news.service";
@@ -61,19 +62,7 @@ export default function ClientNewsPage() {
 							</p>
 						</div>
 						<div className="flex items-center space-x-2">
-							<svg
-								className="w-8 h-8 text-blue-200"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-								/>
-							</svg>
+							<i className='fi fi-rr-newspaper text-blue-200 text-2xl'></i>
 							<span className="text-sm text-blue-200">
 								{news.length} actualité{news.length > 1 ? 's' : ''} disponible{news.length > 1 ? 's' : ''}
 							</span>
@@ -85,19 +74,7 @@ export default function ClientNewsPage() {
 				{error && (
 					<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
 						<div className="flex items-center">
-							<svg
-								className="w-5 h-5 text-red-600 mr-2"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-								/>
-							</svg>
+							<i className='fi fi-rr-triangle-warning text-red-600 text-lg mr-2'></i>
 							<p className="text-red-800">{error}</p>
 						</div>
 					</div>
@@ -106,19 +83,7 @@ export default function ClientNewsPage() {
 				{/* News Grid */}
 				{news.length === 0 ? (
 					<div className="bg-white rounded-lg shadow-md p-12 text-center">
-						<svg
-							className="mx-auto h-12 w-12 text-gray-400"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-							/>
-						</svg>
+						<i className='fi fi-rr-inbox text-gray-400 text-6xl'></i>
 						<h3 className="mt-2 text-sm font-medium text-gray-900">
 							Aucune actualité disponible
 						</h3>
@@ -148,7 +113,7 @@ export default function ClientNewsPage() {
 													{item.content}
 												</p>
 											</div>
-											<div className="ml-4 flex-shrink-0">
+											<div className="ml-4 shrink-0">
 												<span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
 													Publié
 												</span>
@@ -175,19 +140,7 @@ export default function ClientNewsPage() {
 											</span>
 											{index === 0 && (
 												<span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-													<svg
-														className="w-3 h-3 mr-1"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M13 10V3L4 14h7v7l9-11h-7z"
-														/>
-													</svg>
+													<i className='fi fi-rr-bulb text-xs mr-1'></i>
 													Nouveau
 												</span>
 											)}
@@ -206,24 +159,12 @@ export default function ClientNewsPage() {
 											<h3 className="text-lg font-semibold text-gray-900">
 												Détail de l'actualité
 											</h3>
-											<button
-												onClick={() => setSelectedNews(null)}
-												className="text-gray-400 hover:text-gray-600 transition-colors"
-											>
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M6 18L18 6M6 6l12 12"
-													/>
-												</svg>
-											</button>
+										<button
+											onClick={() => setSelectedNews(null)}
+											className="text-gray-400 hover:text-gray-600 transition-colors"
+										>
+											<i className='fi fi-rr-cross text-xl'></i>
+										</button>
 										</div>
 										<div className="space-y-4">
 											<div>
@@ -278,26 +219,14 @@ export default function ClientNewsPage() {
 											</div>
 										</div>
 									</div>
-								) : (
-									<div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-										<svg
-											className="mx-auto h-8 w-8 text-blue-400 mb-3"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-											/>
-										</svg>
-										<p className="text-blue-700 text-sm">
-											Cliquez sur une actualité pour afficher son contenu complet
-										</p>
-									</div>
-								)}
+							) : (
+								<div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+									<i className="fi fi-rr-bulb text-blue-400 text-2xl mb-3 block"></i>
+									<p className="text-blue-700 text-sm">
+										Cliquez sur une actualité pour afficher son contenu complet
+									</p>
+								</div>
+							)}
 							</div>
 						</div>
 					</div>

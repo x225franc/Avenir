@@ -324,6 +324,271 @@ export class EmailService {
 			return false;
 		}
 	}
+
+	/**
+	 * Envoyer un email de notification de nouvelle conversation aux conseillers
+	 */
+	async sendNewConversationNotification(
+		to: string,
+		firstName: string,
+		clientName: string
+	): Promise<boolean> {
+		try {
+			// Skip si pas de credentials configurés
+			if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+				return false;
+			}
+
+			const mailOptions = {
+				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
+				to,
+				subject: "💬 Nouvelle conversation client - Banque AVENIR",
+				html: `
+					<!DOCTYPE html>
+					<html>
+					<head>
+						<meta charset="UTF-8">
+						<style>
+							body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+							.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+							.header { background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+							.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+							.button { display: inline-block; padding: 15px 30px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+							.footer { text-align: center; margin-top: 30px; font-size: 12px; color: #999; }
+						</style>
+					</head>
+					<body>
+						<div class="container">
+							<div class="header">
+								<h1>💬 Nouvelle conversation</h1>
+							</div>
+							<div class="content">
+								<h2>Bonjour ${firstName},</h2>
+								<p>Un client a démarré une nouvelle conversation et attend une réponse.</p>
+								<p><strong>Client :</strong> ${clientName}</p>
+								<p>Connectez-vous à votre espace conseiller pour répondre :</p>
+								<div style="text-align: center;">
+									<a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/advisor/messages" class="button">Voir les messages</a>
+								</div>
+							</div>
+							<div class="footer">
+								<p>Banque AVENIR - Service Clientèle</p>
+							</div>
+						</div>
+					</body>
+					</html>
+				`,
+			};
+
+			await transporter.sendMail(mailOptions);
+			return true;
+		} catch (error) {
+			console.error("❌ Erreur lors de l'envoi de l'email:", error);
+			return false;
+		}
+	}
+
+	/**
+	 * Envoyer un email de notification de nouveau message
+	 */
+	async sendNewMessageNotification(
+		to: string,
+		firstName: string,
+		senderName: string,
+		messagePreview: string
+	): Promise<boolean> {
+		try {
+			// Skip si pas de credentials configurés
+			if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+				return false;
+			}
+
+			const mailOptions = {
+				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
+				to,
+				subject: "💬 Nouveau message - Banque AVENIR",
+				html: `
+					<!DOCTYPE html>
+					<html>
+					<head>
+						<meta charset="UTF-8">
+						<style>
+							body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+							.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+							.header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+							.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+							.message-preview { background: white; padding: 15px; margin: 20px 0; border-left: 4px solid #3b82f6; border-radius: 5px; }
+							.button { display: inline-block; padding: 15px 30px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+							.footer { text-align: center; margin-top: 30px; font-size: 12px; color: #999; }
+						</style>
+					</head>
+					<body>
+						<div class="container">
+							<div class="header">
+								<h1>💬 Nouveau message</h1>
+							</div>
+							<div class="content">
+								<h2>Bonjour ${firstName},</h2>
+								<p>Vous avez reçu un nouveau message de <strong>${senderName}</strong> :</p>
+								<div class="message-preview">
+									<p>${messagePreview.substring(0, 150)}${messagePreview.length > 150 ? '...' : ''}</p>
+								</div>
+								<div style="text-align: center;">
+									<a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/messages" class="button">Voir le message</a>
+								</div>
+							</div>
+							<div class="footer">
+								<p>Banque AVENIR - Service Clientèle</p>
+							</div>
+						</div>
+					</body>
+					</html>
+				`,
+			};
+
+		await transporter.sendMail(mailOptions);
+		return true;
+	} catch (error) {
+		console.error("❌ Erreur lors de l'envoi de l'email:", error);
+		return false;
+	}
+}
+
+/**
+ * Envoyer un email de notification de transfert de conversation (au nouveau conseiller)
+ */
+async sendConversationTransferredToAdvisorEmail(
+	to: string,
+	advisorFirstName: string,
+	clientName: string,
+	previousAdvisorName: string
+): Promise<boolean> {
+	try {
+		// Skip si pas de credentials configurés
+		if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+			return false;
+		}
+
+		const mailOptions = {
+			from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
+			to,
+			subject: "🔄 Conversation transférée - Banque AVENIR",
+			html: `
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<meta charset="UTF-8">
+					<style>
+						body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+						.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+						.header { background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+						.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+						.info-box { background: white; padding: 15px; margin: 20px 0; border-left: 4px solid #10b981; border-radius: 5px; }
+						.button { display: inline-block; padding: 15px 30px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+						.footer { text-align: center; margin-top: 30px; font-size: 12px; color: #999; }
+					</style>
+				</head>
+				<body>
+					<div class="container">
+						<div class="header">
+							<h1>🔄 Conversation transférée</h1>
+						</div>
+						<div class="content">
+							<h2>Bonjour ${advisorFirstName},</h2>
+							<p>Une conversation client vous a été transférée.</p>
+							<div class="info-box">
+								<p><strong>Client :</strong> ${clientName}</p>
+								<p><strong>Transféré par :</strong> ${previousAdvisorName}</p>
+							</div>
+							<p>Veuillez prendre en charge ce client dès que possible.</p>
+							<div style="text-align: center;">
+								<a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/advisor/messages" class="button">Voir la conversation</a>
+							</div>
+						</div>
+						<div class="footer">
+							<p>Banque AVENIR - Service Clientèle</p>
+						</div>
+					</div>
+				</body>
+				</html>
+			`,
+		};
+
+		await transporter.sendMail(mailOptions);
+		return true;
+	} catch (error) {
+		console.error("❌ Erreur lors de l'envoi de l'email:", error);
+		return false;
+	}
+}
+
+/**
+ * Envoyer un email de notification de transfert de conversation (au client)
+ */
+async sendConversationTransferredToClientEmail(
+	to: string,
+	clientFirstName: string,
+	newAdvisorName: string
+): Promise<boolean> {
+	try {
+		// Skip si pas de credentials configurés
+		if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+			return false;
+		}
+
+		const mailOptions = {
+			from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
+			to,
+			subject: "👤 Votre nouveau conseiller - Banque AVENIR",
+			html: `
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<meta charset="UTF-8">
+					<style>
+						body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+						.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+						.header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+						.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+						.advisor-box { background: white; padding: 20px; margin: 20px 0; border-radius: 5px; text-align: center; border: 2px solid #3b82f6; }
+						.button { display: inline-block; padding: 15px 30px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+						.footer { text-align: center; margin-top: 30px; font-size: 12px; color: #999; }
+					</style>
+				</head>
+				<body>
+					<div class="container">
+						<div class="header">
+							<h1>👤 Votre nouveau conseiller</h1>
+						</div>
+						<div class="content">
+							<h2>Bonjour ${clientFirstName},</h2>
+							<p>Nous vous informons que votre dossier a été transféré à un nouveau conseiller.</p>
+							<div class="advisor-box">
+								<h3>👨‍💼 ${newAdvisorName}</h3>
+								<p>Votre nouveau conseiller bancaire</p>
+							</div>
+							<p>${newAdvisorName} prendra en charge votre suivi et répondra à toutes vos questions.</p>
+							<p>Vous pouvez continuer à utiliser la messagerie comme d'habitude.</p>
+							<div style="text-align: center;">
+								<a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/messages" class="button">Accéder à la messagerie</a>
+							</div>
+						</div>
+						<div class="footer">
+							<p>Banque AVENIR - Service Clientèle</p>
+						</div>
+					</div>
+				</body>
+				</html>
+			`,
+		};
+
+		await transporter.sendMail(mailOptions);
+		return true;
+	} catch (error) {
+		console.error("❌ Erreur lors de l'envoi de l'email:", error);
+		return false;
+	}
+}
 }
 
 export const emailService = new EmailService();

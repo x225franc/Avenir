@@ -78,4 +78,12 @@ export const accountService = {
 			throw error;
 		}
 	},
+
+	/**
+	 * Récupérer les comptes d'un utilisateur spécifique (conseiller/directeur uniquement)
+	 */
+	async getUserAccounts(userId: string): Promise<ApiResponse<Account[]>> {
+		const response = await apiClient.get<ApiResponse<Account[]>>(`/accounts/user/${userId}`);
+		return response.data;
+	},
 };

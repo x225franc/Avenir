@@ -97,29 +97,15 @@ export default function AccountsPage() {
 						<p className="mt-2 text-gray-600">
 							Gérez tous vos comptes bancaires
 						</p>
-					</div>
-					<Link
-						href="/dashboard/accounts/create"
-						className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-semibold shadow-lg flex items-center space-x-2"
-					>
-						<svg
-							className="w-5 h-5"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M12 4v16m8-8H4"
-							/>
-						</svg>
-						<span>Nouveau compte</span>
-					</Link>
 				</div>
-
-				{/* Error Message */}
+				<Link
+					href="/dashboard/accounts/create"
+					className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-semibold shadow-lg flex items-center space-x-2"
+				>
+					<i className="fi fi-rr-plus text-xl"></i>
+					<span>Nouveau compte</span>
+				</Link>
+			</div>				{/* Error Message */}
 				{error && (
 					<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
 						<p className="text-red-800">{error}</p>
@@ -129,19 +115,7 @@ export default function AccountsPage() {
 				{/* Accounts List */}
 				{accounts.length === 0 ? (
 					<div className="bg-white rounded-xl shadow-md p-12 text-center">
-						<svg
-							className="w-16 h-16 text-gray-400 mx-auto mb-4"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-							/>
-						</svg>
+						<i className="fi fi-rr-wallet text-gray-400 text-6xl mb-4 block"></i>
 						<h3 className="text-xl font-semibold text-gray-900 mb-2">
 							Aucun compte
 						</h3>
@@ -198,20 +172,10 @@ export default function AccountsPage() {
 								</div>
 
 								{/* Interest Rate for Savings */}
-								{account.type === "savings" && account.interestRate && (
-									<div className="mt-3 flex items-center text-sm text-green-600">
-										<svg
-											className="w-4 h-4 mr-1"
-											fill="currentColor"
-											viewBox="0 0 20 20"
-										>
-											<path
-												fillRule="evenodd"
-												d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-												clipRule="evenodd"
-											/>
-										</svg>
-										<span>
+							{account.type === "savings" && account.interestRate && (
+								<div className="mt-3 flex items-center text-sm text-green-600">
+									<i className="fi fi-rr-arrow-trend-up mr-1"></i>
+									<span>
 											{(account.interestRate * 100).toFixed(2)}% / an
 										</span>
 									</div>
@@ -227,19 +191,7 @@ export default function AccountsPage() {
 						href="/dashboard"
 						className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2"
 					>
-						<svg
-							className="w-5 h-5"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M10 19l-7-7m0 0l7-7m-7 7h18"
-							/>
-						</svg>
+						<i className="fi fi-rr-arrow-left"></i>
 						<span>Retour au tableau de bord</span>
 					</Link>
 				</div>

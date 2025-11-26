@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schema de validation Zod
 const savingsRateSchema = z.object({
@@ -138,8 +139,9 @@ export default function SavingsRatePage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="text-3xl font-bold text-purple-900">
-								📊 Gestion du Taux d&apos;Épargne
+							<h1 className="text-3xl font-bold text-purple-900 flex items-center gap-2">
+								<i className="fi fi-rr-chart-pie"></i>
+								Gestion du Taux d&apos;Épargne
 							</h1>
 							<p className="text-purple-600 mt-2">
 								Définissez le taux d&apos;intérêt annuel pour les comptes
@@ -185,13 +187,19 @@ export default function SavingsRatePage() {
 					{/* Messages d'erreur/succès */}
 					{error && (
 						<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-							<p className="text-red-800">❌ {error}</p>
+							<p className="text-red-800 flex items-center gap-2">
+								<i className="fi fi-rr-cross-circle"></i>
+								{error}
+							</p>
 						</div>
 					)}
 
 					{success && (
 						<div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-							<p className="text-green-800 font-medium">✅ {success}</p>
+							<p className="text-green-800 font-medium flex items-center gap-2">
+								<i className="fi fi-rr-check-circle"></i>
+								{success}
+							</p>
 							{updateResult && (
 								<div className="mt-3 text-sm text-green-700">
 									<p>• Ancien taux : {updateResult.oldRate}%</p>
@@ -241,8 +249,9 @@ export default function SavingsRatePage() {
 
 						{/* Informations importantes */}
 						<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-							<h3 className="text-blue-900 font-semibold mb-2">
-								ℹ️ Informations importantes
+							<h3 className="text-blue-900 font-semibold mb-2 flex items-center gap-2">
+								<i className="fi fi-rr-info"></i>
+								Informations importantes
 							</h3>
 							<ul className="text-blue-800 text-sm space-y-1">
 								<li>
@@ -263,49 +272,29 @@ export default function SavingsRatePage() {
 							</ul>
 						</div>
 
-						{/* Boutons */}
-						<div className="flex gap-4">
-							<button
-								type="submit"
-								disabled={loading || loadingRate}
-								className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-							>
-								{loading ? (
-									<span className="flex items-center justify-center">
-										<svg
-											className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-										>
-											<circle
-												className="opacity-25"
-												cx="12"
-												cy="12"
-												r="10"
-												stroke="currentColor"
-												strokeWidth="4"
-											></circle>
-											<path
-												className="opacity-75"
-												fill="currentColor"
-												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-											></path>
-										</svg>
-										Mise à jour en cours...
-									</span>
-								) : (
-									"Mettre à jour et notifier les clients"
-								)}
-							</button>
-
-							<button
+					{/* Boutons */}
+					<div className="flex gap-4">
+						<button
+							type="submit"
+							disabled={loading || loadingRate}
+							className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+						>
+							{loading ? (
+								<span className="flex items-center justify-center">
+									<i className="fi fi-rr-spinner animate-spin mr-3 text-xl text-white"></i>
+									Mise à jour en cours...
+								</span>
+							) : (
+								"Mettre à jour et notifier les clients"
+							)}
+						</button>							<button
 								type="button"
 								onClick={fetchCurrentRate}
 								disabled={loading || loadingRate}
-								className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+								className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
 							>
-								🔄 Actualiser
+								<i className="fi fi-rr-refresh"></i>
+								Actualiser
 							</button>
 						</div>
 					</form>

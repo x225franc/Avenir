@@ -8,6 +8,7 @@ import Link from "next/link";
 import { registerSchema, RegisterFormData } from "../../components/lib/validations/schemas";
 import { authService } from "../../components/lib/api/auth.service";
 import { useAuth } from "@/components/contexts/AuthContext";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function RegisterPage() {
 	const router = useRouter();
@@ -31,33 +32,33 @@ export default function RegisterPage() {
 		switch (userType) {
 			case 'director':
 				return {
-					title: '🏦 Administration AVENIR',
+					title: 'Administration AVENIR',
 					subtitle: 'Créer un compte directeur',
 					gradient: 'from-purple-50 to-purple-100',
 					buttonColor: 'bg-purple-600 hover:bg-purple-700',
 					ringColor: 'focus:ring-purple-500',
 					linkColor: 'text-purple-600 hover:text-purple-700',
-					emoji: '👔'
+					icon: <i className="fi fi-rr-briefcase text-purple-600"></i>
 				};
 			case 'advisor':
 				return {
-					title: '🏦 Conseillers AVENIR',
+					title: 'Conseillers AVENIR',
 					subtitle: 'Créer un compte conseiller',
 					gradient: 'from-green-50 to-green-100',
 					buttonColor: 'bg-green-600 hover:bg-green-700',
 					ringColor: 'focus:ring-green-500',
 					linkColor: 'text-green-600 hover:text-green-700',
-					emoji: '💼'
+					icon: <i className="fi fi-rr-user-headset text-green-600"></i>
 				};
 			default:
 				return {
-					title: '🏦 Banque AVENIR',
+					title: 'Banque AVENIR',
 					subtitle: 'Créer votre compte',
 					gradient: 'from-blue-50 to-indigo-100',
 					buttonColor: 'bg-blue-600 hover:bg-blue-700',
 					ringColor: 'focus:ring-blue-500',
 					linkColor: 'text-blue-600 hover:text-blue-700',
-					emoji: '👤'
+					icon: <i className="fi fi-rr-user text-blue-600"></i>
 				};
 		}
 	};
@@ -124,7 +125,10 @@ export default function RegisterPage() {
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">
 						{theme.title}
 					</h1>
-					<p className="text-gray-600">{theme.emoji} {theme.subtitle}</p>
+					<p className="text-gray-600 flex items-center justify-center gap-2">
+						{theme.icon}
+						{theme.subtitle}
+					</p>
 				</div>
 
 				{/* Messages */}

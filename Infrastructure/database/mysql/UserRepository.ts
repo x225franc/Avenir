@@ -1,8 +1,8 @@
 import { RowDataPacket, ResultSetHeader } from "mysql2";
-import { IUserRepository } from "@domain/repositories/IUserRepository";
-import { User, UserRole } from "@domain/entities/User";
-import { UserId } from "@domain/value-objects/UserId";
-import { Email } from "@domain/value-objects/Email";
+import { IUserRepository } from "../../../Domain/repositories/IUserRepository";
+import { User, UserRole } from "../../../Domain/entities/User";
+import { UserId } from "../../../Domain/value-objects/UserId";
+import { Email } from "../../../Domain/value-objects/Email";
 import { pool } from "./connection";
 
 interface UserRow extends RowDataPacket {
@@ -148,6 +148,21 @@ export class UserRepository implements IUserRepository {
 		try {
 			const [rows] = await connection.query<UserRow[]>(
 				"SELECT * FROM users ORDER BY created_at DESC"
+			);
+
+			return rows.map((row) => this.mapRowToUser(row));
+		} finally {
+			connection.release();
+		}
+	}
+
+	async findByRole(role: string): Promise<User[]> {
+		const connection = await pool.getConnection();
+
+		try {
+			const [rows] = await connection.query<UserRow[]>(
+				"SELECT * FROM users WHERE role = ?",
+				[role]
 			);
 
 			return rows.map((row) => this.mapRowToUser(row));

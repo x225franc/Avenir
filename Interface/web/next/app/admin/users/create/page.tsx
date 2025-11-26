@@ -4,6 +4,7 @@ import { useState } from "react";
 import { userService, CreateUserDTO } from "../../../../components/lib/api/user.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function CreateUserPage() {
 	const router = useRouter();
@@ -63,8 +64,9 @@ export default function CreateUserPage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="text-3xl font-bold text-purple-900">
-								➕ Créer un Utilisateur
+							<h1 className="text-3xl font-bold text-purple-900 flex items-center gap-2">
+								<i className="fi fi-rr-user-add"></i>
+								Créer un Utilisateur
 							</h1>
 							<p className="text-purple-600 mt-2">
 								Ajoutez un nouvel utilisateur au système
@@ -166,18 +168,18 @@ export default function CreateUserPage() {
 							<label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
 								Rôle *
 							</label>
-							<select
-								id="role"
-								name="role"
-								required
-								value={formData.role}
-								onChange={handleInputChange}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-							>
-								<option value="client">👤 Client</option>
-								<option value="advisor">🏦 Conseiller</option>
-								<option value="director">🎯 Directeur</option>
-							</select>
+						<select
+							id="role"
+							name="role"
+							required
+							value={formData.role}
+							onChange={handleInputChange}
+							className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+						>
+							<option value="client"><i className="fi fi-rr-user"></i> Client</option>
+							<option value="advisor"><i className="fi fi-rr-user-headset"></i> Conseiller</option>
+							<option value="director"><i className="fi fi-rr-briefcase"></i> Directeur</option>
+						</select>
 						</div>
 
 						{/* Informations optionnelles */}
@@ -247,7 +249,10 @@ export default function CreateUserPage() {
 
 				{/* Aide */}
 				<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-					<h4 className="font-medium text-blue-900 mb-2">💡 Informations utiles</h4>
+					<h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
+						<i className="fi fi-rr-bulb"></i>
+						Informations utiles
+					</h4>
 					<ul className="text-sm text-blue-800 space-y-1">
 						<li>• L'utilisateur recevra un email pour vérifier son compte</li>
 						<li>• Le mot de passe peut être modifié après création</li>

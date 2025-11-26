@@ -43,4 +43,11 @@ router.put("/:id", (req, res) => accountController.update(req, res));
  */
 router.delete("/:id", (req, res) => accountController.delete(req, res));
 
+/**
+ * @route   GET /api/accounts/user/:userId
+ * @desc    Récupérer tous les comptes d'un utilisateur (conseiller/directeur uniquement)
+ * @access  Private (advisor, director)
+ */
+router.get("/user/:userId", (req, res) => accountController.getUserAccounts(req, res));
+
 export default router;

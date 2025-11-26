@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountService } from "../../../../components/lib/api/account.service";
 import { useAuth } from "../../../../components/contexts/AuthContext";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schéma de validation
 const createAccountSchema = z.object({
@@ -85,43 +86,29 @@ export default function CreateAccountPage() {
 			value: "checking",
 			label: "Compte Courant",
 			description: "Pour vos dépenses quotidiennes et virements",
-			icon: "💳",
+			icon: <i className="fi fi-rr-credit-card"></i>,
 			color: "blue",
 		},
 		{
 			value: "savings",
 			label: "Compte Épargne",
 			description: "Pour faire fructifier votre argent avec intérêts",
-			icon: "🏦",
+			icon: <i className="fi fi-rr-piggy-bank"></i>,
 			color: "green",
 		},
 		{
 			value: "investment",
 			label: "Compte Titres",
 			description: "Pour investir dans des actions",
-			icon: "📈",
+			icon: <i className="fi fi-rr-chart-line-up"></i>,
 			color: "purple",
 		},
-	];
-
-	if (success) {
+	];	if (success) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-gray-50">
 				<div className="text-center">
 					<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-						<svg
-							className="w-8 h-8 text-green-600"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M5 13l4 4L19 7"
-							/>
-						</svg>
+						<i className="fi fi-rr-check text-green-600 text-2xl"></i>
 					</div>
 					<h2 className="text-2xl font-bold text-gray-900 mb-2">
 						Compte créé avec succès !
@@ -143,19 +130,7 @@ export default function CreateAccountPage() {
 						href="/dashboard/accounts"
 						className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2 mb-4"
 					>
-						<svg
-							className="w-5 h-5"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M10 19l-7-7m0 0l7-7m-7 7h18"
-							/>
-						</svg>
+						<i className="fi fi-rr-arrow-left"></i>
 						<span>Retour à mes comptes</span>
 					</Link>
 					<h1 className="text-3xl font-bold text-gray-900">
@@ -205,17 +180,7 @@ export default function CreateAccountPage() {
 									</div>
 									{selectedType === type.value && (
 										<div className="absolute top-2 right-2">
-											<svg
-												className={`w-6 h-6 text-${type.color}-600`}
-												fill="currentColor"
-												viewBox="0 0 20 20"
-											>
-												<path
-													fillRule="evenodd"
-													d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-													clipRule="evenodd"
-												/>
-											</svg>
+											<i className={`fi fi-rr-check-circle text-${type.color}-600 text-xl`}></i>
 										</div>
 									)}
 								</label>
@@ -303,17 +268,7 @@ export default function CreateAccountPage() {
 				{/* Info Box */}
 				<div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
 					<div className="flex items-start space-x-3">
-						<svg
-							className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-						>
-							<path
-								fillRule="evenodd"
-								d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-								clipRule="evenodd"
-							/>
-						</svg>
+						<i className="fi fi-rr-bulb text-blue-600 text-xl flex-shrink-0 mt-0.5"></i>
 						<div>
 							<h3 className="font-semibold text-blue-900 mb-1">
 								À savoir

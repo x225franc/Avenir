@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { newsService, News } from "../../../components/lib/api/news.service";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
  * Dashboard pour les directeurs
@@ -74,28 +75,33 @@ export default function AdminDashboard() {
 				{/* Quick Actions */}
 				<div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
 					<a
+						href='/admin/users'
+						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
+					>
+						<div className='flex items-center justify-between mb-4'>
+							<div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center'>
+								<i className="fi fi-rr-users text-2xl text-purple-600"></i>
+							</div>
+						</div>
+						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
+							Utilisateurs
+						</h3>
+						<p className='text-sm text-gray-600'>
+							Gérer clients & conseillers
+						</p>
+					</a>
+
+					<a
 						href='/admin/news'
 						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
 					>
 						<div className='flex items-center justify-between mb-4'>
 							<div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center'>
-								<svg
-									className='w-6 h-6 text-purple-600'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'
-									/>
-								</svg>
+								<i className="fi fi-rr-newspaper text-2xl text-purple-600"></i>
 							</div>
-							<span className='text-2xl font-bold text-gray-900'>
+							{/* <span className='text-2xl font-bold text-gray-900'>
 								{news.length}
-							</span>
+							</span> */}
 						</div>
 						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
 							Actualités
@@ -105,49 +111,13 @@ export default function AdminDashboard() {
 						</p>
 					</a>
 
-					<div className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'>
-						<div className='flex items-center justify-between mb-4'>
-							<div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center'>
-								<svg
-									className='w-6 h-6 text-purple-600'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-									/>
-								</svg>
-							</div>
-						</div>
-						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
-							Utilisateurs
-						</h3>
-						<p className='text-sm text-gray-600'>Gérer clients & conseillers</p>
-					</div>
-
 				<a
 					href='/admin/savings'
 					className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
 				>
 					<div className='flex items-center justify-between mb-4'>
 						<div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center'>
-							<svg
-								className='w-6 h-6 text-purple-600'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-								/>
-							</svg>
+							<i className="fi fi-rr-chart-pie text-2xl text-purple-600"></i>
 						</div>
 					</div>
 					<h3 className='text-lg font-semibold text-gray-900 mb-1'>
@@ -162,19 +132,7 @@ export default function AdminDashboard() {
 				>
 					<div className='flex items-center justify-between mb-4'>
 						<div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center'>
-							<svg
-								className='w-6 h-6 text-purple-600'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
-								/>
-							</svg>
+							<i className="fi fi-rr-chart-line-up text-2xl text-purple-600"></i>
 						</div>
 					</div>
 					<h3 className='text-lg font-semibold text-gray-900 mb-1'>
@@ -192,22 +150,10 @@ export default function AdminDashboard() {
 						</h3>
 						<a
 							href='/admin/news'
-							className='text-purple-600 hover:text-purple-700 font-medium flex items-center'
+							className='text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1'
 						>
 							Voir tout
-							<svg
-								className='w-5 h-5 ml-1'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M9 5l7 7-7 7'
-								/>
-							</svg>
+							<i className="fi fi-rr-angle-right"></i>
 						</a>
 					</div>
 
@@ -219,19 +165,7 @@ export default function AdminDashboard() {
 
 					{news.length === 0 ? (
 						<div className='text-center py-12'>
-							<svg
-								className='mx-auto h-12 w-12 text-gray-400'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'
-								/>
-							</svg>
+							<i className="fi fi-rr-newspaper mx-auto text-6xl text-gray-400"></i>
 							<p className='mt-2 text-sm text-gray-600'>
 								Aucune actualité pour le moment
 							</p>
@@ -292,19 +226,7 @@ export default function AdminDashboard() {
 											href={`/admin/news/${item.id}`}
 											className='ml-4 text-purple-600 hover:text-purple-700'
 										>
-											<svg
-												className='w-5 h-5'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M9 5l7 7-7 7'
-												/>
-											</svg>
+											<i className="fi fi-rr-angle-right"></i>
 										</a>
 									</div>
 								</div>

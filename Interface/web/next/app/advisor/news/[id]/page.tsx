@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useAuth } from "../../../../components/contexts/AuthContext";
 import { newsService, News, UpdateNewsDTO } from "../../../../components/lib/api/news.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface EditNewsPageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
 /**
@@ -18,6 +19,7 @@ interface EditNewsPageProps {
 export default function EditNewsPage({ params }: EditNewsPageProps) {
 	const { user } = useAuth();
 	const router = useRouter();
+	const { id } = use(params);
 	const [news, setNews] = useState<News | null>(null);
 	const [formData, setFormData] = useState<UpdateNewsDTO>({
 		title: "",
@@ -30,13 +32,13 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 
 	useEffect(() => {
 		loadNews();
-	}, [params.id]);
+	}, [id]);
 
 	const loadNews = async () => {
 		try {
 			setLoading(true);
 			setError(null);
-			const response = await newsService.getById(params.id);
+			const response = await newsService.getById(id);
 			
 			if (response.success && response.data) {
 				setNews(response.data);
@@ -77,7 +79,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 				published: publish !== undefined ? publish : formData.published,
 			};
 
-			const response = await newsService.update(params.id, dataToSubmit);
+			const response = await newsService.update(id, dataToSubmit);
 
 			if (response.success) {
 				router.push("/advisor/news");
@@ -107,19 +109,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 		return (
 			<div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
 				<div className="text-center">
-					<svg
-						className="mx-auto h-12 w-12 text-gray-400"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15a7.962 7.962 0 01-5-1.709M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-						/>
-					</svg>
+					<i className="fi fi-rr-exclamation mx-auto text-6xl text-gray-400"></i>
 					<h3 className="mt-2 text-sm font-medium text-gray-900">Actualité introuvable</h3>
 					<p className="mt-1 text-sm text-gray-500">{error}</p>
 					<div className="mt-6">
@@ -167,53 +157,25 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 									</span>
 								</div>
 							)}
-						</div>
-						<Link
-							href="/advisor/news"
-							className="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center space-x-2"
-						>
-							<svg
-								className="w-5 h-5"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M10 19l-7-7m0 0l7-7m-7 7h18"
-								/>
-							</svg>
-							<span>Retour</span>
-						</Link>
 					</div>
+					<Link
+						href="/advisor/news"
+						className="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center space-x-2"
+					>
+						<i className="fi fi-rr-arrow-left"></i>
+						<span>Retour</span>
+					</Link>
 				</div>
-
-				{/* Form */}
+			</div>				{/* Form */}
 				<div className="bg-white rounded-lg shadow-md p-8">
-					{error && (
-						<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-							<div className="flex items-center">
-								<svg
-									className="w-5 h-5 text-red-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-									/>
-								</svg>
-								<p className="text-red-800">{error}</p>
-							</div>
+				{error && (
+					<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+						<div className="flex items-center">
+							<i className="fi fi-rr-exclamation text-xl text-red-600 mr-2"></i>
+							<p className="text-red-800">{error}</p>
 						</div>
-					)}
-
-					<form onSubmit={handleSubmit} className="space-y-6">
+					</div>
+				)}					<form onSubmit={handleSubmit} className="space-y-6">
 						{/* Title */}
 						<div>
 							<label
@@ -270,24 +232,12 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 											disabled={saving || !formData.title.trim() || !formData.content.trim()}
 											className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
 										>
-											{saving ? (
-												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 01.614-2.025M5.6 6.4A5.999 5.999 0 0112 5c2.454 0 4.614 1.474 5.54 3.599M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-													/>
-												</svg>
-											)}
-											<span>Dépublier</span>
+										{saving ? (
+											<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+										) : (
+											<i className="fi fi-rr-eye-crossed"></i>
+										)}
+										<span>Dépublier</span>
 										</button>
 										<button
 											type="submit"
@@ -297,19 +247,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-													/>
-												</svg>
+												<i className="fi fi-rr-cloud-upload"></i>
 											)}
 											<span>Mettre à jour</span>
 										</button>
@@ -325,19 +263,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-													/>
-												</svg>
+												<i className="fi fi-rr-disk"></i>
 											)}
 											<span>Sauvegarder</span>
 										</button>
@@ -350,19 +276,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-													/>
-												</svg>
+												<i className="fi fi-rr-check-circle"></i>
 											)}
 											<span>Publier</span>
 										</button>

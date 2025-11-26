@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schema de validation Zod pour créer une action
 const createStockSchema = z.object({
@@ -188,15 +189,15 @@ export default function AdminInvestmentsPage() {
 		// Vérifier d'abord si l'action est détenue
 		if (stock.holdingsCount > 0) {
 			alert(
-				`❌ Impossible de supprimer cette action\n\n` +
+				`Impossible de supprimer cette action\n\n` +
 					`${stock.holdingsCount} action(s) sont actuellement détenues par des clients.\n\n` +
-					`Pour retirer cette action du marché, utilisez le bouton "Désactiver" 🚫 à la place.`
+					`Pour retirer cette action du marché, utilisez le bouton "Désactiver" à la place.`
 			);
 			return;
 		}
 
 		const confirmMessage =
-			`⚠️ Confirmer la suppression de l'action ${stock.symbol} (${stock.companyName}) ?\n\n` +
+			`Confirmer la suppression de l'action ${stock.symbol} (${stock.companyName}) ?\n\n` +
 			`Cette action n'est détenue par aucun client (0 actions détenues).\n` +
 			`La suppression est donc autorisée.\n\n` +
 			`Continuer ?`;
@@ -245,8 +246,9 @@ export default function AdminInvestmentsPage() {
 				<div className='bg-white rounded-lg shadow-lg p-6 mb-8'>
 					<div className='flex items-center justify-between'>
 						<div>
-							<h1 className='text-3xl font-bold text-purple-900'>
-								📈 Gestion des Actions
+							<h1 className='text-3xl font-bold text-purple-900 flex items-center gap-2'>
+								<i className="fi fi-rr-chart-line-up"></i>
+								Gestion des Actions
 							</h1>
 							<p className='text-purple-600 mt-2'>
 								Créez, modifiez et gérez la disponibilité des actions
@@ -264,13 +266,19 @@ export default function AdminInvestmentsPage() {
 				{/* Messages */}
 				{error && (
 					<div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg'>
-						<p className='text-red-800'>❌ {error}</p>
+						<p className='text-red-800 flex items-center gap-2'>
+							<i className="fi fi-rr-cross-circle"></i>
+							{error}
+						</p>
 					</div>
 				)}
 
 				{success && (
 					<div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
-						<p className='text-green-800'>✅ {success}</p>
+						<p className='text-green-800 flex items-center gap-2'>
+							<i className="fi fi-rr-check-circle"></i>
+							{success}
+						</p>
 					</div>
 				)}
 
@@ -411,7 +419,7 @@ export default function AdminInvestmentsPage() {
 						</div>
 					) : stocks.length === 0 ? (
 						<div className='text-center py-12'>
-							<span className='text-6xl'>📈</span>
+							<i className="fi fi-rr-chart-line-up text-6xl text-purple-600"></i>
 							<p className='mt-4 text-gray-600'>Aucune action créée</p>
 							<p className='text-sm text-gray-500 mt-2'>
 								Commencez par créer votre première action
@@ -432,7 +440,7 @@ export default function AdminInvestmentsPage() {
 											Prix Actuel
 										</th>
 										<th className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'>
-											Actions Détenues
+											Actions Détenues par les Clients
 										</th>
 										<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 											Statut
@@ -476,13 +484,7 @@ export default function AdminInvestmentsPage() {
 												>
 													{stock.holdingsCount > 0 ? (
 														<>
-															<svg
-																className='w-4 h-4 mr-1'
-																fill='currentColor'
-																viewBox='0 0 20 20'
-															>
-																<path d='M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z' />
-															</svg>
+															<i className='fi fi-rr-users text-sm mr-1'></i>
 															{stock.holdingsCount}
 														</>
 													) : (
@@ -517,14 +519,14 @@ export default function AdminInvestmentsPage() {
 													}`}
 													title={stock.isAvailable ? "Désactiver" : "Activer"}
 												>
-													{stock.isAvailable ? "🚫" : "✅"}
+													<i className={`fi fi-rr-${stock.isAvailable ? "ban" : "check-circle"}`}></i>
 												</button>
 												<Link
 													href={`/admin/investments/${stock.id}`}
 													className='text-indigo-600 hover:text-indigo-900'
 													title='Modifier'
 												>
-													✏️
+													<i className="fi fi-rr-edit"></i>
 												</Link>
 												<button
 													onClick={() => handleDelete(stock)}
@@ -540,7 +542,7 @@ export default function AdminInvestmentsPage() {
 															: "Supprimer"
 													}
 												>
-													🗑️
+													<i className="fi fi-rr-trash"></i>
 												</button>
 											</td>
 										</tr>
@@ -554,24 +556,15 @@ export default function AdminInvestmentsPage() {
 				{/* Info Rules */}
 				<div className='bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg mt-5 p-6 mb-8'>
 					<h3 className='text-lg font-bold text-blue-900 mb-4 flex items-center'>
-						<svg
-							className='w-6 h-6 mr-2'
-							fill='none'
-							stroke='currentColor'
-							viewBox='0 0 24 24'
-						>
-							<path
-								strokeLinecap='round'
-								strokeLinejoin='round'
-								strokeWidth={2}
-								d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-							/>
-						</svg>
+						<i className='fi fi-rr-bulb text-2xl mr-2'></i>
 						Règles de Gestion
 					</h3>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800'>
 						<div>
-							<p className='font-semibold mb-2'>✅ Vous pouvez :</p>
+							<p className='font-semibold mb-2 flex items-center gap-1'>
+								<i className="fi fi-rr-check-circle"></i>
+								Vous pouvez :
+							</p>
 							<ul className='list-disc list-inside space-y-1 ml-2'>
 								<li>Créer de nouvelles actions</li>
 								<li>Modifier le symbole et le nom d&apos;une action</li>
@@ -580,7 +573,10 @@ export default function AdminInvestmentsPage() {
 							</ul>
 						</div>
 						<div>
-							<p className='font-semibold mb-2'>⚠️ Important :</p>
+							<p className='font-semibold mb-2 flex items-center gap-1'>
+								<i className="fi fi-rr-exclamation"></i>
+								Important :
+							</p>
 							<ul className='list-disc list-inside space-y-1 ml-2'>
 								<li>Le prix évolue automatiquement (non modifiable)</li>
 								<li>
@@ -599,7 +595,7 @@ export default function AdminInvestmentsPage() {
 				{/* Info importante */}
 				<div className='mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6'>
 					<h3 className='text-blue-900 font-semibold mb-2'>
-						ℹ️ Informations importantes
+						<i className="fi fi-rr-info"></i> Informations importantes
 					</h3>
 					<ul className='text-blue-800 text-sm space-y-1'>
 						<li>

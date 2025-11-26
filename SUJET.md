@@ -91,12 +91,12 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 
 
 #### 💳 Crédit
-- ⏳ En tant que conseiller bancaire, je peux être amené à octroyer des crédits
-- ⏳ Un crédit a :
+- ✅ En tant que conseiller bancaire, je peux être amené à octroyer des crédits
+- ✅ Un crédit a :
   - Un **taux annuel d'intérêts** à rembourser sur le capital restant chaque mois
   - Une **assurance** (obligatoire) à un taux dont le montant est calculé sur le total du crédit accordé et prélevé sur les mensualités
   - Des **mensualités** qui correspondent au montant du crédit remboursé chaque mois
-- ⏳ Nous utilisons la méthode de calcul du crédit à **mensualité constante**
+- ✅ Nous utilisons la méthode de calcul du crédit à **mensualité constante**
 
 #### 💬 Messagerie instantanée
 - ⏳ En tant que conseiller bancaire, je peux répondre aux messages qui me sont envoyés de la part de mes clients
@@ -125,8 +125,8 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
   - ⏳ **NestJS** - À créer
 
 ### 3. 📝 Clean Code
-- ⏳ Respect des principes de Clean Code vus en cours
-- ⏳ Les pratiques supplémentaires et documentées sous la forme d'œuvres et d'ouvrages sont aussi à prendre en compte (livres de Bob Martin, etc)
+- Respect des principes de Clean Code vus en cours
+- Les pratiques supplémentaires et documentées sous la forme d'œuvres et d'ouvrages sont aussi à prendre en compte (livres de Bob Martin, etc)
 
 ---
 
@@ -268,7 +268,7 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 ---
 
 ## ✅ Livrables attendus
-- ✅ Un projet **Next.js** fonctionnel conforme aux instructions ci-dessus.  
-- ✅ Un dépôt Git propre, avec un **README clair** et une structure respectant les **bonnes pratiques** du framework.  
+- Un projet **Next.js** fonctionnel conforme aux instructions ci-dessus.  
+- Un dépôt Git propre, avec un **README clair** et une structure respectant les **bonnes pratiques** du framework.  
 
 ---

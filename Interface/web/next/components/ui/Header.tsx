@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../components/contexts/AuthContext";
 import { useState } from "react";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function Header() {
 	const pathname = usePathname();
@@ -26,11 +27,11 @@ export default function Header() {
 					title: 'Administration',
 					color: 'purple',
 					links: [
-						{ href: '/admin/dashboard', label: 'Accueil', icon: '👔' },
-						{ href: '/admin/users', label: 'Utilisateurs', icon: '👥' },
-						{ href: '/admin/news', label: 'Actualités', icon: '📰' },
-						{ href: '/admin/savings', label: 'Epargne', icon: '📊' },
-						{ href: '/admin/investments', label: 'Actions', icon: '📈' },
+						// { href: '/admin/dashboard', label: 'Accueil', icon: <i className="fi fi-rr-home"></i> },
+						{ href: '/admin/users', label: 'Utilisateurs', icon: <i className="fi fi-rr-users"></i> },
+						{ href: '/admin/news', label: 'Actualités', icon: <i className="fi fi-rr-newspaper"></i> },
+						{ href: '/admin/savings', label: 'Epargne', icon: <i className="fi fi-rr-chart-pie"></i> },
+						{ href: '/admin/investments', label: 'Actions', icon: <i className="fi fi-rr-chart-line-up"></i> },
 					]
 				};
 			case 'advisor':
@@ -39,11 +40,12 @@ export default function Header() {
 					title: 'Conseiller',
 					color: 'green',
 					links: [
-						{ href: '/advisor/dashboard', label: 'Accueil', icon: '💼' },
-						{ href: '/advisor/clients', label: 'Clients', icon: '👥' },
-						{ href: '/advisor/transactions', label: 'Transactions', icon: '💳' },
-						{ href: '/advisor/news', label: 'Actualités', icon: '📰' },
-						{ href: '/advisor/messages', label: 'Messages', icon: '💬' },
+						// { href: '/advisor/dashboard', label: 'Accueil', icon: <i className="fi fi-rr-home"></i> },
+						{ href: '/advisor/clients', label: 'Clients', icon: <i className="fi fi-rr-users"></i> },
+						{ href: '/advisor/credits/grant', label: 'Crédits', icon: <i className="fi fi-rr-hand-holding-usd"></i> },
+						{ href: '/advisor/transactions', label: 'Transactions', icon: <i className="fi fi-rr-credit-card"></i> },
+						{ href: '/advisor/news', label: 'Actualités', icon: <i className="fi fi-rr-newspaper"></i> },
+						{ href: '/advisor/messages', label: 'Messages', icon: <i className="fi fi-rr-comment"></i> },
 					]
 				};
 			default: // client
@@ -52,11 +54,13 @@ export default function Header() {
 					title: 'Client',
 					color: 'blue',
 					links: [
-						{ href: '/dashboard', label: 'Accueil', icon: '🏠' },
-						{ href: '/dashboard/accounts', label: 'Mes comptes', icon: '💳' },
-						{ href: '/dashboard/transfers', label: 'Virements', icon: '💸' },
-						{ href: '/investment', label: 'Actions', icon: '📈' },
-						{ href: '/news', label: 'Actualités', icon: '📰' },
+						// { href: '/dashboard', label: 'Accueil', icon: <i className="fi fi-rr-home"></i> },
+						{ href: '/dashboard/accounts', label: 'Comptes', icon: <i className="fi fi-rr-credit-card"></i> },
+						{ href: '/dashboard/credits', label: 'Crédits', icon: <i className="fi fi-rr-hand-holding-usd"></i> },
+						{ href: '/dashboard/transfers', label: 'Virements', icon: <i className="fi fi-rr-exchange"></i> },
+						{ href: '/investment', label: 'Actions', icon: <i className="fi fi-rr-chart-line-up"></i> },
+						{ href: '/news', label: 'Actualités', icon: <i className="fi fi-rr-newspaper"></i> },
+						{ href: '/messages', label: 'Messages', icon: <i className="fi fi-rr-comment"></i> },
 					]
 				};
 		}
@@ -102,7 +106,7 @@ export default function Header() {
 						</div>
 					</Link>
 					{/* Navigation Links (desktop) */}
-					<div className="hidden md:flex items-center space-x-8">
+					<div className="hidden lg:flex items-center space-x-8">
 						{user && navConfig ? (
 							<>
 								{navConfig.links.map((link: any) => {
@@ -129,16 +133,16 @@ export default function Header() {
 										</Link>
 									);
 								})}
-								<div className="flex items-center space-x-4">
-									<div className="text-sm text-gray-600">
+								<div>
+									{/* <div className="text-sm text-gray-600">
 										
 										<div>
 											Bienvenue <b>{user.lastName}</b>
 										</div>
-									</div>
+									</div> */}
 									<button
 										onClick={handleLogout}
-										className={`px-4 py-2 text-white rounded-lg transition font-medium ${
+										className={`px-4 py-2 text-white rounded-lg transition font-medium whitespace-nowrap ${
 											navConfig.color === 'purple' ? 'bg-purple-600 hover:bg-purple-700' :
 											navConfig.color === 'green' ? 'bg-green-600 hover:bg-green-700' :
 											'bg-blue-600 hover:bg-blue-700'
@@ -169,7 +173,7 @@ export default function Header() {
 					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setIsMenuOpen(!isMenuOpen)}
-						className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
+						className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition"
 					>
 						{isMenuOpen ? (
 							<svg
@@ -205,7 +209,7 @@ export default function Header() {
 
 				{/* Mobile Menu */}
 				{isMenuOpen && (
-					<div className="md:hidden mt-2 bg-white rounded-lg shadow-lg p-4 space-y-3">
+					<div className="lg:hidden border-t border-gray-100 py-4 space-y-3">
 						{user && navConfig ? (
 							<>
 								{navConfig.links.map((link: any) => {

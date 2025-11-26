@@ -1,5 +1,6 @@
 "use client";
 
+import '@flaticon/flaticon-uicons/css/all/all.css';
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import {
@@ -102,53 +103,29 @@ export default function PortfolioPage() {
 				</div>
 
 				{/* Error Alert */}
-				{error && (
-					<div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
-						<div className='flex'>
-							<div className='flex-shrink-0'>
-								<svg
-									className='h-5 w-5 text-red-400'
-									viewBox='0 0 20 20'
-									fill='currentColor'
-								>
-									<path
-										fillRule='evenodd'
-										d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
-										clipRule='evenodd'
-									/>
-								</svg>
-							</div>
-							<div className='ml-3'>
-								<p className='text-sm text-red-800'>{error}</p>
-							</div>
+			{error && (
+				<div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
+					<div className='flex'>
+						<div className='flex-shrink-0'>
+							<i className='fi fi-rr-cross-circle text-red-400 text-xl'></i>
+						</div>
+						<div className='ml-3'>
+							<p className='text-sm text-red-800'>{error}</p>
 						</div>
 					</div>
-				)}
-
-				{portfolio ? (
+				</div>
+			)}				{portfolio ? (
 					<>
 						{/* Portfolio Summary */}
 						<div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-12'>
 							<div className='bg-white rounded-xl shadow-lg p-6'>
 								<div className='flex items-center'>
-									<div className='flex-shrink-0'>
-										<div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-											<svg
-												className='w-5 h-5 text-white'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'
-												/>
-											</svg>
-										</div>
+								<div className='flex-shrink-0'>
+									<div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
+										<i className='fi fi-rr-wallet text-white text-xl'></i>
 									</div>
-									<div className='ml-5'>
+								</div>
+								<div className='ml-5'>
 										<p className='text-sm font-medium text-gray-500'>
 											Valeur totale
 										</p>
@@ -169,23 +146,11 @@ export default function PortfolioPage() {
 													: "bg-red-600"
 											}`}
 										>
-											<svg
-												className='w-5 h-5 text-white'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d={
-														portfolio.totalGainLoss.amount >= 0
-															? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-															: "M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
-													}
-												/>
-											</svg>
+											<i className={`text-white text-xl ${
+												portfolio.totalGainLoss.amount >= 0
+													? 'fi fi-rr-arrow-trend-up'
+													: 'fi fi-rr-arrow-trend-down'
+											}`}></i>
 										</div>
 									</div>
 									<div className='ml-5'>
@@ -213,19 +178,7 @@ export default function PortfolioPage() {
 													: "bg-red-600"
 											}`}
 										>
-											<svg
-												className='w-5 h-5 text-white'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-												/>
-											</svg>
+											<i className='fi fi-rr-chart-histogram text-white text-xl'></i>
 										</div>
 									</div>
 									<div className='ml-5'>
@@ -329,20 +282,8 @@ export default function PortfolioPage() {
 								</div>
 							</div>
 						) : (
-							<div className='text-center py-12'>
-								<svg
-									className='mx-auto h-12 w-12 text-gray-400'
-									fill='none'
-									viewBox='0 0 24 24'
-									stroke='currentColor'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-									/>
-								</svg>
+						<div className='text-center py-12'>
+							<i className='fi fi-rr-inbox text-gray-400 text-6xl block mb-4'></i>
 								<h3 className='mt-2 text-sm font-medium text-gray-900'>
 									Aucune position
 								</h3>
@@ -363,19 +304,7 @@ export default function PortfolioPage() {
 					</>
 				) : (
 					<div className='text-center py-12'>
-						<svg
-							className='mx-auto h-12 w-12 text-gray-400'
-							fill='none'
-							viewBox='0 0 24 24'
-							stroke='currentColor'
-						>
-							<path
-								strokeLinecap='round'
-								strokeLinejoin='round'
-								strokeWidth={2}
-								d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
-							/>
-						</svg>
+						<i className='fi fi-rr-triangle-warning text-gray-400 text-6xl block mb-4'></i>
 						<h3 className='mt-2 text-sm font-medium text-gray-900'>
 							Erreur de chargement
 						</h3>

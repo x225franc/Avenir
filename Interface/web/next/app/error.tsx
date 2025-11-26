@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useUiShell } from "../components/contexts/UiShellContext";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface ErrorProps {
 	error: Error & { digest?: string };
@@ -21,28 +22,15 @@ export default function Error({ error, reset }: ErrorProps) {
 		<div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-100 flex items-center justify-center p-4">
 			<div className="max-w-2xl mx-auto text-center">
 				<div className="bg-white rounded-xl shadow-2xl p-8 border border-red-100">
-					{/* Icône d'erreur */}
-					<div className="mb-6">
-						<div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
-							<svg
-								className="w-12 h-12 text-red-600"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-								/>
-							</svg>
-						</div>
+				{/* Icône d'erreur */}
+				<div className="mb-6">
+					<div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
+						<i className="fi fi-rr-triangle-warning text-red-600 text-6xl"></i>
 					</div>
-
-					{/* Titre */}
-					<h1 className="text-4xl font-bold text-gray-900 mb-4">
-						⚠️ Erreur Serveur
+				</div>					{/* Titre */}
+					<h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-2">
+						<i className="fi fi-rr-exclamation"></i>
+						Erreur Serveur
 					</h1>
 
 					{/* Message */}
@@ -71,16 +59,18 @@ export default function Error({ error, reset }: ErrorProps) {
 						<div className="flex flex-col sm:flex-row gap-4 justify-center">
 							<button
 								onClick={reset}
-								className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+								className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center justify-center gap-2"
 							>
-								🔄 Réessayer
+								<i className="fi fi-rr-refresh"></i>
+								Réessayer
 							</button>
 							
 							<Link
 								href="/"
-								className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+								className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium flex items-center justify-center gap-2"
 							>
-								🏠 Retour à l'accueil
+								<i className="fi fi-rr-home"></i>
+								Retour à l'accueil
 							</Link>
 						</div>
 						

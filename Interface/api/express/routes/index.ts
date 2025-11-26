@@ -8,6 +8,8 @@ import advisorRoutes from "./advisor.routes";
 import operationRoutes from "./operation.routes";
 import investmentRoutes from "./investment.routes";
 import newsRoutes from "./news.routes";
+import creditRoutes from "./credit.routes";
+import socketRoutes from "./socket.routes";
 
 const router = Router();
 
@@ -21,5 +23,7 @@ router.use("/advisor", advisorRoutes);
 router.use("/operations", operationRoutes);
 router.use("/investment", investmentRoutes);
 router.use("/news", newsRoutes);
+router.use("/credits", creditRoutes);
+router.use("/socket", socketRoutes);
 
 export default router;

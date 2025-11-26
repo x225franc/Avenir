@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { userService, User } from "../../../components/lib/api/user.service";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function AdvisorClientsPage() {
 	const [clients, setClients] = useState<User[]>([]);
@@ -65,8 +66,9 @@ export default function AdvisorClientsPage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex justify-between items-center">
 						<div>
-							<h1 className="text-3xl font-bold text-green-900">
-								🏦 Liste des Clients
+							<h1 className="text-3xl font-bold text-green-900 flex items-center gap-2">
+								<i className="fi fi-rr-users"></i>
+								Liste des Clients
 							</h1>
 							<p className="text-green-600 mt-2">
 								Consultez les informations des clients (lecture seule)
@@ -87,8 +89,9 @@ export default function AdvisorClientsPage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex items-center space-x-4">
 						<div className="flex-1">
-							<label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-								🔍 Rechercher un client
+							<label htmlFor="search" className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+								<i className="fi fi-rr-search"></i>
+								Rechercher un client
 							</label>
 							<input
 								type="text"
@@ -158,29 +161,33 @@ export default function AdvisorClientsPage() {
 													client.role
 												)}`}
 											>
-												{client.role === "director" && "🎯 Directeur"}
-												{client.role === "advisor" && "🏦 Conseiller"}
-												{client.role === "client" && "👤 Client"}
+												{client.role === "director" && "Directeur"}
+												{client.role === "advisor" && "Conseiller"}
+												{client.role === "client" && "Client"}
 											</span>
 										</td>
 										<td className="px-6 py-4">
 											<div className="space-y-1">
 												{client.isBanned ? (
-													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-														🚫 Banni
+													<span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+														<i className="fi fi-rr-ban"></i>
+														Banni
 													</span>
 												) : (
-													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-														✅ Actif
+													<span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+														<i className="fi fi-rr-check-circle"></i>
+														Actif
 													</span>
 												)}
 												{client.emailVerified ? (
-													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-														📧 Vérifié
+													<span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+														<i className="fi fi-rr-envelope-marker"></i>
+														Vérifié
 													</span>
 												) : (
-													<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-														⚠️ Non vérifié
+													<span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+														<i className="fi fi-rr-exclamation"></i>
+														Non vérifié
 													</span>
 												)}
 											</div>
@@ -259,9 +266,9 @@ export default function AdvisorClientsPage() {
 				</div>
 
 				{/* Information importante */}
-				<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-					<h4 className="font-medium text-blue-900 mb-2">ℹ️ Information</h4>
-					<p className="text-sm text-blue-800">
+				<div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+					<h4 className="font-medium text-green-900 mb-1"><i className="fi fi-rr-info"></i> Information</h4>
+					<p className="text-sm text-green-800">
 						Cette vue est en <strong>lecture seule</strong>. En tant que conseiller, vous pouvez consulter les informations des clients 
 						mais ne pouvez pas les modifier. Pour toute modification, contactez un administrateur.
 					</p>

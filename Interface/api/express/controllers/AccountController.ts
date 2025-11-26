@@ -320,4 +320,57 @@ export class AccountController {
 			});
 		}
 	}
+
+	/**
+	 * GET /api/accounts/user/:userId
+	 * Récupérer tous les comptes d'un utilisateur spécifique (conseiller/directeur uniquement)
+	 */
+	async getUserAccounts(req: Request, res: Response): Promise<void> {
+		try {
+			const requestingUserRole = (req as any).user?.role;
+			const targetUserId = req.params.userId;
+
+			if (!requestingUserRole) {
+				res.status(401).json({
+					success: false,
+					error: "Non authentifié",
+				});
+				return;
+			}
+
+			// Vérifier que l'utilisateur est conseiller ou directeur
+			if (requestingUserRole !== "advisor") {
+				res.status(403).json({
+					success: false,
+					error: "Accès réservé aux conseillers",
+				});
+				return;
+			}
+
+			const accounts = await this.accountRepository.findByUserId(
+				new UserId(targetUserId)
+			);
+
+			res.status(200).json({
+				success: true,
+				data: accounts.map((account) => ({
+					id: account.id.value,
+					iban: account.iban.formatted,
+					name: account.accountName,
+					type: account.accountType,
+					balance: account.balance.amount,
+					currency: account.balance.currency,
+					interestRate: account.interestRate,
+					isActive: account.isActive,
+					createdAt: account.createdAt,
+				})),
+			});
+		} catch (error) {
+			console.error("Error in getUserAccounts:", error);
+			res.status(500).json({
+				success: false,
+				error: "Erreur serveur",
+			});
+		}
+	}
 }

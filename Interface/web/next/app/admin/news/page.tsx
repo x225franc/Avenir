@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { newsService, News } from "../../../components/lib/api/news.service";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
  * Page de gestion des actualités pour les directeurs
@@ -84,30 +85,16 @@ export default function AdminNewsPage() {
 							<p className="text-purple-100">
 								Gérez toutes les actualités de la banque
 							</p>
-						</div>
-						<Link
-							href="/admin/news/create"
-							className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center space-x-2"
-						>
-							<svg
-								className="w-5 h-5"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-								/>
-							</svg>
-							<span>Nouvelle actualité</span>
-						</Link>
 					</div>
+					<Link
+						href="/admin/news/create"
+						className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center space-x-2"
+					>
+						<i className="fi fi-rr-plus text-xl"></i>
+						<span>Nouvelle actualité</span>
+					</Link>
 				</div>
-
-				{/* Filters */}
+			</div>				{/* Filters */}
 				<div className="bg-white rounded-lg shadow-md p-6 mb-6">
 					<div className="flex items-center space-x-4">
 						<span className="text-sm font-medium text-gray-700">Filtrer par :</span>
@@ -137,19 +124,7 @@ export default function AdminNewsPage() {
 				{error && (
 					<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
 						<div className="flex items-center">
-							<svg
-								className="w-5 h-5 text-red-600 mr-2"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-								/>
-							</svg>
+							<i className="fi fi-rr-exclamation text-xl text-red-600 mr-2"></i>
 							<p className="text-red-800">{error}</p>
 						</div>
 					</div>
@@ -159,19 +134,7 @@ export default function AdminNewsPage() {
 				<div className="bg-white rounded-lg shadow-md">
 					{filteredNews.length === 0 ? (
 						<div className="text-center py-12">
-							<svg
-								className="mx-auto h-12 w-12 text-gray-400"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-								/>
-							</svg>
+							<i className="fi fi-rr-newspaper mx-auto text-6xl text-gray-400"></i>
 							<h3 className="mt-2 text-sm font-medium text-gray-900">
 								{filter === "all" && "Aucune actualité"}
 								{filter === "published" && "Aucune actualité publiée"}
@@ -258,44 +221,20 @@ export default function AdminNewsPage() {
 											</div>
 										</div>
 										<div className="flex items-center space-x-2 ml-4">
-											<Link
-												href={`/admin/news/${item.id}`}
-												className="text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50 transition-colors"
-												title="Modifier"
-											>
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-													/>
-												</svg>
-											</Link>
-											<button
-												onClick={() => handleDelete(item.id)}
-												className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
-												title="Supprimer"
-											>
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-													/>
-												</svg>
-											</button>
+										<Link
+											href={`/admin/news/${item.id}`}
+											className="text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50 transition-colors"
+											title="Modifier"
+										>
+											<i className="fi fi-rr-edit"></i>
+										</Link>
+										<button
+											onClick={() => handleDelete(item.id)}
+											className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+											title="Supprimer"
+										>
+											<i className="fi fi-rr-trash"></i>
+										</button>
 										</div>
 									</div>
 								</div>

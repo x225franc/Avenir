@@ -5,6 +5,7 @@ import { useAuth } from "../../../../components/contexts/AuthContext";
 import { newsService, News, UpdateNewsDTO } from "../../../../components/lib/api/news.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface EditAdminNewsPageProps {
 	params: {
@@ -107,19 +108,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 		return (
 			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center">
 				<div className="text-center">
-					<svg
-						className="mx-auto h-12 w-12 text-gray-400"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15a7.962 7.962 0 01-5-1.709M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-						/>
-					</svg>
+					<i className="fi fi-rr-exclamation mx-auto text-6xl text-gray-400"></i>
 					<h3 className="mt-2 text-sm font-medium text-gray-900">Actualité introuvable</h3>
 					<p className="mt-1 text-sm text-gray-500">{error}</p>
 					<div className="mt-6">
@@ -192,28 +181,14 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 
 				{/* Form */}
 				<div className="bg-white rounded-lg shadow-md p-8">
-					{error && (
-						<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-							<div className="flex items-center">
-								<svg
-									className="w-5 h-5 text-red-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-									/>
-								</svg>
-								<p className="text-red-800">{error}</p>
-							</div>
+				{error && (
+					<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+						<div className="flex items-center">
+							<i className="fi fi-rr-exclamation text-xl text-red-600 mr-2"></i>
+							<p className="text-red-800">{error}</p>
 						</div>
-					)}
-
-					<form onSubmit={handleSubmit} className="space-y-6">
+					</div>
+				)}					<form onSubmit={handleSubmit} className="space-y-6">
 						{/* Title */}
 						<div>
 							<label

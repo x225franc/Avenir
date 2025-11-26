@@ -1,5 +1,6 @@
 "use client";
 
+import '@flaticon/flaticon-uicons/css/all/all.css';
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -83,75 +84,39 @@ export default function Home() {
 					</div>
 
 					<div className="grid md:grid-cols-3 gap-8">
-						<div className="p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 hover:shadow-xl transition-shadow">
-							<div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
-								<svg
-									className="w-8 h-8 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-									/>
-								</svg>
-							</div>
-							<h3 className="text-2xl font-bold text-gray-900 mb-3">
-								Sécurité maximale
-							</h3>
+					<div className="p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 hover:shadow-xl transition-shadow">
+						<div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
+							<i className="fi fi-rr-shield-check text-white text-2xl"></i>
+						</div>
+						<h3 className="text-2xl font-bold text-gray-900 mb-3">
+							Sécurité maximale
+						</h3>
 							<p className="text-gray-600">
 								Vos données sont protégées par un chiffrement de niveau
 								bancaire et une authentification à double facteur.
 							</p>
 						</div>
 
-						<div className="p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-xl transition-shadow">
-							<div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
-								<svg
-									className="w-8 h-8 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-									/>
-								</svg>
-							</div>
-							<h3 className="text-2xl font-bold text-gray-900 mb-3">
-								Investissement facile
-							</h3>
+					<div className="p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-xl transition-shadow">
+						<div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
+							<i className="fi fi-rr-chart-line-up text-white text-2xl"></i>
+						</div>
+						<h3 className="text-2xl font-bold text-gray-900 mb-3">
+							Investissement facile
+						</h3>
 							<p className="text-gray-600">
 								Investissez dans des actions avec des frais réduits et suivez
 								votre portefeuille en temps réel.
 							</p>
 						</div>
 
-						<div className="p-8 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-xl transition-shadow">
-							<div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mb-6">
-								<svg
-									className="w-8 h-8 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
-							</div>
-							<h3 className="text-2xl font-bold text-gray-900 mb-3">
-								Épargne rémunérée
-							</h3>
+					<div className="p-8 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-xl transition-shadow">
+						<div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mb-6">
+							<i className="fi fi-rr-piggy-bank text-white text-2xl"></i>
+						</div>
+						<h3 className="text-2xl font-bold text-gray-900 mb-3">
+							Épargne rémunérée
+						</h3>
 							<p className="text-gray-600">
 								Faites fructifier votre argent avec nos comptes d'épargne à
 								taux compétitifs, calculés quotidiennement.

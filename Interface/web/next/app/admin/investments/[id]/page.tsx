@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schema de validation Zod pour éditer une action
 const editStockSchema = z.object({
@@ -187,8 +188,9 @@ export default function EditStockPage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="text-3xl font-bold text-purple-900">
-								✏️ Modifier l&apos;Action
+							<h1 className="text-3xl font-bold text-purple-900 flex items-center gap-2">
+								<i className="fi fi-rr-edit"></i>
+								Modifier l&apos;Action
 							</h1>
 							<p className="text-purple-600 mt-2">
 								{stock.symbol} - {stock.companyName}
@@ -206,20 +208,27 @@ export default function EditStockPage() {
 				{/* Messages */}
 				{error && (
 					<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-						<p className="text-red-800">❌ {error}</p>
+						<p className="text-red-800 flex items-center gap-2">
+							<i className="fi fi-rr-cross-circle"></i>
+							{error}
+						</p>
 					</div>
 				)}
 
 				{success && (
 					<div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-						<p className="text-green-800">✅ {success}</p>
+						<p className="text-green-800 flex items-center gap-2">
+							<i className="fi fi-rr-check-circle"></i>
+							{success}
+						</p>
 					</div>
 				)}
 
 				{/* Info prix */}
 				<div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-					<h3 className="text-blue-900 font-semibold mb-2">
-						💡 Prix actuel (non modifiable)
+					<h3 className="text-blue-900 font-semibold mb-2 flex items-center gap-2">
+						<i className="fi fi-rr-bulb"></i>
+						Prix actuel (non modifiable)
 					</h3>
 					<div className="text-3xl font-bold text-blue-800">
 						{stock.currentPrice.toFixed(2)} {stock.currency}

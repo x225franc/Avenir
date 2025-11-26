@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { newsService, News } from "../../../components/lib/api/news.service";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
  * Dashboard pour les conseillers
@@ -40,7 +41,9 @@ export default function AdvisorDashboard() {
 			if (response.success && response.data) {
 				setNews(response.data);
 			} else {
-				setError(response.message || "Erreur lors du chargement des actualités");
+				setError(
+					response.message || "Erreur lors du chargement des actualités"
+				);
 			}
 		} catch (err) {
 			console.error("Erreur lors du chargement des actualités:", err);
@@ -83,30 +86,64 @@ export default function AdvisorDashboard() {
 				</div>
 
 				{/* Quick Actions */}
-				<div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
+				<div className='grid grid-cols-1 md:grid-cols-5 gap-6 mb-8'>
 					<a
-						href='/advisor/news'
+						href='/advisor/clients'
 						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
 					>
 						<div className='flex items-center justify-between mb-4'>
 							<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
-								<svg
-									className='w-6 h-6 text-green-600'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'
-									/>
-								</svg>
+								<i className="fi fi-rr-users text-green-600 text-2xl"></i>
 							</div>
-							<span className='text-2xl font-bold text-gray-900'>
+						</div>
+						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
+							Clients
+						</h3>
+						<p className='text-sm text-gray-600'>Gérer mes clients</p>
+					</a>
+
+					<a
+						href='/advisor/credits/grant'
+						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
+					>
+						<div className='flex items-center justify-between mb-4'>
+							<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
+								
+								<i className="fi fi-rr-hand-holding-usd text-green-600 text-2xl"></i>
+							</div>
+						</div>
+						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
+							Crédits
+						</h3>
+						<p className='text-sm text-gray-600'>Attribuer des crédits</p>
+					</a>
+
+					<a
+						href='/advisor/transactions'
+						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
+					>
+						<div className='flex items-center justify-between mb-4'>
+							<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
+								<i className="fi fi-rr-credit-card text-green-600 text-2xl"></i>
+							</div>
+						</div>
+						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
+							Transactions
+						</h3>
+						<p className='text-sm text-gray-600'>Gérer les transactions</p>
+					</a>
+
+					<a
+						href='/advisor/news'
+						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
+					>
+					<div className='flex items-center justify-between mb-4'>
+						<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
+							<i className="fi fi-rr-newspaper text-green-600 text-2xl"></i>
+						</div>
+							{/* <span className='text-2xl font-bold text-gray-900'>
 								{news.length}
-							</span>
+							</span> */}
 						</div>
 						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
 							Actualités
@@ -117,78 +154,12 @@ export default function AdvisorDashboard() {
 					</a>
 
 					<a
-						href='/advisor/clients'
-						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
-					>
-						<div className='flex items-center justify-between mb-4'>
-							<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
-								<svg
-									className='w-6 h-6 text-green-600'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-									/>
-								</svg>
-							</div>
-						</div>
-						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
-							Clients
-						</h3>
-						<p className='text-sm text-gray-600'>Gérer mes clients</p>
-					</a>
-
-					<a
-						href='/advisor/transactions'
-						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
-					>
-						<div className='flex items-center justify-between mb-4'>
-							<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
-								<svg
-									className='w-6 h-6 text-green-600'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0zM9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z'
-									/>
-								</svg>
-							</div>
-						</div>
-						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
-							Transactions
-						</h3>
-						<p className='text-sm text-gray-600'>Gérer les transactions</p>
-					</a>
-
-					<a
 						href='/advisor/messages'
 						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
 					>
 						<div className='flex items-center justify-between mb-4'>
 							<div className='w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center'>
-								<svg
-									className='w-6 h-6 text-green-600'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z'
-									/>
-								</svg>
+								<i className="fi fi-rr-comment text-green-600 text-2xl"></i>
 							</div>
 						</div>
 						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
@@ -209,19 +180,7 @@ export default function AdvisorDashboard() {
 							className='text-green-600 hover:text-green-700 font-medium flex items-center'
 						>
 							Voir tout
-							<svg
-								className='w-5 h-5 ml-1'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M9 5l7 7-7 7'
-								/>
-							</svg>
+							<i className="fi fi-rr-angle-right ml-1"></i>
 						</a>
 					</div>
 
@@ -233,19 +192,7 @@ export default function AdvisorDashboard() {
 
 					{news.length === 0 ? (
 						<div className='text-center py-12'>
-							<svg
-								className='mx-auto h-12 w-12 text-gray-400'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'
-								/>
-							</svg>
+							<i className="fi fi-rr-newspaper text-gray-400 text-6xl"></i>
 							<p className='mt-2 text-sm text-gray-600'>
 								Aucune actualité pour le moment
 							</p>
@@ -284,8 +231,11 @@ export default function AdvisorDashboard() {
 												{item.authorName ? (
 													<span>
 														Par {item.authorName}
-														{item.authorRole === 'director' ? " (Administrateur)" :
-															item.authorRole === 'advisor' ? " (Conseiller)" : ""}
+														{item.authorRole === "director"
+															? " (Administrateur)"
+															: item.authorRole === "advisor"
+															? " (Conseiller)"
+															: ""}
 													</span>
 												) : (
 													<span>Auteur inconnu</span>
@@ -306,19 +256,7 @@ export default function AdvisorDashboard() {
 											href={`/advisor/news/${item.id}`}
 											className='ml-4 text-blue-600 hover:text-blue-700'
 										>
-											<svg
-												className='w-5 h-5'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M9 5l7 7-7 7'
-												/>
-											</svg>
+											<i className="fi fi-rr-angle-right"></i>
 										</a>
 									</div>
 								</div>

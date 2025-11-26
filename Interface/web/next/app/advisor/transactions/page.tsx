@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { transactionService, Transaction } from "../../../components/lib/api/transaction.service";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function AdvisorTransactionsPage() {
 	const [pendingTransactions, setPendingTransactions] = useState<Transaction[]>([]);
@@ -20,7 +21,6 @@ export default function AdvisorTransactionsPage() {
 			const response = await transactionService.getPendingTransactions();
 
 			if (response.success && response.data) {
-				console.log("Transactions data:", response.data);
 				setPendingTransactions(response.data);
 			} else {
 				setError(response.error || "Erreur lors du chargement des transactions en attente");
@@ -68,10 +68,10 @@ export default function AdvisorTransactionsPage() {
 
 	const getStatusBadge = (status: string) => {
 		const statusConfig = {
-			pending: { color: "bg-yellow-100 text-yellow-800", icon: "⏳", label: "En attente" },
-			completed: { color: "bg-green-100 text-green-800", icon: "✅", label: "Complété" },
-			failed: { color: "bg-red-100 text-red-800", icon: "❌", label: "Échoué" },
-			cancelled: { color: "bg-gray-100 text-gray-800", icon: "🚫", label: "Annulé" },
+			pending: { color: "bg-yellow-100 text-yellow-800", icon: <i className="fi fi-rr-hourglass"></i>, label: "En attente" },
+			completed: { color: "bg-green-100 text-green-800", icon: <i className="fi fi-rr-check-circle"></i>, label: "Complété" },
+			failed: { color: "bg-red-100 text-red-800", icon: <i className="fi fi-rr-cross-circle"></i>, label: "Échoué" },
+			cancelled: { color: "bg-gray-100 text-gray-800", icon: <i className="fi fi-rr-ban"></i>, label: "Annulé" },
 		};
 		const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
 		return config;
@@ -107,7 +107,7 @@ export default function AdvisorTransactionsPage() {
 					<div className="flex justify-between items-center">
 						<div>
 							<h1 className="text-3xl font-bold text-green-900">
-								⏳ Gestion des Transactions
+								<i className="fi fi-rr-credit-card"></i> Gestion des Transactions
 							</h1>
 							<p className="text-green-600 mt-2">
 								Approuvez ou rejetez les transactions en attente
@@ -242,24 +242,34 @@ export default function AdvisorTransactionsPage() {
 													minute: "2-digit",
 												})}
 											</td>
-											<td className="px-6 py-4">
-												<div className="flex space-x-2">
-													<button
-														onClick={() => handleApprove(transaction.id)}
-														disabled={processingId === transaction.id}
-														className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-													>
-														{processingId === transaction.id ? "..." : "✅ Approuver"}
-													</button>
-													<button
-														onClick={() => handleReject(transaction.id)}
-														disabled={processingId === transaction.id}
-														className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-													>
-														{processingId === transaction.id ? "..." : "❌ Rejeter"}
-													</button>
-												</div>
-											</td>
+										<td className="px-6 py-4">
+											<div className="flex space-x-2">
+												<button
+													onClick={() => handleApprove(transaction.id)}
+													disabled={processingId === transaction.id}
+													className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+												>
+													{processingId === transaction.id ? "..." : (
+														<>
+															<i className="fi fi-rr-check"></i>
+															Approuver
+														</>
+													)}
+												</button>
+												<button
+													onClick={() => handleReject(transaction.id)}
+													disabled={processingId === transaction.id}
+													className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+												>
+													{processingId === transaction.id ? "..." : (
+														<>
+															<i className="fi fi-rr-cross"></i>
+															Rejeter
+														</>
+													)}
+												</button>
+											</div>
+										</td>
 										</tr>
 									);
 								})}
@@ -269,7 +279,10 @@ export default function AdvisorTransactionsPage() {
 
 					{currentTransactions.length === 0 && (
 						<div className="text-center py-8 text-gray-500">
-							<p className="text-lg">🎉 Aucune transaction en attente</p>
+							<p className="text-lg flex items-center justify-center gap-2">
+								<i className="fi fi-rr-party-horn"></i>
+								Aucune transaction en attente
+							</p>
 							<p className="text-sm mt-2">Toutes les transactions ont été traitées</p>
 						</div>
 					)}
@@ -296,9 +309,9 @@ export default function AdvisorTransactionsPage() {
 				</div>
 
 				{/* Informations importantes */}
-				<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-					<h4 className="font-medium text-blue-900 mb-2">ℹ️ Instructions</h4>
-					<ul className="text-sm text-blue-800 space-y-1">
+				<div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+					<h4 className="font-medium text-green-900 mb-2"><i className="fi fi-rr-info"></i> Instructions</h4>
+					<ul className="text-sm text-green-800 space-y-1">
 						<li>• <strong>Approuver</strong> : La transaction sera exécutée et les comptes mis à jour</li>
 						<li>• <strong>Rejeter</strong> : La transaction sera annulée et les fonds recrédités au compte source</li>
 						<li>• Les transactions approuvées ne peuvent plus être modifiées</li>

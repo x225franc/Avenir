@@ -29,10 +29,13 @@
 	"author": "Avenir",
 	"license": "MIT",
 	"devDependencies": {
-		"typescript": "^5.9.2",
 		"@types/node": "^20.19.18",
+		"concurrently": "^8.2.2",
 		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0",
-		"concurrently": "^8.2.2"
+		"typescript": "^5.9.2"
+	},
+	"dependencies": {
+		"@flaticon/flaticon-uicons": "^3.3.1"
 	}
 }

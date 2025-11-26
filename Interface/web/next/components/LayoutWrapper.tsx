@@ -42,6 +42,7 @@ const pageConfig: Record<
 	"/investment/portfolio": { showHeader: true, showFooter: false, allowedRoles: ["client"] },
 	"/investment/orders": { showHeader: true, showFooter: false, allowedRoles: ["client"] },
 	"/news": { showHeader: true, showFooter: false, allowedRoles: ["client"] },
+	"/messages": { showHeader: true, showFooter: false, allowedRoles: ["client"] },
 
 	// Routes admin
 	"/admin/dashboard": { showHeader: true, showFooter: false, allowedRoles: ["director"] },

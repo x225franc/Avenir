@@ -1,30 +1,19 @@
+import '@flaticon/flaticon-uicons/css/all/all.css';
+
 export default function LoadingPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
 			<div className="text-center">
 				<div className="bg-white rounded-xl shadow-2xl p-8 border border-blue-100">
-					{/* Logo ou icône */}
-					<div className="mb-6">
-						<div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-							<svg
-								className="w-8 h-8 text-blue-600 animate-spin"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-								/>
-							</svg>
-						</div>
+				{/* Logo ou icône */}
+				<div className="mb-6">
+					<div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+						<i className="fi fi-rr-spinner text-blue-600 text-2xl animate-spin"></i>
 					</div>
-
-					{/* Titre */}
-					<h1 className="text-2xl font-bold text-gray-900 mb-4">
-						🏦 Avenir Bank
+				</div>					{/* Titre */}
+					<h1 className="text-2xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-2">
+						<i className="fi fi-rr-bank"></i>
+						Avenir Bank
 					</h1>
 
 					{/* Animation de chargement */}

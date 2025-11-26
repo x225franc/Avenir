@@ -5,6 +5,7 @@ import { useAuth } from "../../../../components/contexts/AuthContext";
 import { newsService, CreateNewsDTO } from "../../../../components/lib/api/news.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
  * Page de création d'actualité pour les conseillers
@@ -72,19 +73,7 @@ export default function CreateNewsPage() {
 							href="/advisor/news"
 							className="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center space-x-2"
 						>
-							<svg
-								className="w-5 h-5"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M10 19l-7-7m0 0l7-7m-7 7h18"
-								/>
-							</svg>
+							<i className="fi fi-rr-arrow-left"></i>
 							<span>Retour</span>
 						</Link>
 					</div>
@@ -93,22 +82,10 @@ export default function CreateNewsPage() {
 				{/* Form */}
 				<div className="bg-white rounded-lg shadow-md p-8">
 					{error && (
-						<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-							<div className="flex items-center">
-								<svg
-									className="w-5 h-5 text-red-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-									/>
-								</svg>
-								<p className="text-red-800">{error}</p>
+					<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+						<div className="flex items-center">
+							<i className="fi fi-rr-exclamation text-red-600 text-xl mr-2"></i>
+							<p className="text-red-800">{error}</p>
 							</div>
 						</div>
 					)}
@@ -172,19 +149,7 @@ export default function CreateNewsPage() {
 									{loading ? (
 										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 									) : (
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-											/>
-										</svg>
+										<i className="fi fi-rr-disk"></i>
 									)}
 									<span>Enregistrer comme brouillon</span>
 								</button>
@@ -197,19 +162,7 @@ export default function CreateNewsPage() {
 									{loading ? (
 										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 									) : (
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-											/>
-										</svg>
+										<i className="fi fi-rr-check-circle"></i>
 									)}
 									<span>Publier l'actualité</span>
 								</button>
@@ -218,30 +171,6 @@ export default function CreateNewsPage() {
 					</form>
 				</div>
 
-				{/* Help Section */}
-				<div className="bg-green-50 border border-green-200 rounded-lg p-6 mt-6">
-					<h3 className="text-lg font-semibold text-green-800 mb-4">
-						💡 Conseils pour rédiger une bonne actualité
-					</h3>
-					<ul className="space-y-2 text-green-700">
-						<li className="flex items-start">
-							<span className="text-green-600 mr-2">•</span>
-							<span>Utilisez un titre accrocheur et informatif</span>
-						</li>
-						<li className="flex items-start">
-							<span className="text-green-600 mr-2">•</span>
-							<span>Rédigez un contenu clair et structuré</span>
-						</li>
-						<li className="flex items-start">
-							<span className="text-green-600 mr-2">•</span>
-							<span>Mettez en avant les informations importantes pour vos clients</span>
-						</li>
-						<li className="flex items-start">
-							<span className="text-green-600 mr-2">•</span>
-							<span>Vous pouvez sauvegarder en brouillon et publier plus tard</span>
-						</li>
-					</ul>
-				</div>
 			</div>
 		</div>
 	);

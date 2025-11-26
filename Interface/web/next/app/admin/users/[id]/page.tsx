@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { userService, User, UpdateUserDTO } from "../../../../components/lib/api/user.service";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function EditUserPage() {
 	const router = useRouter();
@@ -121,8 +122,9 @@ export default function EditUserPage() {
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="text-3xl font-bold text-purple-900">
-								✏️ Modifier l'Utilisateur
+							<h1 className="text-3xl font-bold text-purple-900 flex items-center gap-2">
+								<i className="fi fi-rr-edit"></i>
+								Modifier l'Utilisateur
 							</h1>
 							<p className="text-purple-600 mt-2">
 								Éditez les informations de {user.fullName}
@@ -157,12 +159,14 @@ export default function EditUserPage() {
 							<span className="text-sm text-gray-500">Statut</span>
 							<div className="space-x-2">
 								{user.isBanned ? (
-									<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-										🚫 Banni
+									<span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+										<i className="fi fi-rr-ban"></i>
+										Banni
 									</span>
 								) : (
-									<span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-										✅ Actif
+									<span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+										<i className="fi fi-rr-check-circle"></i>
+										Actif
 									</span>
 								)}
 							</div>
@@ -266,18 +270,18 @@ export default function EditUserPage() {
 									<label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
 										Rôle *
 									</label>
-									<select
-										id="role"
-										name="role"
-										required
-										value={formData.role}
-										onChange={handleInputChange}
-										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-									>
-										<option value="client">👤 Client</option>
-										<option value="advisor">🏦 Conseiller</option>
-										<option value="director">🎯 Directeur</option>
-									</select>
+								<select
+									id="role"
+									name="role"
+									required
+									value={formData.role}
+									onChange={handleInputChange}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+								>
+									<option value="client">Client</option>
+									<option value="advisor">Conseiller</option>
+									<option value="director">Directeur</option>
+								</select>
 								</div>
 
 								<div>
@@ -325,7 +329,10 @@ export default function EditUserPage() {
 
 				{/* Actions spéciales */}
 				<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
-					<h4 className="font-medium text-yellow-900 mb-2">⚠️ Actions spéciales</h4>
+					<h4 className="font-medium text-yellow-900 mb-2 flex items-center gap-2">
+						<i className="fi fi-rr-exclamation"></i>
+						Actions spéciales
+					</h4>
 					<p className="text-sm text-yellow-800 mb-3">
 						Ces actions sont disponibles depuis la liste des utilisateurs :
 					</p>

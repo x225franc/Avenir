@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import apiClient from "../../components/lib/api/client";
 import { useAuth } from "../../components/contexts/AuthContext";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function VerifyEmailPage() {
 	const router = useRouter();
@@ -61,8 +62,9 @@ export default function VerifyEmailPage() {
 			<div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
 				{/* Header */}
 				<div className="mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
-						🏦 Banque AVENIR
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+						<i className="fi fi-rr-bank"></i>
+						Banque AVENIR
 					</h1>
 					<p className="text-gray-600">Vérification de votre email</p>
 				</div>
@@ -79,19 +81,7 @@ export default function VerifyEmailPage() {
 				{!loading && success && (
 					<div className="py-8">
 						<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-							<svg
-								className="w-8 h-8 text-green-600"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M5 13l4 4L19 7"
-								/>
-							</svg>
+							<i className="fi fi-rr-check text-green-600 text-4xl"></i>
 						</div>
 						<h2 className="text-2xl font-bold text-gray-900 mb-2">Email vérifié !</h2>
 						<p className="text-gray-600 mb-6">
@@ -111,19 +101,7 @@ export default function VerifyEmailPage() {
 				{!loading && error && (
 					<div className="py-8">
 						<div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-							<svg
-								className="w-8 h-8 text-red-600"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
+							<i className="fi fi-rr-cross text-red-600 text-4xl"></i>
 						</div>
 						<h2 className="text-2xl font-bold text-gray-900 mb-2">
 							Erreur de vérification

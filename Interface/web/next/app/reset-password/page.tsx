@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { resetPasswordSchema, ResetPasswordFormData } from "@/components/lib/validations/schemas";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 function ResetPasswordContent() {
 	const router = useRouter();
@@ -77,8 +78,9 @@ function ResetPasswordContent() {
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-blue-500 px-4">
 			<div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
 				<div className="text-center mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
-						🔑 Nouveau mot de passe
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+						<i className="fi fi-rr-key"></i>
+						Nouveau mot de passe
 					</h1>
 					<p className="text-gray-600">
 						Définissez un nouveau mot de passe pour votre compte
@@ -87,7 +89,10 @@ function ResetPasswordContent() {
 
 				{success ? (
 					<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6">
-						<p className="font-medium">✅ Mot de passe réinitialisé !</p>
+						<p className="font-medium flex items-center gap-2">
+							<i className="fi fi-rr-check-circle"></i>
+							Mot de passe réinitialisé !
+						</p>
 						<p className="text-sm mt-1">
 							Redirection vers la page de connexion...
 						</p>

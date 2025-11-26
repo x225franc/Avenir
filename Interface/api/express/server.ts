@@ -115,11 +115,52 @@ if (require.main === module) {
 				io.on("connection", (socket) => {
 					console.log(`🟢 WebSocket connecté: ${socket.id}`);
 
+					// Join user-specific room
+					socket.on("join", (data) => {
+						console.log('📥 Join request received:', data);
+						const userId = typeof data === 'object' ? data.userId : data;
+						const role = typeof data === 'object' ? data.role : null;
+
+						if (userId) {
+							socket.join(`user:${userId}`);
+							console.log(`👤 User ${userId} joined room`);
+						}
+
+						if (role === 'advisor') {
+							socket.join('advisors');
+							console.log(`👔 User ${userId} joined advisors room`);
+						}
+					});
+
+					// Join conversation-specific room
+					socket.on("join-conversation", (conversationId) => {
+						socket.join(`conversation:${conversationId}`);
+						console.log(`💬 Joined conversation: ${conversationId}`);
+					});
+
+					// Leave conversation room
+					socket.on("leave-conversation", (conversationId) => {
+						socket.leave(`conversation:${conversationId}`);
+						console.log(`👋 Left conversation: ${conversationId}`);
+					});
+
+					// Typing indicators
+					socket.on("typing:start", ({ conversationId }) => {
+						socket.to(`conversation:${conversationId}`).emit("typing:user", { conversationId });
+					});
+
+					socket.on("typing:stop", ({ conversationId }) => {
+						socket.to(`conversation:${conversationId}`).emit("typing:user:stop", { conversationId });
+					});
+
 					socket.on("disconnect", () => {
 						console.log(`🔴 WebSocket déconnecté: ${socket.id}`);
 					});
 				});
 				console.log("🔌 Socket.IO server started");
+				
+				// Export io globally for use in routes
+				(global as any).io = io;
 			} catch (error) {
 				console.error('⚠️ Erreur lors du démarrage de Socket.IO:', error);
 			}

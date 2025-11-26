@@ -1,5 +1,6 @@
 "use client";
 
+import '@flaticon/flaticon-uicons/css/all/all.css';
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import {
@@ -72,7 +73,7 @@ export default function StocksPage() {
 				const socket = io(wsUrl, { transports: ["websocket"] });
 
 				socket.on("connect", () => {
-					console.log("🔌 Socket connecté (stocks page)", socket.id);
+				// Socket connected
 				});
 
 				socket.on("stock_price_update", (payload: any) => {
@@ -374,19 +375,7 @@ export default function StocksPage() {
 				<div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
 					<div className='bg-white rounded-xl shadow-lg p-8 text-center'>
 						<div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6'>
-							<svg
-								className='w-8 h-8 text-red-600'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z'
-								/>
-							</svg>
+							<i className='fi fi-rr-triangle-warning text-red-600 text-2xl'></i>
 						</div>
 						<h1 className='text-2xl font-bold text-gray-900 mb-4'>
 							Connexion requise
@@ -413,19 +402,7 @@ export default function StocksPage() {
 				<div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
 					<div className='bg-white rounded-xl shadow-lg p-8 text-center'>
 						<div className='w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6'>
-							<svg
-								className='w-8 h-8 text-yellow-600'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'
-								/>
-							</svg>
+							<i className='fi fi-rr-piggy-bank text-yellow-600 text-2xl'></i>
 						</div>
 						<h1 className='text-2xl font-bold text-gray-900 mb-4'>
 							Compte d'investissement requis
@@ -449,19 +426,7 @@ export default function StocksPage() {
 								href='/dashboard/accounts'
 								className='inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors'
 							>
-								<svg
-									className='w-5 h-5 mr-2'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M12 6v6m0 0v6m0-6h6m-6 0H6'
-									/>
-								</svg>
+								<i className='fi fi-rr-plus mr-2'></i>
 								Ouvrir un compte d'investissement
 							</a>
 						</div>
@@ -489,40 +454,18 @@ export default function StocksPage() {
 					<div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
 						<div className='flex'>
 							<div className='flex-shrink-0'>
-								<svg
-									className='h-5 w-5 text-red-400'
-									viewBox='0 0 20 20'
-									fill='currentColor'
-								>
-									<path
-										fillRule='evenodd'
-										d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
-										clipRule='evenodd'
-									/>
-								</svg>
+								<i className='fi fi-rr-cross-circle text-red-400 text-xl'></i>
 							</div>
 							<div className='ml-3'>
 								<p className='text-sm text-red-800'>{error}</p>
 								{error.includes("compte d'investissement") && (
 									<div className='mt-2'>
 										<a
-											href='/dashboard/accounts'
-											className='text-sm bg-red-100 text-red-800 px-3 py-1 rounded-md hover:bg-red-200 transition-colors inline-flex items-center'
-										>
-											<svg
-												className='w-4 h-4 mr-1'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M12 6v6m0 0v6m0-6h6m-6 0H6'
-												/>
-											</svg>
-											Créer un compte d'investissement
+										href='/dashboard/accounts'
+										className='text-sm bg-red-100 text-red-800 px-3 py-1 rounded-md hover:bg-red-200 transition-colors inline-flex items-center'
+									>
+										<i className='fi fi-rr-plus mr-1 text-xs'></i>
+										Créer un compte d'investissement
 										</a>
 									</div>
 								)}
@@ -561,11 +504,9 @@ export default function StocksPage() {
 												{stock.isAvailable ? "Disponible" : "Indisponible"}
 											</div>
 											{userPositions.has(stock.id) && userPositions.get(stock.id)! > 0 && (
-												<div className='px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 flex items-center gap-1'>
-													<svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-													</svg>
-													{userPositions.get(stock.id)} action{userPositions.get(stock.id)! > 1 ? 's' : ''} détenue{userPositions.get(stock.id)! > 1 ? 's' : ''}
+											<div className='px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 flex items-center gap-1'>
+												<i className='fi fi-rr-user text-xs'></i>
+												{userPositions.get(stock.id)} action{userPositions.get(stock.id)! > 1 ? 's' : ''} détenue{userPositions.get(stock.id)! > 1 ? 's' : ''}
 												</div>
 											)}
 										</div>
@@ -584,13 +525,9 @@ export default function StocksPage() {
 														: 'bg-red-100 text-red-700'
 												}`}>
 													{priceChanges[stock.id].direction === 'up' ? (
-														<svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-														</svg>
+														<i className="fi fi-rr-arrow-up mr-1"></i>
 													) : (
-														<svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-														</svg>
+														<i className="fi fi-rr-arrow-down mr-1"></i>
 													)}
 													{Math.abs(priceChanges[stock.id].change).toFixed(2)}%
 												</div>
@@ -627,19 +564,7 @@ export default function StocksPage() {
 												onClick={() => handlePlaceOrder(stock)}
 												className='w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center'
 											>
-												<svg
-													className='w-5 h-5 mr-2'
-													fill='none'
-													stroke='currentColor'
-													viewBox='0 0 24 24'
-												>
-													<path
-														strokeLinecap='round'
-														strokeLinejoin='round'
-														strokeWidth={2}
-														d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
-													/>
-												</svg>
+												<i className='fi fi-rr-chart-line-up mr-2'></i>
 												Passer un ordre
 											</button>
 										) : (
@@ -657,19 +582,7 @@ export default function StocksPage() {
 					</div>
 				) : (
 					<div className='text-center py-12'>
-						<svg
-							className='mx-auto h-12 w-12 text-gray-400'
-							fill='none'
-							viewBox='0 0 24 24'
-							stroke='currentColor'
-						>
-							<path
-								strokeLinecap='round'
-								strokeLinejoin='round'
-								strokeWidth={2}
-								d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-							/>
-						</svg>
+						<i className='fi fi-rr-inbox text-gray-400 text-6xl'></i>
 						<h3 className='mt-2 text-sm font-medium text-gray-900'>
 							Aucune action disponible
 						</h3>
@@ -694,9 +607,7 @@ export default function StocksPage() {
 									onClick={closeOrderModal}
 									className="text-gray-400 hover:text-gray-600 transition"
 								>
-									<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-									</svg>
+									<i className='fi fi-rr-cross text-xl'></i>
 								</button>
 							</div>
 

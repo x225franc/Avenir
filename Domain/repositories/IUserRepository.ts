@@ -23,6 +23,11 @@ export interface IUserRepository {
 	findByEmail(email: Email): Promise<User | null>;
 
 	/**
+	 * Trouve tous les utilisateurs par rôle
+	 */
+	findByRole(role: string): Promise<User[]>;
+
+	/**
 	 * Trouve tous les utilisateurs
 	 */
 	findAll(): Promise<User[]>;

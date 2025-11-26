@@ -7,6 +7,7 @@
 /// <reference path="types/build.d.ts" />
 /// <reference path="types/schema.d.ts" />
 /// <reference path="types/app.config.d.ts" />
+/// <reference types="C:/Laragon/www/Avenir/node_modules/@nuxt/nitro-server/dist/index.mjs" />
 /// <reference path="types/middleware.d.ts" />
 /// <reference path="types/components.d.ts" />
 /// <reference path="imports.d.ts" />

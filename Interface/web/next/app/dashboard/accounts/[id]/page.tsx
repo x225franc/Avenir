@@ -1,5 +1,6 @@
 "use client";
 
+import '@flaticon/flaticon-uicons/css/all/all.css';
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
@@ -369,19 +370,7 @@ export default function AccountDetailPage() {
 				: "text-red-600";
 		const rotation = isCredit ? "rotate-180" : "";
 		return (
-			<svg
-				className={`w-5 h-5 ${color} ${rotation}`}
-				fill='none'
-				stroke='currentColor'
-				viewBox='0 0 24 24'
-			>
-				<path
-					strokeLinecap='round'
-					strokeLinejoin='round'
-					strokeWidth={2}
-					d='M12 4v16m0 0l-4-4m4 4l4-4'
-				/>
-			</svg>
+			<i className={`fi fi-rr-arrow-down text-xl ${color} ${rotation}`}></i>
 		);
 	};
 

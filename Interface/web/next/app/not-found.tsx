@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useUiShell } from "../components/contexts/UiShellContext";
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function NotFound() {
     const { setVisibility } = useUiShell();
@@ -21,8 +22,9 @@ export default function NotFound() {
 					</div>
 
 					{/* Titre */}
-					<h1 className='text-4xl font-bold text-gray-900 mb-4'>
-						🔍 Page Introuvable
+					<h1 className='text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-2'>
+						<i className="fi fi-rr-search"></i>
+						Page Introuvable
 					</h1>
 
 					{/* Message */}
@@ -40,9 +42,10 @@ export default function NotFound() {
 						<div className='flex flex-col sm:flex-row gap-4 justify-center'>
 							<Link
 								href='/'
-								className='px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium'
+								className='px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2'
 							>
-								🏠 Accueil
+								<i className="fi fi-rr-home"></i>
+								Accueil
 							</Link>
 
 							<button
