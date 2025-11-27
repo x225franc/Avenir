@@ -58,10 +58,10 @@ export default function CreateNewsPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+		<div className="min-h-screen bg-linear-to-br from-green-50 to-green-100">
 			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 				{/* Header */}
-				<div className="bg-gradient-to-r from-green-600 to-green-800 rounded-xl shadow-lg p-8 text-white mb-8">
+				<div className="bg-linear-to-r from-green-600 to-green-800 rounded-xl shadow-lg p-8 text-white mb-8">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-3xl font-bold mb-2">Nouvelle Actualité</h1>

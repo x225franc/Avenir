@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { CreateAccount } from "@application/use-cases";
+import type { CreateAccountDTO } from "@application/use-cases";
 import { AccountRepository } from "@infrastructure/database/mysql/AccountRepository";
 import { UserRepository } from "@infrastructure/database/mysql/UserRepository";
-import { CreateAccountDTO } from "@application/dto";
 import { AccountId } from "@domain/value-objects/AccountId";
 import { UserId } from "@domain/value-objects/UserId";
 

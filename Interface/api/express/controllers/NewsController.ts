@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { 
-	CreateNews, 
-	GetNews, 
-	UpdateNews, 
+import {
+	CreateNews,
+	GetNews,
+	UpdateNews,
 	DeleteNews,
 	CreateNewsDTO,
 	UpdateNewsDTO,
@@ -10,6 +10,7 @@ import {
 import { NewsRepository } from "@infrastructure/database/mysql/NewsRepository";
 import { UserRepository } from "@infrastructure/database/mysql/UserRepository";
 import { UserId } from "@domain/value-objects/UserId";
+import { getSSEService } from "../../../../Infrastructure/services/SSEService";
 
 /**
  * Controller pour les actualités
@@ -41,7 +42,8 @@ export class NewsController {
 			if (!userRole || !["advisor", "director"].includes(userRole)) {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers et directeurs peuvent créer des actualités.",
+					error:
+						"Accès refusé. Seuls les conseillers et directeurs peuvent créer des actualités.",
 				});
 				return;
 			}
@@ -63,6 +65,25 @@ export class NewsController {
 			const result = await this.createNewsUseCase.execute(dto);
 
 			if (result.success) {
+				// Émettre événement SSE pour notifier les clients
+				try {
+					const sseService = getSSEService();
+					sseService.broadcastToRole(
+						"news:created",
+						{
+							id: result.news?.id,
+							title: result.news?.title,
+							content: result.news?.content,
+							authorId: result.news?.authorId,
+							published: result.news?.published,
+							createdAt: result.news?.createdAt,
+						},
+						"client"
+					);
+				} catch (error) {
+					console.error("Erreur lors de l'envoi SSE:", error);
+				}
+
 				res.status(201).json({
 					success: true,
 					message: "Actualité créée avec succès",
@@ -203,7 +224,8 @@ export class NewsController {
 			if (!userRole || !["advisor", "director"].includes(userRole)) {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers et directeurs peuvent modifier des actualités.",
+					error:
+						"Accès refusé. Seuls les conseillers et directeurs peuvent modifier des actualités.",
 				});
 				return;
 			}
@@ -258,7 +280,8 @@ export class NewsController {
 			if (!userRole || !["advisor", "director"].includes(userRole)) {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers et directeurs peuvent supprimer des actualités.",
+					error:
+						"Accès refusé. Seuls les conseillers et directeurs peuvent supprimer des actualités.",
 				});
 				return;
 			}

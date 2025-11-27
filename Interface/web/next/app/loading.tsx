@@ -2,7 +2,7 @@ import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function LoadingPage() {
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+		<div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
 			<div className="text-center">
 				<div className="bg-white rounded-xl shadow-2xl p-8 border border-blue-100">
 				{/* Logo ou icône */}

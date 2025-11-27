@@ -54,7 +54,9 @@ export const userService = {
 	 * Récupérer un utilisateur par son ID (admin uniquement)
 	 */
 	async getById(userId: string): Promise<ApiResponse<User>> {
-		const response = await apiClient.get<ApiResponse<User>>(`/admin/users/${userId}`);
+		const response = await apiClient.get<ApiResponse<User>>(
+			`/admin/users/${userId}`
+		);
 		return response.data;
 	},
 
@@ -72,8 +74,14 @@ export const userService = {
 	/**
 	 * Mettre à jour un utilisateur (admin uniquement)
 	 */
-	async update(userId: string, data: UpdateUserDTO): Promise<ApiResponse<User>> {
-		const response = await apiClient.put<ApiResponse<User>>(`/admin/users/${userId}`, data);
+	async update(
+		userId: string,
+		data: UpdateUserDTO
+	): Promise<ApiResponse<User>> {
+		const response = await apiClient.put<ApiResponse<User>>(
+			`/admin/users/${userId}`,
+			data
+		);
 		return response.data;
 	},
 
@@ -81,7 +89,9 @@ export const userService = {
 	 * Supprimer un utilisateur (admin uniquement)
 	 */
 	async delete(userId: string): Promise<ApiResponse<void>> {
-		const response = await apiClient.delete<ApiResponse<void>>(`/admin/users/${userId}`);
+		const response = await apiClient.delete<ApiResponse<void>>(
+			`/admin/users/${userId}`
+		);
 		return response.data;
 	},
 
@@ -89,7 +99,9 @@ export const userService = {
 	 * Bannir un utilisateur (admin uniquement)
 	 */
 	async ban(userId: string): Promise<ApiResponse<User>> {
-		const response = await apiClient.patch<ApiResponse<User>>(`/admin/users/${userId}/ban`);
+		const response = await apiClient.patch<ApiResponse<User>>(
+			`/admin/users/${userId}/ban`
+		);
 		return response.data;
 	},
 
@@ -97,7 +109,9 @@ export const userService = {
 	 * Débannir un utilisateur (admin uniquement)
 	 */
 	async unban(userId: string): Promise<ApiResponse<User>> {
-		const response = await apiClient.patch<ApiResponse<User>>(`/admin/users/${userId}/unban`);
+		const response = await apiClient.patch<ApiResponse<User>>(
+			`/admin/users/${userId}/unban`
+		);
 		return response.data;
 	},
 
@@ -105,7 +119,9 @@ export const userService = {
 	 * Récupérer tous les utilisateurs pour consultation (advisor)
 	 */
 	async getAllForAdvisor(): Promise<ApiResponse<User[]>> {
-		const response = await apiClient.get<ApiResponse<User[]>>("/advisor/clients");
+		const response = await apiClient.get<ApiResponse<User[]>>(
+			"/advisor/clients"
+		);
 		return response.data;
 	},
 };

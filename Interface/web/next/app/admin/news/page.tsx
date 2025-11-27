@@ -65,7 +65,7 @@ export default function AdminNewsPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-purple-100 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
 					<p className="mt-4 text-gray-600">Chargement des actualités...</p>
@@ -75,10 +75,10 @@ export default function AdminNewsPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-purple-100">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 				{/* Header */}
-				<div className="bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8">
+				<div className="bg-linear-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-3xl font-bold mb-2">Administration des Actualités</h1>
@@ -148,19 +148,7 @@ export default function AdminNewsPage() {
 									href="/admin/news/create"
 									className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
 								>
-									<svg
-										className="w-5 h-5 mr-2"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-										/>
-									</svg>
+									<i className="fi fi-rr-plus w-5 h-5 mr-2"></i>
 									Nouvelle actualité
 								</Link>
 							</div>

@@ -140,7 +140,7 @@ export default function OrdersPage() {
 			{error && (
 				<div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
 					<div className='flex'>
-						<div className='flex-shrink-0'>
+						<div className='shrink-0'>
 							<i className='fi fi-rr-cross-circle text-red-400 text-xl'></i>
 						</div>
 						<div className='ml-3'>

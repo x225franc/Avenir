@@ -193,9 +193,7 @@ export class GetUserPortfolio {
 		const totalGainLossPercentage =
 			portfolio.totalValue.amount > 0
 				? (portfolio.totalGainLoss.amount /
-						(portfolio.totalValue.amount - portfolio.totalGainLoss.amount)) *
-				  100
-				: 0;
+						(portfolio.totalValue.amount - portfolio.totalGainLoss.amount)) * 100 : 0;
 
 		return {
 			userId: portfolio.userId.value,

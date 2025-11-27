@@ -133,7 +133,7 @@ export default function SavingsRatePage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 			<div className="max-w-4xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -167,7 +167,7 @@ export default function SavingsRatePage() {
 							<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
 						</div>
 					) : (
-						<div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-8 text-center">
+						<div className="bg-linear-to-r from-purple-600 to-indigo-600 rounded-lg p-8 text-center">
 							<p className="text-white text-sm font-medium mb-2">
 								Taux d&apos;Intérêt Annuel
 							</p>
@@ -277,7 +277,7 @@ export default function SavingsRatePage() {
 						<button
 							type="submit"
 							disabled={loading || loadingRate}
-							className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+							className="flex-1 bg-linear-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{loading ? (
 								<span className="flex items-center justify-center">

@@ -166,7 +166,7 @@ export default function InvestmentHomePage() {
 				{/* Info Banner */}
 				<div className='mt-12 bg-blue-50 rounded-xl p-8 border border-blue-200'>
 					<div className='flex items-start'>
-						<div className='flex-shrink-0'>
+						<div className='shrink-0'>
 							<i className='fi fi-rr-bulb text-blue-600 text-xl'></i>
 						</div>
 						<div className='ml-3'>

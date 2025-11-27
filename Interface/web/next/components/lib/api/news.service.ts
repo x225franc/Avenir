@@ -4,15 +4,15 @@ import apiClient, { ApiResponse } from "./client";
  * DTOs pour les actualités
  */
 export interface News {
-    id: string;
-    title: string;
-    content: string;
-    authorId: string;
-    published: boolean;
-    createdAt: string;
-    updatedAt: string;
-    authorName?: string;
-    authorRole?: string;
+	id: string;
+	title: string;
+	content: string;
+	authorId: string;
+	published: boolean;
+	createdAt: string;
+	updatedAt: string;
+	authorName?: string;
+	authorRole?: string;
 }
 
 export interface CreateNewsDTO {
@@ -60,7 +60,10 @@ export const newsService = {
 	 * Mettre à jour une actualité (advisor/director seulement)
 	 */
 	async update(id: string, data: UpdateNewsDTO): Promise<ApiResponse<News>> {
-		const response = await apiClient.put<ApiResponse<News>>(`/news/${id}`, data);
+		const response = await apiClient.put<ApiResponse<News>>(
+			`/news/${id}`,
+			data
+		);
 		return response.data;
 	},
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AccountController } from "../controllers/AccountController";
+import { AccountController } from "../controllers";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -9,44 +9,38 @@ const accountController = new AccountController();
 router.use(authMiddleware);
 
 /**
- * @route   POST /api/accounts
- * @desc    Créer un nouveau compte bancaire
- * @access  Private
+ * POST /api/accounts
+ * Créer un nouveau compte bancaire
  */
 router.post("/", (req, res) => accountController.create(req, res));
 
 /**
- * @route   GET /api/accounts
- * @desc    Récupérer tous les comptes de l'utilisateur
- * @access  Private
+ * GET /api/accounts
+ * Récupérer tous les comptes de l'utilisateur
  */
 router.get("/", (req, res) => accountController.getAll(req, res));
 
 /**
- * @route   GET /api/accounts/:id
- * @desc    Récupérer un compte spécifique
- * @access  Private
+ * GET /api/accounts/:id
+ * Récupérer un compte spécifique
  */
 router.get("/:id", (req, res) => accountController.getById(req, res));
 
 /**
- * @route   PUT /api/accounts/:id
- * @desc    Mettre à jour un compte
- * @access  Private
+ * PUT /api/accounts/:id
+ * Mettre à jour un compte
  */
 router.put("/:id", (req, res) => accountController.update(req, res));
 
 /**
- * @route   DELETE /api/accounts/:id
- * @desc    Supprimer un compte
- * @access  Private
+ * DELETE /api/accounts/:id
+ * Supprimer un compte
  */
 router.delete("/:id", (req, res) => accountController.delete(req, res));
 
 /**
- * @route   GET /api/accounts/user/:userId
- * @desc    Récupérer tous les comptes d'un utilisateur (conseiller/directeur uniquement)
- * @access  Private (advisor, director)
+ * GET /api/accounts/user/:userId
+ * Récupérer tous les comptes d'un utilisateur (conseiller/directeur uniquement)
  */
 router.get("/user/:userId", (req, res) => accountController.getUserAccounts(req, res));
 

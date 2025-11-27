@@ -3,24 +3,35 @@
  * Identifiant unique d'un crédit
  */
 export class CreditId {
-	private readonly value: number;
+	private readonly _value: number;
 
 	constructor(value: number) {
 		if (value <= 0) {
 			throw new Error("CreditId must be a positive number");
 		}
-		this.value = value;
+		this._value = value;
 	}
 
-	getValue(): number {
-		return this.value;
+	get value(): number {
+		return this._value;
 	}
 
-	equals(other: CreditId): boolean {
-		return this.value === other.value;
+	public getValue(): number {
+		return this._value;
 	}
 
-	toString(): string {
-		return this.value.toString();
+	public equals(other: CreditId): boolean {
+		return this._value === other._value;
+	}
+
+	public toString(): string {
+		return this._value.toString();
+	}
+
+	/**
+	 * Crée un CreditId à partir d'une valeur numérique
+	 */
+	public static fromNumber(value: number): CreditId {
+		return new CreditId(value);
 	}
 }

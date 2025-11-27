@@ -8,15 +8,16 @@ import Link from "next/link";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface EditAdminNewsPageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
 /**
  * Page d'édition d'actualité pour les directeurs
  */
 export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
+	const unwrappedParams = React.use(params);
 	const { user } = useAuth();
 	const router = useRouter();
 	const [news, setNews] = useState<News | null>(null);
@@ -31,13 +32,13 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 
 	useEffect(() => {
 		loadNews();
-	}, [params.id]);
+	}, [unwrappedParams.id]);
 
 	const loadNews = async () => {
 		try {
 			setLoading(true);
 			setError(null);
-			const response = await newsService.getById(params.id);
+			const response = await newsService.getById(unwrappedParams.id);
 			
 			if (response.success && response.data) {
 				setNews(response.data);
@@ -78,7 +79,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 				published: publish !== undefined ? publish : formData.published,
 			};
 
-			const response = await newsService.update(params.id, dataToSubmit);
+			const response = await newsService.update(unwrappedParams.id, dataToSubmit);
 
 			if (response.success) {
 				router.push("/admin/news");
@@ -95,7 +96,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-purple-100 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
 					<p className="mt-4 text-gray-600">Chargement de l'actualité...</p>
@@ -106,7 +107,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 
 	if (error && !news) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-purple-100 flex items-center justify-center">
 				<div className="text-center">
 					<i className="fi fi-rr-exclamation mx-auto text-6xl text-gray-400"></i>
 					<h3 className="mt-2 text-sm font-medium text-gray-900">Actualité introuvable</h3>
@@ -125,10 +126,10 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-purple-100">
 			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 				{/* Header */}
-				<div className="bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8">
+				<div className="bg-linear-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-3xl font-bold mb-2">Modifier l'Actualité (Admin)</h1>
@@ -161,19 +162,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 							href="/admin/news"
 							className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center space-x-2"
 						>
-							<svg
-								className="w-5 h-5"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M10 19l-7-7m0 0l7-7m-7 7h18"
-								/>
-							</svg>
+							<i className="fi fi-rr-arrow-left w-5 h-5"></i>
 							<span>Retour</span>
 						</Link>
 					</div>
@@ -248,19 +237,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 01.614-2.025M5.6 6.4A5.999 5.999 0 0112 5c2.454 0 4.614 1.474 5.54 3.599M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-													/>
-												</svg>
+												<i className="fi fi-rr-eye-crossed w-5 h-5"></i>
 											)}
 											<span>Dépublier</span>
 										</button>
@@ -272,19 +249,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-													/>
-												</svg>
+												<i className="fi fi-rr-upload w-5 h-5"></i>
 											)}
 											<span>Mettre à jour</span>
 										</button>
@@ -300,19 +265,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-													/>
-												</svg>
+												<i className="fi fi-rr-disk w-5 h-5"></i>
 											)}
 											<span>Sauvegarder</span>
 										</button>
@@ -325,19 +278,7 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 											{saving ? (
 												<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 											) : (
-												<svg
-													className="w-5 h-5"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-													/>
-												</svg>
+												<i className="fi fi-rr-check-circle w-5 h-5"></i>
 											)}
 											<span>Publier</span>
 										</button>

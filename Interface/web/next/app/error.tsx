@@ -19,7 +19,7 @@ export default function Error({ error, reset }: ErrorProps) {
 	}, [error]);
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-100 flex items-center justify-center p-4">
+		<div className="min-h-screen bg-linear-to-br from-red-50 to-rose-100 flex items-center justify-center p-4">
 			<div className="max-w-2xl mx-auto text-center">
 				<div className="bg-white rounded-xl shadow-2xl p-8 border border-red-100">
 				{/* Icône d'erreur */}
@@ -42,7 +42,7 @@ export default function Error({ error, reset }: ErrorProps) {
 						{process.env.NODE_ENV === "development" && (
 							<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
 								<h3 className="font-medium text-red-900 mb-2">Détails de l'erreur (mode développement) :</h3>
-								<p className="text-sm text-red-700 font-mono break-words">
+								<p className="text-sm text-red-700 font-mono wrap-break-word">
 									{error.message}
 								</p>
 								{error.digest && (

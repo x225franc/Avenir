@@ -33,7 +33,6 @@ export class User {
 		const now = new Date();
 		return new User({
 			...props,
-			// ID temporaire (sera remplacé par l'auto_increment de MySQL)
 			id: UserId.fromNumber(0),
 			createdAt: now,
 			updatedAt: now,

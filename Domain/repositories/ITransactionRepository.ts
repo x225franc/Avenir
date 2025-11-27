@@ -1,7 +1,8 @@
 import { Transaction } from "../entities/Transaction";
+import { TransactionId } from "../value-objects/TransactionId";
 
 /**
- * Interface du repository Transaction (contrat du domaine)
+ * Interface du repository pour les transactions
  */
 export interface ITransactionRepository {
 	/**
@@ -12,7 +13,7 @@ export interface ITransactionRepository {
 	/**
 	 * Trouve une transaction par son ID
 	 */
-	findById(id: string): Promise<Transaction | null>;
+	findById(id: TransactionId): Promise<Transaction | null>;
 
 	/**
 	 * Trouve toutes les transactions d'un compte
@@ -42,5 +43,5 @@ export interface ITransactionRepository {
 	/**
 	 * Supprime une transaction
 	 */
-	delete(id: string): Promise<void>;
+	delete(id: TransactionId): Promise<void>;
 }

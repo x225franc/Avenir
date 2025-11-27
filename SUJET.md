@@ -99,10 +99,10 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 - ✅ Nous utilisons la méthode de calcul du crédit à **mensualité constante**
 
 #### 💬 Messagerie instantanée
-- ⏳ En tant que conseiller bancaire, je peux répondre aux messages qui me sont envoyés de la part de mes clients
-- ⏳ Étant donné que nous sommes une banque moderne, chaque fois qu'un message est envoyé et en attente de réponse, tous les conseillers peuvent le voir
-- ⏳ Néanmoins à partir du premier message, la discussion est reliée au conseiller bancaire qui a répondu en premier au client
-- ⏳ En cas de besoin, la discussion peut être transférée d'un conseiller à un autre, auquel cas le transfert de la discussion se fait entre les deux conseillers
+- ✅ En tant que conseiller bancaire, je peux répondre aux messages qui me sont envoyés de la part de mes clients
+- ✅ Étant donné que nous sommes une banque moderne, chaque fois qu'un message est envoyé et en attente de réponse, tous les conseillers peuvent le voir
+- ✅ Néanmoins à partir du premier message, la discussion est reliée au conseiller bancaire qui a répondu en premier au client
+- ✅ En cas de besoin, la discussion peut être transférée d'un conseiller à un autre, auquel cas le transfert de la discussion se fait entre les deux conseillers
 
 ---
 
@@ -163,41 +163,41 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ✅ En tant que client, je dois pouvoir m'inscrire sur cette nouvelle plateforme. Je dois pouvoir renseigner mes informations afin de recevoir un lien me permettant de confirmer mon inscription et d'accéder à mon compte (qui sera automatiquement créé à l'inscription).
 
 #### 💬 Discussion privée
-⏳ En tant que client, je dois pouvoir contacter mon conseiller via messages privés en temps réel.
+✅ En tant que client, je dois pouvoir contacter mon conseiller via messages privés en temps réel.
 
 #### 📰 Activités et feed
-⏳ En tant que client je dois pouvoir, sur mon espace, consulter en temps réel les actualités de ma banque.
+✅ En tant que client je dois pouvoir, sur mon espace, consulter en temps réel les actualités de ma banque.
 
 ---
 
 ### 🤝 Conseiller de banque
 
 #### 📰 Activités
-⏳ En tant que conseiller, je dois pouvoir créer une nouvelle actualité consultable par les clients.
+✅ En tant que conseiller, je dois pouvoir créer une nouvelle actualité consultable par les clients.
 
 #### 🔔 Notification
-⏳ En tant que conseiller, je peux envoyer une notification en temps réel à l'un de mes clients. La notification doit être personnalisée en fonction du besoin.
+✅ En tant que conseiller, je peux envoyer une notification en temps réel à l'un de mes clients. La notification doit être personnalisée en fonction du besoin.
 
 #### 💬 Discussion privée
-⏳ En tant que conseiller, je peux répondre aux clients qui m'ont contacté via message privé en temps réel.
+✅ En tant que conseiller, je peux répondre aux clients qui m'ont contacté via message privé en temps réel.
 
 ---
 
 ### 👥 Conseiller de banque et directeur de banque
 
 #### 💬 Discussion de groupe
-⏳ En tant que conseiller ou directeur, je dois pouvoir communiquer via une discussion de groupe avec tout le monde en temps réel. Le directeur de banque doit se démarquer visuellement dans la conversation.
+✅ En tant que conseiller ou directeur, je dois pouvoir communiquer via une discussion de groupe avec tout le monde en temps réel. Le directeur de banque doit se démarquer visuellement dans la conversation.
 
 ---
 
 ## 🛠️ Contraintes techniques
 
 ### 1. 🔧 Langage
-⏳ Développement en **TypeScript** (backend et frontend).
+✅ Développement en **TypeScript** (backend et frontend).
 
 ### 2. 🌐 Web Temps Réel
-- ⏳ Le système de **chat** doit être réalisé via **web socket**.
-- ⏳ Le système de **Feed et de notification** doit être réalisé via **SSE** (Server-Sent Events).
+- ✅ Le système de **chat** doit être réalisé via **web socket**.
+- ✅ Le système de **Feed et de notification** doit être réalisé via **SSE** (Server-Sent Events).
 
 ### 3. 🧪 Fixtures
 ⏳ Le projet devra avoir des **fixtures** et/ou des **jeux de données** afin de tester rapidement toutes les fonctionnalités.
@@ -213,7 +213,7 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ## 🎁 BONUS
 
 ### 💭 Statut "En train d'écrire"
-⏳ Afficher le statut « En train d'écrire » si un client ou un conseiller est en train d'envoyer un message dans la partie « contacter un conseiller ».
+✅ Afficher le statut « En train d'écrire » si un client ou un conseiller est en train d'envoyer un message dans la partie « contacter un conseiller ».
 
 ### 🔔 Notifications Push
 ⏳ Faire le lien entre les notifications administrateur et l'API web « notification push ».
@@ -242,28 +242,28 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 - ✅ Utiliser un ou plusieurs **contexts** (`React Context`) - AuthContext implémenté pour authentification globale.  
 
 ### 🧠 Gestion des formulaires
-- Les formulaires doivent être gérés avec **React Hook Form**.  
-- La validation doit s’appuyer sur des **schémas** (ex : `zod`).  
+- ⏳ Les formulaires doivent être gérés avec **React Hook Form**.  
+- ⏳ La validation doit s’appuyer sur des **schémas** (ex : `zod`).  
 
 ### ⚠️ Gestion des erreurs
 - ✅ Intégrer des pages **404** et **500**, en accord avec la charte graphique de l’application.  
 
 ### 🌐 Internationalisation
-- L’application doit être traduite en **français** et en **anglais**.  
+- ⏳ L’application doit être traduite en **français** et en **anglais**.  
 
 ### 🗺️ SEO et structure du site
-- Fournir un fichier **`sitemap.xml`** listant les pages de l’application.  
-- Intégrer correctement les **métadonnées SEO** (titre, description, etc.) sur la page d’accueil.  
+- ⏳ Fournir un fichier **`sitemap.xml`** listant les pages de l’application.  
+- ⏳ Intégrer correctement les **métadonnées SEO** (titre, description, etc.) sur la page d’accueil.  
 
 ### ⚡ Optimisation et performance
-- Mettre en place un **système de cache**, qu’il soit **applicatif** ou côté **API**.  
+- ⏳ Mettre en place un **système de cache**, qu’il soit **applicatif** ou côté **API**.  
 
 ---
 
 ## 💎 Bonus (optionnel)
-- Gestion du **cache** via **Redis**.  
-- Ajout d’**animations** sur les tableaux, cartes ou listes.  
-- Mise en place d’un **Drag & Drop** (ex : déplacer de l’argent d’un compte à un autre).  
+- ⏳ Gestion du **cache** via **Redis**.  
+- ⏳ Ajout d’**animations** sur les tableaux, cartes ou listes.  
+- ⏳ Mise en place d’un **Drag & Drop** (ex : déplacer de l’argent d’un compte à un autre).  
 
 ---
 

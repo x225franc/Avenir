@@ -29,11 +29,12 @@ export const accountService = {
 	/**
 	 * Créer un nouveau compte bancaire
 	 */
-	async create(data: CreateAccountDTO): Promise<ApiResponse<{ accountId: string; iban: string }>> {
-		const response = await apiClient.post<ApiResponse<{ accountId: string; iban: string }>>(
-			"/accounts",
-			data
-		);
+	async create(
+		data: CreateAccountDTO
+	): Promise<ApiResponse<{ accountId: string; iban: string }>> {
+		const response = await apiClient.post<
+			ApiResponse<{ accountId: string; iban: string }>
+		>("/accounts", data);
 		return response.data;
 	},
 
@@ -49,15 +50,23 @@ export const accountService = {
 	 * Récupérer un compte spécifique
 	 */
 	async getById(accountId: string): Promise<ApiResponse<Account>> {
-		const response = await apiClient.get<ApiResponse<Account>>(`/accounts/${accountId}`);
+		const response = await apiClient.get<ApiResponse<Account>>(
+			`/accounts/${accountId}`
+		);
 		return response.data;
 	},
 
 	/**
 	 * Mettre à jour un compte
 	 */
-	async update(accountId: string, data: Partial<CreateAccountDTO>): Promise<ApiResponse<Account>> {
-		const response = await apiClient.put<ApiResponse<Account>>(`/accounts/${accountId}`, data);
+	async update(
+		accountId: string,
+		data: Partial<CreateAccountDTO>
+	): Promise<ApiResponse<Account>> {
+		const response = await apiClient.put<ApiResponse<Account>>(
+			`/accounts/${accountId}`,
+			data
+		);
 		return response.data;
 	},
 
@@ -66,13 +75,15 @@ export const accountService = {
 	 */
 	async delete(accountId: string): Promise<ApiResponse> {
 		try {
-			const response = await apiClient.delete<ApiResponse>(`/accounts/${accountId}`);
+			const response = await apiClient.delete<ApiResponse>(
+				`/accounts/${accountId}`
+			);
 			return response.data;
 		} catch (error: any) {
 			if (error.response?.status === 400) {
 				return {
 					success: false,
-					error: error.response.data?.error || "Erreur lors de la suppression"
+					error: error.response.data?.error || "Erreur lors de la suppression",
 				};
 			}
 			throw error;
@@ -83,7 +94,9 @@ export const accountService = {
 	 * Récupérer les comptes d'un utilisateur spécifique (conseiller/directeur uniquement)
 	 */
 	async getUserAccounts(userId: string): Promise<ApiResponse<Account[]>> {
-		const response = await apiClient.get<ApiResponse<Account[]>>(`/accounts/user/${userId}`);
+		const response = await apiClient.get<ApiResponse<Account[]>>(
+			`/accounts/user/${userId}`
+		);
 		return response.data;
 	},
 };

@@ -171,7 +171,7 @@ export class StockPriceFluctuationService extends EventEmitter {
 		try {
 			const [result] = await pool.execute(
 				`DELETE FROM stock_price_history 
-				 WHERE timestamp < DATE_SUB(NOW(), INTERVAL 30 DAY)`
+				WHERE timestamp < DATE_SUB(NOW(), INTERVAL 30 DAY)`
 			);
 
 			console.log(`🧹 Historique nettoyé (${(result as any).affectedRows} entrées supprimées)`);

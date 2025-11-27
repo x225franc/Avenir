@@ -74,7 +74,7 @@ export default function AdvisorDashboard() {
 			{/* Main Content */}
 			<main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
 				{/* Welcome Section */}
-				<div className='bg-gradient-to-r from-green-600 to-green-300 rounded-xl shadow-lg p-8 text-white mb-8'>
+				<div className='bg-linear-to-r from-green-600 to-green-300 rounded-xl shadow-lg p-8 text-white mb-8'>
 					<h2 className='text-3xl font-bold mb-2'>
 						Bienvenue, {user?.firstName} !
 					</h2>
@@ -86,7 +86,7 @@ export default function AdvisorDashboard() {
 				</div>
 
 				{/* Quick Actions */}
-				<div className='grid grid-cols-1 md:grid-cols-5 gap-6 mb-8'>
+				<div className='grid grid-cols-1 md:grid-cols-6 gap-6 mb-8'>
 					<a
 						href='/advisor/clients'
 						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
@@ -166,6 +166,21 @@ export default function AdvisorDashboard() {
 							Messages
 						</h3>
 						<p className='text-sm text-gray-600'>Messagerie instantanée</p>
+					</a>
+
+					<a
+						href='/advisor/internal-chat'
+						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
+					>
+						<div className='flex items-center justify-between mb-4'>
+							<div className='w-12 h-12 bg-linear-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center'>
+								<i className="fi fi-rr-comments text-green-600 text-2xl"></i>
+							</div>
+						</div>
+						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
+							Chat Interne
+						</h3>
+						<p className='text-sm text-gray-600'>Communication équipe</p>
 					</a>
 				</div>
 

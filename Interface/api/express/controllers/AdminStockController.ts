@@ -81,8 +81,7 @@ export class AdminStockController {
 				symbol,
 				companyName,
 				currentPrice: parseFloat(currentPrice),
-				isAvailable:
-					isAvailable !== undefined ? Boolean(isAvailable) : true,
+				isAvailable: isAvailable !== undefined ? Boolean(isAvailable) : true,
 			});
 
 			if (result.success) {

@@ -20,7 +20,7 @@ export default function Home() {
 	// Afficher un loader pendant la vérification
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+			<div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
 					<p className="text-gray-600">Chargement...</p>
@@ -30,13 +30,13 @@ export default function Home() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+		<div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
 			<section className="relative overflow-hidden">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 sm:pt-24 sm:pb-20">
 					<div className="text-center">
 						<h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-gray-900 mb-6">
 							<span className="block">Bienvenue chez</span>
-							<span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+							<span className="block bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
 								Banque AVENIR
 							</span>
 						</h1>
@@ -51,7 +51,7 @@ export default function Home() {
 						<div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
 							<Link
 								href="/register"
-								className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+								className="px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
 							>
 								Ouvrir un compte
 							</Link>
@@ -84,7 +84,7 @@ export default function Home() {
 					</div>
 
 					<div className="grid md:grid-cols-3 gap-8">
-					<div className="p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 hover:shadow-xl transition-shadow">
+					<div className="p-8 rounded-2xl bg-linear-to-br from-blue-50 to-indigo-50 hover:shadow-xl transition-shadow">
 						<div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
 							<i className="fi fi-rr-shield-check text-white text-2xl"></i>
 						</div>
@@ -97,7 +97,7 @@ export default function Home() {
 							</p>
 						</div>
 
-					<div className="p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-xl transition-shadow">
+					<div className="p-8 rounded-2xl bg-linear-to-br from-purple-50 to-pink-50 hover:shadow-xl transition-shadow">
 						<div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
 							<i className="fi fi-rr-chart-line-up text-white text-2xl"></i>
 						</div>
@@ -110,7 +110,7 @@ export default function Home() {
 							</p>
 						</div>
 
-					<div className="p-8 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-xl transition-shadow">
+					<div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 hover:shadow-xl transition-shadow">
 						<div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mb-6">
 							<i className="fi fi-rr-piggy-bank text-white text-2xl"></i>
 						</div>
@@ -126,7 +126,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+			<section className="py-20 bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
 				<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 					<h2 className="text-4xl font-bold text-gray-900 mb-6">
 						Prêt à commencer ?
@@ -137,7 +137,7 @@ export default function Home() {
 					</p>
 					<Link
 						href="/register"
-						className="inline-block px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold text-xl hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+						className="inline-block px-10 py-5 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold text-xl hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
 					>
 						Ouvrir un compte gratuitement
 					</Link>

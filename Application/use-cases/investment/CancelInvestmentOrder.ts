@@ -35,7 +35,7 @@ export class CancelInvestmentOrder {
 		dto: CancelInvestmentOrderDTO
 	): Promise<CancelInvestmentOrderResult> {
 		try {
-			// 1. Validation des données d'entrée
+			// Validation des données d'entrée
 			if (!dto.userId || !dto.orderId) {
 				return {
 					success: false,
@@ -47,7 +47,7 @@ export class CancelInvestmentOrder {
 			const userId = new UserId(dto.userId);
 			const orderId = InvestmentOrderId.fromNumber(parseInt(dto.orderId));
 
-			// 2. Récupérer l'ordre
+			// Récupérer l'ordre
 			const order = await this.investmentOrderRepository.findById(orderId);
 			if (!order) {
 				return {
@@ -57,7 +57,7 @@ export class CancelInvestmentOrder {
 				};
 			}
 
-			// 3. Vérifier que l'utilisateur est propriétaire de l'ordre
+			// Vérifier que l'utilisateur est propriétaire de l'ordre
 			if (!order.userId.equals(userId)) {
 				return {
 					success: false,
@@ -66,7 +66,7 @@ export class CancelInvestmentOrder {
 				};
 			}
 
-			// 4. Vérifier que l'ordre peut être annulé
+			// Vérifier que l'ordre peut être annulé
 			if (!order.canBeCancelled()) {
 				return {
 					success: false,
@@ -77,7 +77,7 @@ export class CancelInvestmentOrder {
 				};
 			}
 
-			// 5. Si c'était un ordre d'achat, rembourser les fonds
+			// Si c'était un ordre d'achat, rembourser les fonds
 			if (order.isBuyOrder()) {
 				const account = await this.accountRepository.findById(order.accountId);
 				if (account) {
@@ -86,7 +86,7 @@ export class CancelInvestmentOrder {
 				}
 			}
 
-			// 6. Annuler l'ordre
+			// Annuler l'ordre
 			order.cancel();
 			await this.investmentOrderRepository.save(order);
 

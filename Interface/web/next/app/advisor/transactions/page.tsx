@@ -88,7 +88,7 @@ export default function AdvisorTransactionsPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
+			<div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
 				<div className="max-w-6xl mx-auto">
 					<div className="text-center py-8">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
@@ -100,7 +100,7 @@ export default function AdvisorTransactionsPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
 			<div className="max-w-6xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -152,7 +152,7 @@ export default function AdvisorTransactionsPage() {
 												<div>
 									{transaction.sourceAccount?.user ? (
 										<>
-											<div className="font-medium text-gray-900 break-words">
+											<div className="font-medium text-gray-900 wrap-break-word">
 												{transaction.sourceAccount.user.firstName} {transaction.sourceAccount.user.lastName}
 											</div>
 											<div className="text-sm text-gray-500 break-all">
@@ -170,7 +170,7 @@ export default function AdvisorTransactionsPage() {
 												<div>
 									{transaction.destinationAccount?.user ? (
 										<>
-											<div className="font-medium text-gray-900 break-words">
+											<div className="font-medium text-gray-900 wrap-break-word">
 												{transaction.destinationAccount.user.firstName} {transaction.destinationAccount.user.lastName}
 											</div>
 											<div className="text-sm text-gray-500 break-all">
@@ -206,7 +206,7 @@ export default function AdvisorTransactionsPage() {
 												</div>
 											</td>
 											<td className="px-6 py-4">
-								<div className="max-w-xs text-gray-700 break-words">
+								<div className="max-w-xs text-gray-700 wrap-break-word">
 									{transaction.description ? (
 										<>
 											{/* <span>Description</span> */}

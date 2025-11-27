@@ -100,7 +100,7 @@ export default function AccountsPage() {
 				</div>
 				<Link
 					href="/dashboard/accounts/create"
-					className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-semibold shadow-lg flex items-center space-x-2"
+					className="px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-semibold shadow-lg flex items-center space-x-2"
 				>
 					<i className="fi fi-rr-plus text-xl"></i>
 					<span>Nouveau compte</span>

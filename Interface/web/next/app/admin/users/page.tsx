@@ -77,7 +77,7 @@ export default function AdminUsersPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 				<div className="max-w-6xl mx-auto">
 					<div className="text-center py-8">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
@@ -89,7 +89,7 @@ export default function AdminUsersPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 			<div className="max-w-6xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">

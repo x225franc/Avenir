@@ -40,7 +40,7 @@ export default function ClientNewsPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
 					<p className="mt-4 text-gray-600">Chargement des actualités...</p>
@@ -50,10 +50,10 @@ export default function ClientNewsPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+		<div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-100">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 				{/* Header */}
-				<div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-lg p-8 text-white mb-8">
+				<div className="bg-linear-to-r from-blue-600 to-blue-800 rounded-xl shadow-lg p-8 text-white mb-8">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-3xl font-bold mb-2">Actualités Banque AVENIR</h1>

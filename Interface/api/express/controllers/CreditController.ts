@@ -161,8 +161,12 @@ export class CreditController {
 	 */
 	calculateCredit = async (req: Request, res: Response) => {
 		try {
-			const { principalAmount, annualInterestRate, insuranceRate, durationMonths } =
-				req.query;
+			const {
+				principalAmount,
+				annualInterestRate,
+				insuranceRate,
+				durationMonths,
+			} = req.query;
 
 			if (
 				!principalAmount ||

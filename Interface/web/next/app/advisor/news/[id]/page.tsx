@@ -96,7 +96,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-green-50 to-green-100 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
 					<p className="mt-4 text-gray-600">Chargement de l'actualité...</p>
@@ -107,7 +107,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 
 	if (error && !news) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-green-50 to-green-100 flex items-center justify-center">
 				<div className="text-center">
 					<i className="fi fi-rr-exclamation mx-auto text-6xl text-gray-400"></i>
 					<h3 className="mt-2 text-sm font-medium text-gray-900">Actualité introuvable</h3>
@@ -126,10 +126,10 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+		<div className="min-h-screen bg-linear-to-br from-green-50 to-green-100">
 			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 				{/* Header */}
-				<div className="bg-gradient-to-r from-green-600 to-green-800 rounded-xl shadow-lg p-8 text-white mb-8">
+				<div className="bg-linear-to-r from-green-600 to-green-800 rounded-xl shadow-lg p-8 text-white mb-8">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-3xl font-bold mb-2">Modifier l'Actualité</h1>

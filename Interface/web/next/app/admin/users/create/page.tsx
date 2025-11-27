@@ -58,7 +58,7 @@ export default function CreateUserPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 			<div className="max-w-2xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">

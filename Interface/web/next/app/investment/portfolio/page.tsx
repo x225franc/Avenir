@@ -106,7 +106,7 @@ export default function PortfolioPage() {
 			{error && (
 				<div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
 					<div className='flex'>
-						<div className='flex-shrink-0'>
+						<div className='shrink-0'>
 							<i className='fi fi-rr-cross-circle text-red-400 text-xl'></i>
 						</div>
 						<div className='ml-3'>
@@ -120,7 +120,7 @@ export default function PortfolioPage() {
 						<div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-12'>
 							<div className='bg-white rounded-xl shadow-lg p-6'>
 								<div className='flex items-center'>
-								<div className='flex-shrink-0'>
+								<div className='shrink-0'>
 									<div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
 										<i className='fi fi-rr-wallet text-white text-xl'></i>
 									</div>
@@ -138,7 +138,7 @@ export default function PortfolioPage() {
 
 							<div className='bg-white rounded-xl shadow-lg p-6'>
 								<div className='flex items-center'>
-									<div className='flex-shrink-0'>
+									<div className='shrink-0'>
 										<div
 											className={`w-8 h-8 rounded-lg flex items-center justify-center ${
 												portfolio.totalGainLoss.amount >= 0
@@ -170,7 +170,7 @@ export default function PortfolioPage() {
 
 							<div className='bg-white rounded-xl shadow-lg p-6'>
 								<div className='flex items-center'>
-									<div className='flex-shrink-0'>
+									<div className='shrink-0'>
 										<div
 											className={`w-8 h-8 rounded-lg flex items-center justify-center ${
 												portfolio.totalGainLossPercentage >= 0

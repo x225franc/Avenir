@@ -1,9 +1,17 @@
 import { Router } from "express";
-import { AdvisorController } from "../controllers/AdvisorController";
+import { AdvisorController } from "../controllers";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 const advisorController = new AdvisorController();
+
+/**
+ * GET /api/advisor/advisors
+ * Récupère tous les conseillers pour le transfert de conversations
+ */
+router.get("/advisors", (req, res) =>
+	advisorController.getAdvisors(req, res)
+);
 
 /**
  * GET /api/advisor/clients
@@ -43,6 +51,14 @@ router.patch("/transactions/:id/approve", authMiddleware, (req, res) =>
  */
 router.patch("/transactions/:id/reject", authMiddleware, (req, res) =>
 	advisorController.rejectTransaction(req, res)
+);
+
+/**
+ * POST /api/advisor/notify-client
+ * Envoyer une notification email personnalisée à un client
+ */
+router.post("/notify-client", (req, res) =>
+	advisorController.notifyClient(req, res)
 );
 
 export default router;

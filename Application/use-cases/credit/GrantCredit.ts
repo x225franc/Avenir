@@ -21,7 +21,7 @@ export class GrantCredit {
 	) {}
 
 	async execute(input: GrantCreditInput): Promise<GrantCreditOutput> {
-		// 1. Vérifier que le conseiller existe et a le bon rôle
+		// Vérifier que le conseiller existe et a le bon rôle
 		const advisor = await this.userRepository.findById(
 			UserId.fromNumber(input.advisorId)
 		);
@@ -32,7 +32,7 @@ export class GrantCredit {
 			throw new Error("Only advisors and directors can grant credits");
 		}
 
-		// 2. Vérifier que le client existe
+		// Vérifier que le client existe
 		const user = await this.userRepository.findById(
 			UserId.fromNumber(input.userId)
 		);
@@ -40,7 +40,7 @@ export class GrantCredit {
 			throw new Error("User not found");
 		}
 
-		// 3. Vérifier que le compte existe et appartient au client
+		// Vérifier que le compte existe et appartient au client
 		const account = await this.accountRepository.findById(
 			AccountId.fromNumber(input.accountId)
 		);
@@ -51,7 +51,7 @@ export class GrantCredit {
 			throw new Error("Account does not belong to user");
 		}
 
-		// 4. Calculer la mensualité
+		// Calculer la mensualité
 		const monthlyPayment = this.calculationService.calculateMonthlyPayment(
 			input.principalAmount,
 			input.annualInterestRate,
@@ -59,7 +59,7 @@ export class GrantCredit {
 			input.durationMonths
 		);
 
-		// 5. Créer le crédit
+		// Créer le crédit
 		const creditId = new CreditId(Date.now()); // Temporaire, sera remplacé par l'ID de la base
 		const credit = new Credit(
 			creditId,
@@ -77,14 +77,14 @@ export class GrantCredit {
 			new Date()
 		);
 
-		// 6. Sauvegarder le crédit
+		// Sauvegarder le crédit
 		await this.creditRepository.save(credit);
 
-		// 7. Créditer le compte du client
+		// Créditer le compte du client
 		account.credit(new Money(input.principalAmount));
 		await this.accountRepository.save(account);
 
-		// 8. Calculer les informations totales
+		// Calculer les informations totales
 		const totalCost = this.calculationService.calculateTotalCost(
 			input.principalAmount,
 			input.annualInterestRate,

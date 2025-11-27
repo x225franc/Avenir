@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_BASE_URL =
+	process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 const apiClient: AxiosInstance = axios.create({
 	baseURL: API_BASE_URL,
@@ -13,7 +14,8 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
 	(config) => {
 		// Récupérer le token depuis le localStorage
-		const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+		const token =
+			typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
@@ -34,7 +36,7 @@ apiClient.interceptors.response.use(
 			// Supprimer le token
 			if (typeof window !== "undefined") {
 				localStorage.removeItem("token");
-				
+
 				// Ne pas rediriger si on est déjà sur la page de login
 				const currentPath = window.location.pathname;
 				if (currentPath !== "/login" && currentPath !== "/register") {

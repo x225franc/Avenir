@@ -12,22 +12,22 @@ router.post("/emit", (req: Request, res: Response) => {
 			return res.status(500).json({ error: "Socket.IO not initialized" });
 		}
 
-		// Emit to specific user
+		// Emettre a un utilisateur spécifique
 		if (userId) {
 			io.to(`user:${userId}`).emit(event, data);
 			console.log(`📤 Emitted ${event} to user:${userId}`);
 		}
-		// Emit to specific conversation
+		// Emettre a une conversation spécifique
 		else if (conversationId) {
 			io.to(`conversation:${conversationId}`).emit(event, data);
 			console.log(`📤 Emitted ${event} to conversation:${conversationId}`);
 		}
-		// Emit to specific room (e.g. advisors)
+		// Emettre a une salle spécifique (par exemple, conseillers)
 		else if (room) {
 			io.to(room).emit(event, data);
 			console.log(`📤 Emitted ${event} to room:${room}`);
 		}
-		// Broadcast to all
+		// Diffuser a tous
 		else {
 			io.emit(event, data);
 			console.log(`📤 Broadcast ${event} to all clients`);

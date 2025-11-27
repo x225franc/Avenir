@@ -252,7 +252,7 @@ export default function CreateAccountPage() {
 						<button
 							type="submit"
 							disabled={loading}
-							className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+							className="flex-1 px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{loading ? "Création en cours..." : "Créer le compte"}
 						</button>
@@ -268,7 +268,7 @@ export default function CreateAccountPage() {
 				{/* Info Box */}
 				<div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
 					<div className="flex items-start space-x-3">
-						<i className="fi fi-rr-bulb text-blue-600 text-xl flex-shrink-0 mt-0.5"></i>
+						<i className="fi fi-rr-bulb text-blue-600 text-xl shrink-0 mt-0.5"></i>
 						<div>
 							<h3 className="font-semibold text-blue-900 mb-1">
 								À savoir

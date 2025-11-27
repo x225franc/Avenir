@@ -1,3 +1,7 @@
+/**
+ * Value Object : Email
+ * Adresse email valide
+ */
 export class Email {
 	private readonly _value: string;
 

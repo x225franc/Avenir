@@ -589,6 +589,69 @@ async sendConversationTransferredToClientEmail(
 		return false;
 	}
 }
+
+	/**
+	 * Envoyer une notification personnalisée d'un conseiller à un client
+	 */
+	async sendAdvisorNotificationEmail(
+		to: string,
+		clientFirstName: string,
+		subject: string,
+		message: string
+	): Promise<boolean> {
+		try {
+			const mailOptions = {
+				from: `"Banque AVENIR - Votre Conseiller" <${process.env.EMAIL_USER}>`,
+				to,
+				subject: `🔔 ${subject}`,
+				html: `
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<meta charset="UTF-8">
+					<style>
+						body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+						.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+						.header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+						.content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+						.message-box { background: white; padding: 25px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+						.button { display: inline-block; padding: 15px 30px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+						.footer { text-align: center; margin-top: 30px; font-size: 12px; color: #999; }
+					</style>
+				</head>
+				<body>
+					<div class="container">
+						<div class="header">
+							<h1>🔔 Notification de votre conseiller</h1>
+						</div>
+						<div class="content">
+							<h2>Bonjour ${clientFirstName},</h2>
+							<p>Votre conseiller bancaire vous a envoyé une notification importante :</p>
+							<div class="message-box">
+								<p style="white-space: pre-wrap; margin: 0;">${message}</p>
+							</div>
+							<p>Pour toute question, n'hésitez pas à contacter votre conseiller via la messagerie.</p>
+							<div style="text-align: center;">
+								<a href="${process.env.FRONTEND_URL || "http://localhost:3000"}/messages" class="button">Accéder à la messagerie</a>
+							</div>
+						</div>
+						<div class="footer">
+							<p>Banque AVENIR - Service Clientèle</p>
+							<p>Cet email est envoyé par votre conseiller bancaire personnel</p>
+						</div>
+					</div>
+				</body>
+				</html>
+			`,
+			};
+
+			await transporter.sendMail(mailOptions);
+			return true;
+		} catch (error) {
+			console.error("❌ Erreur lors de l'envoi de la notification conseiller:", error);
+			return false;
+		}
+	}
 }
 
 export const emailService = new EmailService();

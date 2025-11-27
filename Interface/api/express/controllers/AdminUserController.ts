@@ -18,7 +18,10 @@ export class AdminUserController {
 	constructor() {
 		this.userRepository = new UserRepository();
 		this.accountRepository = new AccountRepository();
-		this.registerUserUseCase = new RegisterUser(this.userRepository, this.accountRepository);
+		this.registerUserUseCase = new RegisterUser(
+			this.userRepository,
+			this.accountRepository
+		);
 	}
 
 	/**
@@ -32,13 +35,14 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent accéder à cette ressource.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent accéder à cette ressource.",
 				});
 				return;
 			}
 
 			const users = await this.userRepository.findAll();
-			const usersData = users.map(user => user.toJSON());
+			const usersData = users.map((user) => user.toJSON());
 
 			res.status(200).json({
 				success: true,
@@ -64,7 +68,8 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent accéder à cette ressource.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent accéder à cette ressource.",
 				});
 				return;
 			}
@@ -114,12 +119,21 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent créer des utilisateurs.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent créer des utilisateurs.",
 				});
 				return;
 			}
 
-			const { email, password, firstName, lastName, phoneNumber, address, role } = req.body;
+			const {
+				email,
+				password,
+				firstName,
+				lastName,
+				phoneNumber,
+				address,
+				role,
+			} = req.body;
 
 			// Validation des données
 			if (!email || !password || !firstName || !lastName || !role) {
@@ -184,13 +198,15 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent modifier des utilisateurs.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent modifier des utilisateurs.",
 				});
 				return;
 			}
 
 			const { id } = req.params;
-			const { firstName, lastName, phoneNumber, address, role, emailVerified } = req.body;
+			const { firstName, lastName, phoneNumber, address, role, emailVerified } =
+				req.body;
 
 			if (!id) {
 				res.status(400).json({
@@ -221,7 +237,12 @@ export class AdminUserController {
 			}
 
 			// Mettre à jour les propriétés
-			if (firstName !== undefined || lastName !== undefined || phoneNumber !== undefined || address !== undefined) {
+			if (
+				firstName !== undefined ||
+				lastName !== undefined ||
+				phoneNumber !== undefined ||
+				address !== undefined
+			) {
 				user.updateProfile({
 					firstName,
 					lastName,
@@ -265,7 +286,8 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent supprimer des utilisateurs.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent supprimer des utilisateurs.",
 				});
 				return;
 			}
@@ -327,7 +349,8 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent bannir des utilisateurs.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent bannir des utilisateurs.",
 				});
 				return;
 			}
@@ -391,7 +414,8 @@ export class AdminUserController {
 			if (userRole !== "director") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les directeurs peuvent débannir des utilisateurs.",
+					error:
+						"Accès refusé. Seuls les directeurs peuvent débannir des utilisateurs.",
 				});
 				return;
 			}

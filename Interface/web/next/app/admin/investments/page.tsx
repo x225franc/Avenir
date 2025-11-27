@@ -240,7 +240,7 @@ export default function AdminInvestmentsPage() {
 	};
 
 	return (
-		<div className='min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8'>
+		<div className='min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8'>
 			<div className='max-w-7xl mx-auto'>
 				{/* Header */}
 				<div className='bg-white rounded-lg shadow-lg p-6 mb-8'>
@@ -286,7 +286,7 @@ export default function AdminInvestmentsPage() {
 				<div className='mb-8'>
 					<button
 						onClick={() => setShowCreateForm(!showCreateForm)}
-						className='bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition'
+						className='bg-linear-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition'
 					>
 						{showCreateForm ? "✖ Annuler" : "+ Créer une nouvelle action"}
 					</button>
@@ -388,7 +388,7 @@ export default function AdminInvestmentsPage() {
 								<button
 									type='submit'
 									disabled={creating}
-									className='flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed'
+									className='flex-1 bg-linear-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									{creating ? "Création en cours..." : "Créer l'action"}
 								</button>
@@ -554,7 +554,7 @@ export default function AdminInvestmentsPage() {
 				</div>
 
 				{/* Info Rules */}
-				<div className='bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg mt-5 p-6 mb-8'>
+				<div className='bg-linear-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg mt-5 p-6 mb-8'>
 					<h3 className='text-lg font-bold text-blue-900 mb-4 flex items-center'>
 						<i className='fi fi-rr-bulb text-2xl mr-2'></i>
 						Règles de Gestion

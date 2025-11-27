@@ -1,5 +1,5 @@
 /**
- * Repository pour les paramètres de la banque
+ * Interface du repository pour les paramètres de la banque
  */
 export interface IBankSettingsRepository {
 	/**

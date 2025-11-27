@@ -1,8 +1,8 @@
 "use client";
 
 import '@flaticon/flaticon-uicons/css/all/all.css';
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toUpperCase, z } from "zod";
@@ -26,10 +26,16 @@ const updateAccountSchema = z.object({
 
 type UpdateAccountForm = z.infer<typeof updateAccountSchema>;
 
-export default function AccountDetailPage() {
+interface AccountDetailPageProps {
+	params: Promise<{
+		id: string;
+	}>;
+}
+
+export default function AccountDetailPage({ params }: AccountDetailPageProps) {
+	const unwrappedParams = React.use(params);
 	const router = useRouter();
-	const params = useParams();
-	const accountId = params.id as string;
+	const accountId = unwrappedParams.id;
 
 	const [account, setAccount] = useState<Account | null>(null);
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -412,19 +418,7 @@ export default function AccountDetailPage() {
 						href='/dashboard/accounts'
 						className='text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2 mb-4'
 					>
-						<svg
-							className='w-5 h-5'
-							fill='none'
-							stroke='currentColor'
-							viewBox='0 0 24 24'
-						>
-							<path
-								strokeLinecap='round'
-								strokeLinejoin='round'
-								strokeWidth={2}
-								d='M10 19l-7-7m0 0l7-7m-7 7h18'
-							/>
-						</svg>
+						<i className="fi fi-rr-arrow-left w-5 h-5"></i>
 						<span>Retour à mes comptes</span>
 					</Link>
 					<div className='flex items-center justify-between'>
@@ -455,34 +449,20 @@ export default function AccountDetailPage() {
 										IBAN
 									</label>
 									<div className='mt-1 flex items-center space-x-2'>
-										<p className='text-lg font-mono text-gray-900'>
-											{account.iban}
-										</p>
-										<button
-											onClick={() =>
-												navigator.clipboard.writeText(account.iban)
-											}
-											className='p-2 text-gray-500 hover:text-blue-600 transition'
-											title="Copier l'IBAN"
-										>
-											<svg
-												className='w-5 h-5'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z'
-												/>
-											</svg>
-										</button>
-									</div>
-								</div>
-
-								<div className='grid grid-cols-2 gap-4'>
+								<p className='text-lg font-mono text-gray-900'>
+									{account.iban}
+								</p>
+								<button
+									onClick={() =>
+										navigator.clipboard.writeText(account.iban)
+									}
+									className='p-2 text-gray-500 hover:text-blue-600 transition'
+									title="Copier l'IBAN"
+								>
+									<i className="fi fi-rr-copy w-5 h-5"></i>
+								</button>
+							</div>
+						</div>								<div className='grid grid-cols-2 gap-4'>
 									<div>
 										<label className='text-sm font-medium text-gray-600'>
 											Solde actuel
@@ -515,19 +495,7 @@ export default function AccountDetailPage() {
 											onClick={() => setShowDepositModal(true)}
 											className='flex items-center justify-center space-x-2 px-4 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition'
 										>
-											<svg
-												className='w-5 h-5'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M12 6v12m-6-6h12'
-												/>
-											</svg>
+											<i className="fi fi-rr-plus w-5 h-5"></i>
 											<span>Dépôt</span>
 										</button>
 										<button
@@ -539,19 +507,7 @@ export default function AccountDetailPage() {
 													: "bg-orange-600 text-white hover:bg-orange-700"
 											}`}
 										>
-											<svg
-												className='w-5 h-5'
-												fill='none'
-												stroke='currentColor'
-												viewBox='0 0 24 24'
-											>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													strokeWidth={2}
-													d='M20 12H4'
-												/>
-											</svg>
+											<i className="fi fi-rr-minus w-5 h-5"></i>
 											<span>Retrait</span>
 										</button>
 									</div>
@@ -595,19 +551,7 @@ export default function AccountDetailPage() {
 								</div>
 							) : transactions.length === 0 ? (
 								<div className='text-center py-8 text-gray-500'>
-									<svg
-										className='w-16 h-16 mx-auto mb-4 text-gray-300'
-										fill='none'
-										stroke='currentColor'
-										viewBox='0 0 24 24'
-									>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth={2}
-											d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
-										/>
-									</svg>
+									<i className="fi fi-rr-file w-16 h-16 mx-auto mb-4 text-gray-300 block"></i>
 									<p>Aucune transaction pour ce compte</p>
 								</div>
 							) : (
@@ -661,19 +605,7 @@ export default function AccountDetailPage() {
 													<div
 														className={`w-10 h-10 rounded-full flex items-center justify-center ${bubbleColor}`}
 													>
-														<svg
-															className={`w-5 h-5 ${arrowColor} ${arrowRotation}`}
-															fill='none'
-															stroke='currentColor'
-															viewBox='0 0 24 24'
-														>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																strokeWidth={2}
-																d='M12 4v16m0 0l-4-4m4 4l4-4'
-															/>
-														</svg>
+														<i className={`fi fi-rr-arrow-down w-5 h-5 ${arrowColor} ${arrowRotation}`}></i>
 													</div>
 													<div>
 														<p className='font-medium text-gray-900'>
@@ -879,19 +811,7 @@ export default function AccountDetailPage() {
 													</>
 												) : (
 													<>
-														<svg
-															className='w-5 h-5 mr-2'
-															fill='none'
-															stroke='currentColor'
-															viewBox='0 0 24 24'
-														>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																strokeWidth={2}
-																d='M12 6v6m0 0v6m0-6h6m-6 0H6'
-															/>
-														</svg>
+														<i className="fi fi-rr-plus w-5 h-5 mr-2"></i>
 														Charger plus de transactions
 													</>
 												)}
@@ -948,27 +868,13 @@ export default function AccountDetailPage() {
 								Actions rapides
 							</h2>
 							<div className='space-y-3'>
-								<Link
-									href={`/dashboard/transfers?from=${accountId}`}
-									className='w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold'
-								>
-									<svg
-										className='w-5 h-5'
-										fill='none'
-										stroke='currentColor'
-										viewBox='0 0 24 24'
-									>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth={2}
-											d='M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4'
-										/>
-									</svg>
-									<span>Effectuer un virement</span>
-								</Link>
-
-								<button
+							<Link
+								href={`/dashboard/transfers?from=${accountId}`}
+								className='w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold'
+							>
+								<i className="fi fi-rr-exchange w-5 h-5"></i>
+								<span>Effectuer un virement</span>
+							</Link>								<button
 									onClick={() => setShowDeleteModal(true)}
 									className='w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold'
 								>
@@ -1058,35 +964,21 @@ export default function AccountDetailPage() {
 			{showDepositModal && (
 				<div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
 					<div className='bg-white rounded-xl shadow-xl max-w-md w-full p-6'>
-						<div className='flex items-center justify-between mb-6'>
-							<h3 className='text-xl font-bold text-gray-900'>
-								Effectuer un dépôt
-							</h3>
-							<button
-								onClick={() => {
-									setShowDepositModal(false);
-									setOperationAmount("");
-									setOperationDescription("");
-								}}
-								className='text-gray-400 hover:text-gray-600'
-							>
-								<svg
-									className='w-6 h-6'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M6 18L18 6M6 6l12 12'
-									/>
-								</svg>
-							</button>
-						</div>
-
-						<div className='space-y-4'>
+					<div className='flex items-center justify-between mb-6'>
+						<h3 className='text-xl font-bold text-gray-900'>
+							Effectuer un dépôt
+						</h3>
+						<button
+							onClick={() => {
+								setShowDepositModal(false);
+								setOperationAmount("");
+								setOperationDescription("");
+							}}
+							className='text-gray-400 hover:text-gray-600'
+						>
+							<i className="fi fi-rr-cross w-6 h-6"></i>
+						</button>
+					</div>						<div className='space-y-4'>
 							<div>
 								<label className='block text-sm font-medium text-gray-700 mb-1'>
 									Montant (€)
@@ -1145,35 +1037,21 @@ export default function AccountDetailPage() {
 			{showWithdrawModal && (
 				<div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
 					<div className='bg-white rounded-xl shadow-xl max-w-md w-full p-6'>
-						<div className='flex items-center justify-between mb-6'>
-							<h3 className='text-xl font-bold text-gray-900'>
-								Effectuer un retrait
-							</h3>
-							<button
-								onClick={() => {
-									setShowWithdrawModal(false);
-									setOperationAmount("");
-									setOperationDescription("");
-								}}
-								className='text-gray-400 hover:text-gray-600'
-							>
-								<svg
-									className='w-6 h-6'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={2}
-										d='M6 18L18 6M6 6l12 12'
-									/>
-								</svg>
-							</button>
-						</div>
-
-						<div className='space-y-4'>
+					<div className='flex items-center justify-between mb-6'>
+						<h3 className='text-xl font-bold text-gray-900'>
+							Effectuer un retrait
+						</h3>
+						<button
+							onClick={() => {
+								setShowWithdrawModal(false);
+								setOperationAmount("");
+								setOperationDescription("");
+							}}
+							className='text-gray-400 hover:text-gray-600'
+						>
+							<i className="fi fi-rr-cross w-6 h-6"></i>
+						</button>
+					</div>						<div className='space-y-4'>
 							<div>
 								<label className='block text-sm font-medium text-gray-700 mb-1'>
 									Montant disponible

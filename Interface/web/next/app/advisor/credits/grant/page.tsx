@@ -207,7 +207,7 @@ export default function GrantCreditPage() {
 						{success && (
 							<div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
 							<div className="flex">
-								<div className="flex-shrink-0">
+								<div className="shrink-0">
 									<i className="fi fi-rr-check-circle text-green-600 text-xl"></i>
 								</div>
 								<div className="ml-3">
@@ -223,7 +223,7 @@ export default function GrantCreditPage() {
 						{error && (
 							<div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
 							<div className="flex">
-								<div className="flex-shrink-0">
+								<div className="shrink-0">
 									<i className="fi fi-rr-cross-circle text-red-600 text-xl"></i>
 								</div>
 								<div className="ml-3">

@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { userService, User, UpdateUserDTO } from "../../../../components/lib/api/user.service";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
-export default function EditUserPage() {
+interface EditUserPageProps {
+	params: Promise<{
+		id: string;
+	}>;
+}
+
+export default function EditUserPage({ params }: EditUserPageProps) {
+	const unwrappedParams = React.use(params);
 	const router = useRouter();
-	const params = useParams();
-	const userId = params.id as string;
+	const userId = unwrappedParams.id;
 
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -92,7 +98,7 @@ export default function EditUserPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 				<div className="max-w-2xl mx-auto">
 					<div className="text-center py-8">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
@@ -105,7 +111,7 @@ export default function EditUserPage() {
 
 	if (!user) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 				<div className="max-w-2xl mx-auto">
 					<div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
 						Utilisateur non trouvé
@@ -116,7 +122,7 @@ export default function EditUserPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 			<div className="max-w-2xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">

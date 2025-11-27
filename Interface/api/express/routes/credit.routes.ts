@@ -1,29 +1,32 @@
 import { Router } from "express";
-import { CreditController } from "../controllers/CreditController";
+import { CreditController } from "../controllers";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 const creditController = new CreditController();
 
 /**
- * @route POST /api/credits/grant
- * @desc Octroyer un crédit (conseiller/directeur uniquement)
- * @access Private (advisor, director)
+ * POST /api/credits/grant
+ * Octroyer un crédit (conseiller/directeur uniquement)
  */
-router.post("/grant", authMiddleware, creditController.grantCredit);
+router.post("/grant", authMiddleware, (req, res) =>
+	creditController.grantCredit(req, res)
+);
 
 /**
- * @route GET /api/credits/user/:userId
- * @desc Récupérer les crédits d'un utilisateur
- * @access Private (client + advisor/director)
+ * GET /api/credits/user/:userId
+ * Récupérer les crédits d'un utilisateur
  */
-router.get("/user/:userId", authMiddleware, creditController.getUserCredits);
+router.get("/user/:userId", authMiddleware, (req, res) =>
+	creditController.getUserCredits(req, res)
+);
 
 /**
- * @route GET /api/credits/calculate
- * @desc Simuler un crédit (calcul des mensualités)
- * @access Private
+ * GET /api/credits/calculate
+ * Simuler un crédit (calcul des mensualités)
  */
-router.get("/calculate", authMiddleware, creditController.calculateCredit);
+router.get("/calculate", authMiddleware, (req, res) =>
+	creditController.calculateCredit(req, res)
+);
 
 export default router;

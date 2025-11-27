@@ -1,9 +1,13 @@
 import { IUserRepository } from "@domain/repositories/IUserRepository";
 import { config } from "@infrastructure/config/database";
 import { Email } from "@domain/value-objects/Email";
-import { LoginUserDTO } from "@application/dto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+
+export interface LoginUserDTO {
+	email: string;
+	password: string;
+}
 
 export interface LoginUserResult {
 	success: boolean;

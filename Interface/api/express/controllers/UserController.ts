@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import { RegisterUser, LoginUser, VerifyEmail } from "@application/use-cases";
-import { RequestPasswordReset } from "@application/use-cases/user/RequestPasswordReset";
-import { ResetPassword } from "@application/use-cases/user/ResetPassword";
+import { RegisterUser, LoginUser, VerifyEmail, RequestPasswordReset, ResetPassword } from "@application/use-cases";
+import type { RegisterUserDTO, LoginUserDTO } from "@application/use-cases";
 import { UserRepository } from "@infrastructure/database/mysql/UserRepository";
 import { AccountRepository } from "@infrastructure/database/mysql/AccountRepository";
-import { RegisterUserDTO, LoginUserDTO } from "@application/dto";
 import { UserId } from "@domain/value-objects/UserId";
 import { emailService } from "@infrastructure/services/email.service";
 
@@ -166,6 +164,58 @@ export class UserController {
 			});
 		} catch (error) {
 			console.error("Error in getMe:", error);
+			res.status(500).json({
+				success: false,
+				error: "Erreur serveur",
+			});
+		}
+	}
+
+	/**
+	 * GET /api/users/:id
+	 * Récupérer les informations d'un utilisateur par son ID
+	 */
+	async getUserById(req: Request, res: Response): Promise<void> {
+		try {
+			const { id } = req.params;
+
+			if (!id) {
+				res.status(400).json({
+					success: false,
+					error: "ID utilisateur requis",
+				});
+				return;
+			}
+
+			const userRepository = new UserRepository();
+			const userIdObj = UserId.fromNumber(parseInt(id));
+			const user = await userRepository.findById(userIdObj);
+
+			if (!user) {
+				res.status(404).json({
+					success: false,
+					error: "Utilisateur non trouvé",
+				});
+				return;
+			}
+
+			res.status(200).json({
+				success: true,
+				data: {
+					id: user.id.value,
+					email: user.email.value,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					fullName: user.fullName,
+					phone: user.phone,
+					address: user.address,
+					role: user.role,
+					emailVerified: user.emailVerified,
+					createdAt: user.createdAt,
+				},
+			});
+		} catch (error) {
+			console.error("Error in getUserById:", error);
 			res.status(500).json({
 				success: false,
 				error: "Erreur serveur",

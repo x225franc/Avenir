@@ -3,7 +3,14 @@ import { IUserRepository } from "@domain/repositories/IUserRepository";
 import { Account, AccountType } from "@domain/entities/Account";
 import { UserId } from "@domain/value-objects/UserId";
 import { Money } from "@domain/value-objects/Money";
-import { CreateAccountDTO } from "@application/dto";
+
+export interface CreateAccountDTO {
+	userId: string;
+	accountName: string;
+	accountType: "checking" | "savings" | "investment";
+	initialDeposit?: number;
+	currency?: string;
+}
 
 export interface CreateAccountResult {
 	success: boolean;
@@ -30,10 +37,10 @@ export class CreateAccount {
 
 	async execute(dto: CreateAccountDTO): Promise<CreateAccountResult> {
 		try {
-			// 1. Valider l'userId
+			// Valider l'userId
 			const userId = new UserId(dto.userId);
 
-			// 2. Vérifier que l'utilisateur existe
+			// Vérifier que l'utilisateur existe
 			const user = await this.userRepository.findById(userId);
 			if (!user) {
 				return {
@@ -42,7 +49,7 @@ export class CreateAccount {
 				};
 			}
 
-			// 3. Valider le type de compte
+			// Valider le type de compte
 			if (!Object.values(AccountType).includes(dto.accountType as AccountType)) {
 				return {
 					success: false,
@@ -50,7 +57,7 @@ export class CreateAccount {
 				};
 			}
 
-			// 4. Créer l'entité Account (IBAN généré automatiquement)
+			// Créer l'entité Account (IBAN généré automatiquement)
 			const account = Account.create({
 				userId,
 				accountName: dto.accountName.trim(),
@@ -59,7 +66,7 @@ export class CreateAccount {
 					dto.accountType === AccountType.SAVINGS ? 2.0 : undefined, // 2% par défaut pour épargne
 			});
 
-			// 5. Appliquer un dépôt initial si fourni
+			// Appliquer un dépôt initial si fourni
 			if (dto.initialDeposit && dto.initialDeposit > 0) {
 				const depositAmount = new Money(
 					dto.initialDeposit,
@@ -68,7 +75,7 @@ export class CreateAccount {
 				account.credit(depositAmount);
 			}
 
-			// 6. Sauvegarder dans le repository
+			// Sauvegarder dans le repository
 			await this.accountRepository.save(account);
 
 			return {

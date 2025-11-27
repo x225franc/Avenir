@@ -57,13 +57,13 @@ export default function AdminDashboard() {
 	}
 
 	return (
-		<div className='min-h-screen bg-gradient-to-br from-purple-50 to-purple-100'>
+		<div className='min-h-screen bg-linear-to-br from-purple-50 to-purple-100'>
 
 
 			{/* Main Content */}
 			<main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
 				{/* Welcome Section */}
-				<div className='bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8'>
+				<div className='bg-linear-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8'>
 					<h2 className='text-3xl font-bold mb-2'>
 						Bienvenue, {user?.firstName} !
 					</h2>
@@ -73,7 +73,7 @@ export default function AdminDashboard() {
 				</div>
 
 				{/* Quick Actions */}
-				<div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
+				<div className='grid grid-cols-1 md:grid-cols-5 gap-6 mb-8'>
 					<a
 						href='/admin/users'
 						className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
@@ -139,6 +139,21 @@ export default function AdminDashboard() {
 						Actions
 					</h3>
 					<p className='text-sm text-gray-600'>Gérer les actions boursières</p>
+				</a>
+
+				<a
+					href='/admin/internal-chat'
+					className='bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer'
+				>
+					<div className='flex items-center justify-between mb-4'>
+						<div className='w-12 h-12 bg-linear-to-br from-purple-200 to-purple-400 rounded-lg flex items-center justify-center'>
+							<i className="fi fi-rr-comments text-purple-700 text-2xl"></i>
+						</div>
+					</div>
+					<h3 className='text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2'>
+						Chat Interne
+					</h3>
+					<p className='text-sm text-gray-600'>Communication équipe</p>
 				</a>
 				</div>
 

@@ -51,12 +51,12 @@ export class TransactionRepository implements ITransactionRepository {
 		await pool.execute<ResultSetHeader>(query, values);
 	}
 
-	async findById(id: string): Promise<Transaction | null> {
+	async findById(id: TransactionId): Promise<Transaction | null> {
 		const query = `
       SELECT * FROM transactions WHERE id = ?
     `;
 
-		const [rows] = await pool.execute<TransactionRow[]>(query, [id]);
+		const [rows] = await pool.execute<TransactionRow[]>(query, [id.getValue()]);
 
 		if (rows.length === 0) {
 			return null;
@@ -136,9 +136,9 @@ export class TransactionRepository implements ITransactionRepository {
 		]);
 	}
 
-	async delete(id: string): Promise<void> {
+	async delete(id: TransactionId): Promise<void> {
 		const query = `DELETE FROM transactions WHERE id = ?`;
-		await pool.execute(query, [id]);
+		await pool.execute(query, [id.getValue()]);
 	}
 
 	async findByAccountId(accountId: string): Promise<Transaction[]> {

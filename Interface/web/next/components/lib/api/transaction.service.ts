@@ -58,18 +58,21 @@ export const transactionService = {
 	/**
 	 * Effectuer un transfert d'argent
 	 */
-	async transfer(data: TransferMoneyDTO): Promise<ApiResponse<{ transactionId: string }>> {
-		const response = await apiClient.post<ApiResponse<{ transactionId: string }>>(
-			"/transactions/transfer",
-			data
-		);
+	async transfer(
+		data: TransferMoneyDTO
+	): Promise<ApiResponse<{ transactionId: string }>> {
+		const response = await apiClient.post<
+			ApiResponse<{ transactionId: string }>
+		>("/transactions/transfer", data);
 		return response.data;
 	},
 
 	/**
 	 * Récupérer l'historique des transactions d'un compte
 	 */
-	async getAccountTransactions(accountId: string): Promise<ApiResponse<Transaction[]>> {
+	async getAccountTransactions(
+		accountId: string
+	): Promise<ApiResponse<Transaction[]>> {
 		const response = await apiClient.get<ApiResponse<Transaction[]>>(
 			`/transactions/account/${accountId}`
 		);
@@ -89,7 +92,9 @@ export const transactionService = {
 	/**
 	 * Approuver une transaction PENDING (advisor uniquement)
 	 */
-	async approveTransaction(transactionId: string): Promise<ApiResponse<Transaction>> {
+	async approveTransaction(
+		transactionId: string
+	): Promise<ApiResponse<Transaction>> {
 		const response = await apiClient.patch<ApiResponse<Transaction>>(
 			`/advisor/transactions/${transactionId}/approve`
 		);
@@ -100,7 +105,7 @@ export const transactionService = {
 	 * Rejeter une transaction PENDING (advisor uniquement)
 	 */
 	async rejectTransaction(
-		transactionId: string, 
+		transactionId: string,
 		reason?: string
 	): Promise<ApiResponse<Transaction>> {
 		const response = await apiClient.patch<ApiResponse<Transaction>>(

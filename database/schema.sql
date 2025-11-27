@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS `investment_orders`;
 DROP TABLE IF EXISTS `stocks`;
 DROP TABLE IF EXISTS `credits`;
 DROP TABLE IF EXISTS `messages`;
+DROP TABLE IF EXISTS `internal_messages`;
 DROP TABLE IF EXISTS `news`;
 DROP TABLE IF EXISTS `accounts`;
 DROP TABLE IF EXISTS `users`;
@@ -156,9 +157,28 @@ CREATE TABLE `messages` (
     FOREIGN KEY (`to_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
     INDEX `idx_conversation` (`conversation_id`),
     INDEX `idx_from_user` (`from_user_id`),
-    INDEX `idx_to_user` (`to_user_id`)
+    INDEX `idx_to_user` (`to_user_id`),
+    INDEX `idx_is_closed` (`is_closed`)
 );
 
+-- =============================================
+-- TABLE: internal_messages (Messages internes entre conseillers/directeurs)
+-- =============================================
+CREATE TABLE `internal_messages` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `from_user_id` INT NOT NULL,
+    `to_user_id` INT DEFAULT NULL, -- NULL = message de groupe
+    `content` TEXT NOT NULL,
+    `is_group_message` BOOLEAN DEFAULT FALSE,
+    `is_read` BOOLEAN DEFAULT FALSE,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`from_user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`to_user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    INDEX `idx_from_user` (`from_user_id`),
+    INDEX `idx_to_user` (`to_user_id`),
+    INDEX `idx_is_group` (`is_group_message`),
+    INDEX `idx_created_at` (`created_at`)
+);
 
 -- =============================================
 -- TABLE: stock_price_history (Historique des prix des actions)
@@ -187,6 +207,7 @@ CREATE TABLE `news` (
     INDEX `idx_author` (`author_id`),
     INDEX `idx_published` (`published`)
 );
+
 
 -- =============================================
 -- DONNÉES D'EXEMPLE

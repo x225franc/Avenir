@@ -30,7 +30,7 @@ export class ProcessMonthlyPayments {
 
 		for (const credit of activeCredits) {
 			try {
-				// 1. Récupérer le compte du client
+				// Récupérer le compte du client
 				const account = await this.accountRepository.findById(
 					credit.getAccountId()
 				);
@@ -43,7 +43,7 @@ export class ProcessMonthlyPayments {
 					continue;
 				}
 
-				// 2. Vérifier que le compte a suffisamment de fonds
+				// Vérifier que le compte a suffisamment de fonds
 				const monthlyPayment = credit.getMonthlyPayment();
 				if (account.balance.amount < monthlyPayment.amount) {
 					results.failed++;
@@ -55,15 +55,15 @@ export class ProcessMonthlyPayments {
 					continue;
 				}
 
-				// 3. Débiter le compte
+				// Débiter le compte
 				account.debit(monthlyPayment);
 				await this.accountRepository.save(account);
 
-				// 4. Traiter le paiement sur le crédit
+				// Traiter le paiement sur le crédit
 				credit.processMonthlyPayment();
 				await this.creditRepository.update(credit);
 
-				// 5. Créer une transaction pour tracer le paiement
+				// Créer une transaction pour tracer le paiement
 				const transaction = Transaction.create(
 					credit.getAccountId(),
 					null, // Pas de compte destination (paiement de crédit)

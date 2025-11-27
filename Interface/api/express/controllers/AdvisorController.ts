@@ -3,6 +3,9 @@ import { UserRepository } from "../../../../Infrastructure/database/mysql/UserRe
 import { TransactionRepository } from "../../../../Infrastructure/database/mysql/TransactionRepository";
 import { AccountRepository } from "../../../../Infrastructure/database/mysql/AccountRepository";
 import { TransactionStatus } from "../../../../Domain/enums/TransactionStatus";
+import { TransactionId } from "../../../../Domain/value-objects/TransactionId";
+import { UserId } from "../../../../Domain/value-objects/UserId";
+import { emailService } from "../../../../Infrastructure/services/email.service";
 
 /**
  * Controller pour les opérations des conseillers
@@ -19,6 +22,35 @@ export class AdvisorController {
 	}
 
 	/**
+	 * GET /api/advisor/advisors
+	 * Récupère tous les conseillers pour le transfert de conversations
+	 */
+	async getAdvisors(req: Request, res: Response): Promise<void> {
+		try {
+			// Récupérer tous les utilisateurs avec le rôle advisor
+			const advisors = await this.userRepository.findByRole("advisor");
+			const advisorsData = advisors.map((advisor: any) => ({
+				id: advisor.id.value,
+				email: advisor.email.value,
+				firstName: advisor.firstName,
+				lastName: advisor.lastName,
+				fullName: `${advisor.firstName} ${advisor.lastName}`,
+			}));
+
+			res.status(200).json({
+				success: true,
+				data: advisorsData,
+			});
+		} catch (error) {
+			console.error("Error in getAdvisors:", error);
+			res.status(500).json({
+				success: false,
+				error: "Erreur serveur lors de la récupération des conseillers",
+			});
+		}
+	}
+
+	/**
 	 * GET /api/advisor/clients
 	 * Récupère tous les clients pour consultation
 	 */
@@ -29,7 +61,8 @@ export class AdvisorController {
 			if (userRole !== "advisor") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers peuvent accéder à cette ressource.",
+					error:
+						"Accès refusé. Seuls les conseillers peuvent accéder à cette ressource.",
 				});
 				return;
 			}
@@ -74,7 +107,8 @@ export class AdvisorController {
 			if (userRole !== "advisor") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers peuvent accéder à cette ressource.",
+					error:
+						"Accès refusé. Seuls les conseillers peuvent accéder à cette ressource.",
 				});
 				return;
 			}
@@ -116,12 +150,15 @@ export class AdvisorController {
 			if (userRole !== "advisor") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers peuvent accéder à cette ressource.",
+					error:
+						"Accès refusé. Seuls les conseillers peuvent accéder à cette ressource.",
 				});
 				return;
 			}
 
-			const transactions = await this.transactionRepository.findByStatus("PENDING");
+			const transactions = await this.transactionRepository.findByStatus(
+				"PENDING"
+			);
 			const transactionsData = [] as any[];
 			for (const transaction of transactions) {
 				let sourceAccount: any = undefined;
@@ -131,7 +168,9 @@ export class AdvisorController {
 				const toId = transaction.getToAccountId()?.value;
 
 				if (fromId) {
-					const acc = await this.accountRepository.findById({ value: fromId } as any);
+					const acc = await this.accountRepository.findById({
+						value: fromId,
+					} as any);
 					if (acc) {
 						const user = await this.userRepository.findById(acc.userId);
 						sourceAccount = {
@@ -141,18 +180,20 @@ export class AdvisorController {
 							accountType: acc.accountType,
 							user: user
 								? {
-									id: user.id.value,
-									firstName: user.firstName,
-									lastName: user.lastName,
-									email: user.email.value,
-								}
+										id: user.id.value,
+										firstName: user.firstName,
+										lastName: user.lastName,
+										email: user.email.value,
+								  }
 								: undefined,
 						};
 					}
 				}
 
 				if (toId) {
-					const acc = await this.accountRepository.findById({ value: toId } as any);
+					const acc = await this.accountRepository.findById({
+						value: toId,
+					} as any);
 					if (acc) {
 						const user = await this.userRepository.findById(acc.userId);
 						destinationAccount = {
@@ -162,11 +203,11 @@ export class AdvisorController {
 							accountType: acc.accountType,
 							user: user
 								? {
-									id: user.id.value,
-									firstName: user.firstName,
-									lastName: user.lastName,
-									email: user.email.value,
-								}
+										id: user.id.value,
+										firstName: user.firstName,
+										lastName: user.lastName,
+										email: user.email.value,
+								  }
 								: undefined,
 						};
 					}
@@ -195,7 +236,8 @@ export class AdvisorController {
 			console.error("Error in getPendingTransactions:", error);
 			res.status(500).json({
 				success: false,
-				error: "Erreur serveur lors de la récupération des transactions en attente",
+				error:
+					"Erreur serveur lors de la récupération des transactions en attente",
 			});
 		}
 	}
@@ -211,7 +253,8 @@ export class AdvisorController {
 			if (userRole !== "advisor") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers peuvent approuver des transactions.",
+					error:
+						"Accès refusé. Seuls les conseillers peuvent approuver des transactions.",
 				});
 				return;
 			}
@@ -226,7 +269,9 @@ export class AdvisorController {
 				return;
 			}
 
-			const transaction = await this.transactionRepository.findById(id);
+			const transaction = await this.transactionRepository.findById(
+				TransactionId.create(id)
+			);
 
 			if (!transaction) {
 				res.status(404).json({
@@ -247,7 +292,9 @@ export class AdvisorController {
 			// Créditer le compte destination si applicable
 			const toAccountId = transaction.getToAccountId()?.value;
 			if (toAccountId) {
-				const destinationAccount = await this.accountRepository.findById({ value: toAccountId } as any);
+				const destinationAccount = await this.accountRepository.findById({
+					value: toAccountId,
+				} as any);
 				if (destinationAccount) {
 					// Créditer le montant sur le compte destination
 					destinationAccount.credit(transaction.getAmount());
@@ -287,7 +334,8 @@ export class AdvisorController {
 			if (userRole !== "advisor") {
 				res.status(403).json({
 					success: false,
-					error: "Accès refusé. Seuls les conseillers peuvent rejeter des transactions.",
+					error:
+						"Accès refusé. Seuls les conseillers peuvent rejeter des transactions.",
 				});
 				return;
 			}
@@ -302,7 +350,9 @@ export class AdvisorController {
 				return;
 			}
 
-			const transaction = await this.transactionRepository.findById(id);
+			const transaction = await this.transactionRepository.findById(
+				TransactionId.create(id)
+			);
 
 			if (!transaction) {
 				res.status(404).json({
@@ -323,7 +373,9 @@ export class AdvisorController {
 			// Rembourser le compte source (le débit a été effectué lors de la création)
 			const fromAccountId = transaction.getFromAccountId()?.value;
 			if (fromAccountId) {
-				const sourceAccount = await this.accountRepository.findById({ value: fromAccountId } as any);
+				const sourceAccount = await this.accountRepository.findById({
+					value: fromAccountId,
+				} as any);
 				if (sourceAccount) {
 					// Créditer le montant sur le compte source pour rembourser
 					sourceAccount.credit(transaction.getAmount());
@@ -348,6 +400,53 @@ export class AdvisorController {
 			res.status(500).json({
 				success: false,
 				error: "Erreur serveur lors du rejet de la transaction",
+			});
+		}
+	}
+
+	async notifyClient(req: Request, res: Response): Promise<void> {
+		try {
+			const { clientId, subject, message } = req.body;
+
+			// Valider les entrées
+			if (!clientId || !subject || !message) {
+				res.status(400).json({
+					success: false,
+					error: "Tous les champs sont requis (clientId, subject, message)",
+				});
+				return;
+			}
+
+			// Récupérer le client depuis le dépôt
+			const client = await this.userRepository.findById(
+				UserId.fromString(clientId)
+			);
+
+			if (!client) {
+				res.status(404).json({
+					success: false,
+					error: "Client non trouvé",
+				});
+				return;
+			}
+
+			// Envoyer l'email de notification
+			await emailService.sendAdvisorNotificationEmail(
+				client.email.value,
+				client.firstName,
+				subject,
+				message
+			);
+
+			res.status(200).json({
+				success: true,
+				message: "Notification envoyée avec succès",
+			});
+		} catch (error) {
+			console.error("Error in notifyClient:", error);
+			res.status(500).json({
+				success: false,
+				error: "Erreur serveur lors de l'envoi de la notification",
 			});
 		}
 	}

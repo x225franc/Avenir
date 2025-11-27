@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,10 +34,16 @@ interface Stock {
 	updatedAt: string;
 }
 
-export default function EditStockPage() {
+interface EditStockPageProps {
+	params: Promise<{
+		id: string;
+	}>;
+}
+
+export default function EditStockPage({ params }: EditStockPageProps) {
+	const unwrappedParams = React.use(params);
 	const router = useRouter();
-	const params = useParams();
-	const stockId = params.id as string;
+	const stockId = unwrappedParams.id;
 
 	const [stock, setStock] = useState<Stock | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -152,7 +158,7 @@ export default function EditStockPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
 					<p className="mt-4 text-gray-600">Chargement...</p>
@@ -163,7 +169,7 @@ export default function EditStockPage() {
 
 	if (!stock) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+			<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 				<div className="max-w-2xl mx-auto">
 					<div className="bg-white rounded-lg shadow-lg p-6">
 						<h1 className="text-2xl font-bold text-red-600 mb-4">
@@ -182,7 +188,7 @@ export default function EditStockPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 			<div className="max-w-4xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -311,7 +317,7 @@ export default function EditStockPage() {
 							<button
 								type="submit"
 								disabled={saving}
-								className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+								className="flex-1 bg-linear-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								{saving ? "Enregistrement..." : "Enregistrer les modifications"}
 							</button>

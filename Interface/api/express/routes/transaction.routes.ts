@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TransactionController } from "../controllers/TransactionController";
+import { TransactionController } from "../controllers";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -9,18 +9,16 @@ const transactionController = new TransactionController();
 router.use(authMiddleware);
 
 /**
- * @route   POST /api/transactions/transfer
- * @desc    Effectuer un transfert d'argent
- * @access  Private
+ * POST /api/transactions/transfer
+ * Effectuer un transfert d'argent
  */
 router.post("/transfer", (req, res) =>
 	transactionController.transfer(req, res)
 );
 
 /**
- * @route   GET /api/transactions/account/:accountId
- * @desc    Récupérer l'historique des transactions d'un compte
- * @access  Private
+ * GET /api/transactions/account/:accountId
+ * Récupérer l'historique des transactions d'un compte
  */
 router.get("/account/:accountId", (req, res) =>
 	transactionController.getAccountTransactions(req, res)

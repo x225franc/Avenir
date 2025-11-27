@@ -4,7 +4,14 @@ import { AccountId } from "@domain/value-objects/AccountId";
 import { Money } from "@domain/value-objects/Money";
 import { Transaction } from "@domain/entities/Transaction";
 import { TransactionType } from "@domain/enums/TransactionType";
-import { TransferMoneyDTO } from "@application/dto";
+
+export interface TransferMoneyDTO {
+	sourceAccountId: string;
+	destinationAccountId: string;
+	amount: number;
+	currency: string;
+	description?: string;
+}
 
 export interface TransferMoneyResult {
 	success: boolean;
@@ -35,12 +42,12 @@ export class TransferMoney {
 
 	async execute(dto: TransferMoneyDTO): Promise<TransferMoneyResult> {
 		try {
-			// 1. Valider les données
+			// Valider les données
 			const sourceAccountId = new AccountId(dto.sourceAccountId);
 			const destinationAccountId = new AccountId(dto.destinationAccountId);
 			const amount = new Money(dto.amount, dto.currency);
 
-			// 2. Vérifier que le montant est positif
+			// Vérifier que le montant est positif
 			if (amount.amount <= 0) {
 				return {
 					success: false,
@@ -48,7 +55,7 @@ export class TransferMoney {
 				};
 			}
 
-			// 3. Récupérer le compte source
+			// Récupérer le compte source
 			const sourceAccount = await this.accountRepository.findById(
 				sourceAccountId
 			);
@@ -66,7 +73,7 @@ export class TransferMoney {
 				};
 			}
 
-			// 4. Récupérer le compte destination
+			// Récupérer le compte destination
 			const destinationAccount = await this.accountRepository.findById(
 				destinationAccountId
 			);
@@ -84,7 +91,7 @@ export class TransferMoney {
 				};
 			}
 
-			// 5. Vérifier que ce ne sont pas le même compte
+			// Vérifier que ce ne sont pas le même compte
 			if (sourceAccount.id.equals(destinationAccount.id)) {
 				return {
 					success: false,
@@ -92,7 +99,7 @@ export class TransferMoney {
 				};
 			}
 
-			// 6. Vérifier le solde suffisant
+			// Vérifier le solde suffisant
 			if (!sourceAccount.hasEnoughBalance(amount)) {
 				return {
 					success: false,
@@ -100,7 +107,7 @@ export class TransferMoney {
 				};
 			}
 
-			// 7. Créer la transaction
+			// Créer la transaction
 			const transaction = Transaction.create(
 				sourceAccount.id,
 				destinationAccount.id,
@@ -112,16 +119,16 @@ export class TransferMoney {
 			// Sauvegarder l'ID de la transaction avant les opérations
 			const transactionId = transaction.getId().toString();
 
-			// 8. Effectuer le transfert (débiter source + créditer destination)
+			// Effectuer le transfert (débiter source + créditer destination)
 			sourceAccount.debit(amount);
 			destinationAccount.credit(amount);
 
-			// 9. Sauvegarder (dans cet ordre : transaction, puis comptes)
+			// Sauvegarder (dans cet ordre : transaction, puis comptes)
 			await this.transactionRepository.save(transaction);
 			await this.accountRepository.save(sourceAccount);
 			await this.accountRepository.save(destinationAccount);
 
-			// 10. Marquer la transaction comme complétée
+			// Marquer la transaction comme complétée
 			transaction.complete();
 			await this.transactionRepository.save(transaction);
 			return {

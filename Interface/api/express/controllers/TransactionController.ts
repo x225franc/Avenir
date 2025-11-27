@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { TransferMoney } from "@application/use-cases";
+import type { TransferMoneyTransactionDTO } from "@application/use-cases";
 import { AccountRepository } from "@infrastructure/database/mysql/AccountRepository";
-import { TransferMoneyDTO } from "@application/dto";
 import { TransactionRepository } from "../../../../Infrastructure/database/mysql/TransactionRepository";
 import { Transaction } from "../../../../Domain/entities/Transaction";
 import { AccountId } from "../../../../Domain/value-objects/AccountId";
@@ -19,7 +19,10 @@ export class TransactionController {
 	constructor() {
 		const accountRepository = new AccountRepository();
 		const transactionRepository = new TransactionRepository();
-		this.transferMoneyUseCase = new TransferMoney(accountRepository, transactionRepository);
+		this.transferMoneyUseCase = new TransferMoney(
+			accountRepository,
+			transactionRepository
+		);
 		this.transactionRepository = transactionRepository;
 	}
 
@@ -39,7 +42,7 @@ export class TransactionController {
 				return;
 			}
 
-			const dto: TransferMoneyDTO = req.body;
+			const dto: TransferMoneyTransactionDTO = req.body;
 
 			// Validation basique
 			if (
@@ -122,7 +125,9 @@ export class TransactionController {
 
 			// Vérifier que le compte appartient bien à l'utilisateur
 			const accountRepository = new AccountRepository();
-			const account = await accountRepository.findById(new AccountId(accountId));
+			const account = await accountRepository.findById(
+				new AccountId(accountId)
+			);
 
 			if (!account) {
 				res.status(404).json({
@@ -239,10 +244,10 @@ export class TransactionController {
 
 			// Pour l'instant, simulons une validation IBAN basique
 			// En production, il faudrait valider l'IBAN et récupérer les vraies infos
-			
+
 			// Validation IBAN basique (commence par 2 lettres + 2 chiffres)
 			const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,}/;
-			
+
 			if (!ibanRegex.test(iban.toUpperCase())) {
 				res.status(400).json({
 					success: false,
@@ -288,7 +293,13 @@ export class TransactionController {
 				return;
 			}
 
-			const { sourceAccountId, destinationIban, amount, currency, description } = req.body;
+			const {
+				sourceAccountId,
+				destinationIban,
+				amount,
+				currency,
+				description,
+			} = req.body;
 
 			// Validation basique
 			if (!sourceAccountId || !destinationIban || !amount || !currency) {
@@ -332,20 +343,27 @@ export class TransactionController {
 			}
 
 			// Vérifier que l'IBAN de destination n'appartient pas à l'utilisateur
-			const userAccounts = await accountRepository.findByUserId(new UserId(userId));
-			const targetAccount = userAccounts.find(account => account.iban.value === destinationIban.toUpperCase());
-			
+			const userAccounts = await accountRepository.findByUserId(
+				new UserId(userId)
+			);
+			const targetAccount = userAccounts.find(
+				(account) => account.iban.value === destinationIban.toUpperCase()
+			);
+
 			if (targetAccount) {
 				res.status(400).json({
 					success: false,
-					error: "Vous ne pouvez pas effectuer un virement vers votre propre compte. Utilisez un virement interne.",
+					error:
+						"Vous ne pouvez pas effectuer un virement vers votre propre compte. Utilisez un virement interne.",
 				});
 				return;
 			}
 
 			// Chercher le compte de destination par IBAN dans la base de données
-			const destinationAccount = await accountRepository.findByIban(destinationIban.toUpperCase());
-			
+			const destinationAccount = await accountRepository.findByIban(
+				destinationIban.toUpperCase()
+			);
+
 			// Vérifier le solde
 			const amountMoney = new Money(amount, currency);
 			if (!sourceAccount.hasEnoughBalance(amountMoney)) {
@@ -355,7 +373,7 @@ export class TransactionController {
 				});
 				return;
 			}
-			
+
 			// Débiter immédiatement le compte source
 			sourceAccount.debit(amountMoney);
 			await accountRepository.save(sourceAccount);
@@ -363,18 +381,18 @@ export class TransactionController {
 			// Créer UNE SEULE transaction en PENDING pour validation par le conseiller
 			let transaction;
 			let destinationAccountId = null;
-			
+
 			if (destinationAccount) {
 				// Virement IBAN interne (les deux comptes sont dans notre banque)
 				destinationAccountId = destinationAccount.id.value;
-				
+
 				// Description automatique avec IBAN source ET destination
 				// Format: "De [IBAN_SOURCE] vers [IBAN_DEST]"
 				const sourceIban = sourceAccount.iban.value;
 				const destIban = destinationIban.toUpperCase();
-				
+
 				const transactionDescription = `Virement De ${sourceIban} vers ${destIban}`;
-				
+
 				transaction = Transaction.create(
 					new AccountId(sourceAccountId),
 					new AccountId(destinationAccountId),
@@ -385,7 +403,7 @@ export class TransactionController {
 			} else {
 				// Virement IBAN externe (compte destinataire hors de notre banque)
 				const transactionDescription = `Virement vers ${destinationIban.toUpperCase()}`;
-					
+
 				transaction = Transaction.create(
 					new AccountId(sourceAccountId),
 					null,

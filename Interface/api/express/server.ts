@@ -12,6 +12,8 @@ import morgan from "morgan";
 import { testConnection } from "@infrastructure/database/mysql/connection";
 import { getCronService } from "../../../Infrastructure/jobs/CronService";
 import { stockPriceFluctuationService } from "../../../Application/services/StockPriceFluctuation";
+import { initMessageSocketService } from "@infrastructure/services/MessageSocketService";
+import { initSSEService } from "../../../Infrastructure/services/SSEService";
 import apiRoutes from "./routes";
 
 const app = express();
@@ -85,7 +87,7 @@ if (require.main === module) {
 	// Test de la connexion à la base de données avant de démarrer le serveur
 	testConnection().then((isConnected: boolean) => {
 		if (!isConnected) {
-			console.error('❌ Echec de la connexion bdd');
+			console.error("❌ Echec de la connexion bdd");
 			process.exit(1);
 		}
 
@@ -93,14 +95,17 @@ if (require.main === module) {
 			console.log(`🚀 Serveur express tourne sur http://localhost:${PORT}`);
 			console.log(`📊 Health check: http://localhost:${PORT}/health`);
 			console.log(`💾 Base de données connectée`);
-			
+
 			// Démarrer les tâches planifiées
 			try {
 				const cronService = getCronService();
 				cronService.start();
 				console.log(`⏰ Tâches planifiées démarrées`);
 			} catch (error) {
-				console.error('⚠️ Erreur lors du démarrage des tâches planifiées:', error);
+				console.error(
+					"⚠️ Erreur lors du démarrage des tâches planifiées:",
+					error
+				);
 			}
 
 			// Démarrer socket.io
@@ -117,18 +122,19 @@ if (require.main === module) {
 
 					// Join user-specific room
 					socket.on("join", (data) => {
-						console.log('📥 Join request received:', data);
-						const userId = typeof data === 'object' ? data.userId : data;
-						const role = typeof data === 'object' ? data.role : null;
+						console.log("📥 Join request received:", data);
+						const userId = typeof data === "object" ? data.userId : data;
+						const role = typeof data === "object" ? data.role : null;
 
 						if (userId) {
 							socket.join(`user:${userId}`);
 							console.log(`👤 User ${userId} joined room`);
 						}
 
-						if (role === 'advisor') {
-							socket.join('advisors');
-							console.log(`👔 User ${userId} joined advisors room`);
+						if (role === "advisor" || role === "director") {
+							socket.join("advisors");
+							socket.join("staff"); // Room pour les messages internes
+							console.log(`👔 User ${userId} joined advisors and staff rooms`);
 						}
 					});
 
@@ -145,12 +151,37 @@ if (require.main === module) {
 					});
 
 					// Typing indicators
-					socket.on("typing:start", ({ conversationId }) => {
-						socket.to(`conversation:${conversationId}`).emit("typing:user", { conversationId });
+					socket.on("typing:start", ({ conversationId, userId }) => {
+						socket
+							.to(`conversation:${conversationId}`)
+							.emit("typing:start", { conversationId, userId });
 					});
 
-					socket.on("typing:stop", ({ conversationId }) => {
-						socket.to(`conversation:${conversationId}`).emit("typing:user:stop", { conversationId });
+					socket.on("typing:stop", ({ conversationId, userId }) => {
+						socket
+							.to(`conversation:${conversationId}`)
+							.emit("typing:stop", { conversationId, userId });
+					});
+
+					// Internal message typing indicators
+					socket.on("internal_typing:start", ({ userId, targetUserId }) => {
+						if (targetUserId) {
+							socket
+								.to(`user:${targetUserId}`)
+								.emit("internal_typing:start", { userId });
+						} else {
+							socket.to("staff").emit("internal_typing:start", { userId });
+						}
+					});
+
+					socket.on("internal_typing:stop", ({ userId, targetUserId }) => {
+						if (targetUserId) {
+							socket
+								.to(`user:${targetUserId}`)
+								.emit("internal_typing:stop", { userId });
+						} else {
+							socket.to("staff").emit("internal_typing:stop", { userId });
+						}
 					});
 
 					socket.on("disconnect", () => {
@@ -158,11 +189,17 @@ if (require.main === module) {
 					});
 				});
 				console.log("🔌 Socket.IO server started");
-				
+
 				// Export io globally for use in routes
 				(global as any).io = io;
+
+				// Initialize MessageSocketService
+				initMessageSocketService(io);
+
+				// Initialize SSE Service
+				initSSEService();
 			} catch (error) {
-				console.error('⚠️ Erreur lors du démarrage de Socket.IO:', error);
+				console.error("⚠️ Erreur lors du démarrage de Socket.IO:", error);
 			}
 
 			// Démarrer le service de fluctuation des prix des actions
@@ -170,7 +207,10 @@ if (require.main === module) {
 				stockPriceFluctuationService.start();
 				console.log(`📈 Service de fluctuation des prix démarré`);
 			} catch (error) {
-				console.error('⚠️ Erreur lors du démarrage de la fluctuation des prix:', error);
+				console.error(
+					"⚠️ Erreur lors du démarrage de la fluctuation des prix:",
+					error
+				);
 			}
 
 			// Si le service émet des mises à jour, les diffuser via socket.io
@@ -181,13 +221,16 @@ if (require.main === module) {
 					}
 				});
 			} catch (err) {
-				console.error("⚠️ Erreur lors du binding Socket.IO avec la fluctuation:", err);
+				console.error(
+					"⚠️ Erreur lors du binding Socket.IO avec la fluctuation:",
+					err
+				);
 			}
 		});
 
 		// Gestion propre de l'arrêt du serveur
-		process.on('SIGTERM', () => {
-			console.log('SIGTERM signal received: closing HTTP server');
+		process.on("SIGTERM", () => {
+			console.log("SIGTERM signal received: closing HTTP server");
 			const cronService = getCronService();
 			cronService.stop();
 			stockPriceFluctuationService.stop();
@@ -197,8 +240,8 @@ if (require.main === module) {
 			process.exit(0);
 		});
 
-		process.on('SIGINT', () => {
-			console.log('SIGINT signal received: closing HTTP server');
+		process.on("SIGINT", () => {
+			console.log("SIGINT signal received: closing HTTP server");
 			const cronService = getCronService();
 			cronService.stop();
 			stockPriceFluctuationService.stop();

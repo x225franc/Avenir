@@ -3,9 +3,18 @@ import { IAccountRepository } from "@domain/repositories/IAccountRepository";
 import { User, UserRole } from "@domain/entities/User";
 import { Account, AccountType } from "@domain/entities/Account";
 import { Email } from "@domain/value-objects/Email";
-import { RegisterUserDTO } from "@application/dto";
 import { emailService } from "@infrastructure/services/email.service";
 import bcrypt from "bcrypt";
+
+export interface RegisterUserDTO {
+	email: string;
+	password: string;
+	firstName: string;
+	lastName: string;
+	phoneNumber?: string;
+	address?: string;
+	role?: "client" | "advisor" | "director";
+}
 
 export interface RegisterUserResult {
 	success: boolean;
@@ -35,10 +44,10 @@ export class RegisterUser {
 
 	async execute(dto: RegisterUserDTO): Promise<RegisterUserResult> {
 		try {
-			// 1. Valider l'email
+			// Valider l'email
 			const email = new Email(dto.email);
 
-			// 2. Vérifier que l'email n'existe pas déjà
+			// Vérifier que l'email n'existe pas déjà
 			const emailExists = await this.userRepository.emailExists(email);
 			if (emailExists) {
 				return {
@@ -47,10 +56,10 @@ export class RegisterUser {
 				};
 			}
 
-			// 3. Hasher le mot de passe
+			// Hasher le mot de passe
 			const hashedPassword = await bcrypt.hash(dto.password, this.SALT_ROUNDS);
 
-			// 4. Déterminer le rôle utilisateur
+			// Déterminer le rôle utilisateur
 			let userRole = UserRole.CLIENT; // Par défaut
 			if (dto.role === "advisor") {
 				userRole = UserRole.ADVISOR;
@@ -58,7 +67,7 @@ export class RegisterUser {
 				userRole = UserRole.DIRECTOR;
 			}
 
-			// 5. Créer l'entité User
+			// Créer l'entité User
 			const user = User.create({
 				email,
 				passwordHash: hashedPassword,
@@ -73,10 +82,10 @@ export class RegisterUser {
 				isBanned: false,
 			});
 
-			// 6. Sauvegarder dans le repository (pour obtenir l'ID réel de MySQL)
+			// Sauvegarder dans le repository (pour obtenir l'ID réel de MySQL)
 			await this.userRepository.save(user);
 
-			// 7. Générer et assigner le token de vérification APRÈS avoir l'ID réel
+			// Générer et assigner le token de vérification APRÈS avoir l'ID réel
 			// Format: userId:timestamp encodé en base64
 			// Le timestamp permet de vérifier l'expiration (24h)
 			const verificationToken = Buffer.from(
@@ -84,12 +93,12 @@ export class RegisterUser {
 			).toString("base64");
 			user.setVerificationToken(verificationToken);
 
-			// 8. Sauvegarder à nouveau pour mettre à jour le token en BDD
+			// Sauvegarder à nouveau pour mettre à jour le token en BDD
 			await this.userRepository.save(user);
 
 			console.log(`✅ Utilisateur créé avec ID: ${user.id.value}, Rôle: ${userRole}, Token: ${verificationToken}`);
 
-			// 9. Créer automatiquement un compte courant pour les nouveaux clients seulement
+			// Créer automatiquement un compte courant pour les nouveaux clients seulement
 			if (userRole === UserRole.CLIENT) {
 				try {
 					const defaultAccount = Account.create({
@@ -108,7 +117,7 @@ export class RegisterUser {
 				}
 			}
 
-			// 10. Envoyer l'email de vérification
+			// Envoyer l'email de vérification
 			try {
 				await emailService.sendVerificationEmail(
 					dto.email,

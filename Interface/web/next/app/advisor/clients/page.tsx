@@ -9,6 +9,12 @@ export default function AdvisorClientsPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [showNotificationModal, setShowNotificationModal] = useState(false);
+	const [selectedClient, setSelectedClient] = useState<User | null>(null);
+	const [notificationSubject, setNotificationSubject] = useState("");
+	const [notificationMessage, setNotificationMessage] = useState("");
+	const [isSending, setIsSending] = useState(false);
+	const [notificationSuccess, setNotificationSuccess] = useState(false);
 
 	useEffect(() => {
 		loadClients();
@@ -37,6 +43,54 @@ export default function AdvisorClientsPage() {
 			client.phone?.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
+	const handleOpenNotificationModal = (client: User) => {
+		setSelectedClient(client);
+		setNotificationSubject("");
+		setNotificationMessage("");
+		setNotificationSuccess(false);
+		setShowNotificationModal(true);
+	};
+
+	const handleCloseNotificationModal = () => {
+		setShowNotificationModal(false);
+		setSelectedClient(null);
+		setNotificationSubject("");
+		setNotificationMessage("");
+		setNotificationSuccess(false);
+	};
+
+	const handleSendNotification = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!selectedClient || !notificationSubject.trim() || !notificationMessage.trim()) return;
+
+		setIsSending(true);
+		try {
+			const response = await fetch("http://localhost:3001/api/advisor/notify-client", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					clientId: selectedClient.id,
+					subject: notificationSubject,
+					message: notificationMessage,
+				}),
+			});
+
+			const data = await response.json();
+			if (data.success) {
+				setNotificationSuccess(true);
+				setTimeout(() => {
+					handleCloseNotificationModal();
+				}, 2000);
+			} else {
+				alert(data.error || "Erreur lors de l'envoi");
+			}
+		} catch (error) {
+			alert("Erreur réseau lors de l'envoi de la notification");
+		} finally {
+			setIsSending(false);
+		}
+	};
+
 	const getRoleBadge = (role: string) => {
 		const colors = {
 			client: "bg-blue-100 text-blue-800",
@@ -48,7 +102,7 @@ export default function AdvisorClientsPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
+			<div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
 				<div className="max-w-6xl mx-auto">
 					<div className="text-center py-8">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
@@ -60,7 +114,7 @@ export default function AdvisorClientsPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
+		<div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
 			<div className="max-w-6xl mx-auto">
 				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -132,6 +186,7 @@ export default function AdvisorClientsPage() {
 									<th className="px-6 py-4 text-left">Statut</th>
 									<th className="px-6 py-4 text-left">Membre depuis</th>
 									<th className="px-6 py-4 text-left">Adresse</th>
+									<th className="px-6 py-4 text-left">Actions</th>
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-200">
@@ -204,6 +259,16 @@ export default function AdvisorClientsPage() {
 												<span className="text-gray-400 text-sm">Non renseignée</span>
 											)}
 										</td>
+										<td className="px-6 py-4">
+											<button
+												onClick={() => handleOpenNotificationModal(client)}
+												className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+												title="Envoyer une notification par email"
+											>
+												<i className="fi fi-rr-envelope"></i>
+												Notifier
+											</button>
+										</td>
 									</tr>
 								))}
 							</tbody>
@@ -228,6 +293,107 @@ export default function AdvisorClientsPage() {
 						</div>
 					)}
 				</div>
+
+				{/* Notification Modal */}
+				{showNotificationModal && selectedClient && (
+					<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+						<div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+							<div className="p-6 border-b border-gray-200">
+								<div className="flex justify-between items-start">
+									<div>
+										<h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+											<i className="fi fi-rr-envelope text-green-600"></i>
+											Envoyer une notification
+										</h3>
+										<p className="text-gray-600 mt-1">
+											Destinataire : <span className="font-semibold">{selectedClient.fullName}</span>
+										</p>
+										<p className="text-sm text-gray-500">{selectedClient.email}</p>
+									</div>
+									<button
+										onClick={handleCloseNotificationModal}
+										className="text-gray-400 hover:text-gray-600 transition-colors"
+									>
+										<i className="fi fi-rr-cross-circle text-2xl"></i>
+									</button>
+								</div>
+							</div>
+
+							{notificationSuccess ? (
+								<div className="p-8 text-center">
+									<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+										<i className="fi fi-rr-check-circle text-3xl text-green-600"></i>
+									</div>
+									<h4 className="text-xl font-bold text-gray-900 mb-2">Notification envoyée !</h4>
+									<p className="text-gray-600">Le client recevra votre message par email.</p>
+								</div>
+							) : (
+								<form onSubmit={handleSendNotification} className="p-6 space-y-6">
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">
+											Objet de la notification
+										</label>
+										<input
+											type="text"
+											value={notificationSubject}
+											onChange={(e) => setNotificationSubject(e.target.value)}
+											placeholder="Ex: Mise à jour importante de votre compte"
+											className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+											required
+											disabled={isSending}
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">
+											Message personnalisé
+										</label>
+										<textarea
+											value={notificationMessage}
+											onChange={(e) => setNotificationMessage(e.target.value)}
+											placeholder="Rédigez votre message personnalisé pour le client..."
+											rows={8}
+											className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+											required
+											disabled={isSending}
+										/>
+										<p className="text-xs text-gray-500 mt-1">
+											Le client recevra ce message directement par email.
+										</p>
+									</div>
+
+									<div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+										<button
+											type="button"
+											onClick={handleCloseNotificationModal}
+											className="px-6 py-2.5 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+											disabled={isSending}
+										>
+											Annuler
+										</button>
+										<button
+											type="submit"
+											disabled={isSending || !notificationSubject.trim() || !notificationMessage.trim()}
+											className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+										>
+											{isSending ? (
+												<>
+													<div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+													Envoi en cours...
+												</>
+											) : (
+												<>
+													<i className="fi fi-rr-paper-plane"></i>
+													Envoyer la notification
+												</>
+											)}
+										</button>
+									</div>
+								</form>
+							)}
+						</div>
+					</div>
+				)}
 
 				{/* Statistiques */}
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">

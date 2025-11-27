@@ -59,7 +59,7 @@ export class PlaceInvestmentOrder {
 		const errors: string[] = [];
 
 		try {
-			// 1. Validation des données d'entrée
+			// Validation des données d'entrée
 			if (!dto.userId || !dto.accountId || !dto.stockId) {
 				return {
 					success: false,
@@ -88,10 +88,10 @@ export class PlaceInvestmentOrder {
 			const accountId = new AccountId(dto.accountId);
 			const stockId = StockId.fromNumber(parseInt(dto.stockId));
 
-			// 1.1. Récupérer les frais d'investissement depuis les paramètres
+			// Récupérer les frais d'investissement depuis les paramètres
 			const transactionFee = await this.bankSettingsRepository.getInvestmentFee();
 
-			// 2. Vérifier que le compte existe et appartient à l'utilisateur
+			// Vérifier que le compte existe et appartient à l'utilisateur
 			const account = await this.accountRepository.findById(accountId);
 			if (!account) {
 				return {
@@ -127,7 +127,7 @@ export class PlaceInvestmentOrder {
 				};
 			}
 
-			// 3. Vérifier que l'action existe et est disponible
+			// Vérifier que l'action existe et est disponible
 			const stock = await this.stockRepository.findById(stockId);
 			if (!stock) {
 				return {
@@ -145,7 +145,7 @@ export class PlaceInvestmentOrder {
 				};
 			}
 
-			// 4. Créer l'ordre selon le type
+			// Créer l'ordre selon le type
 			let order: InvestmentOrder;
 
 			if (dto.orderType === "buy") {
@@ -211,14 +211,14 @@ export class PlaceInvestmentOrder {
 				account.credit(saleAmount);
 			}
 
-			// 5. Exécuter l'ordre immédiatement (banque moderne, pas de carnet d'ordres complexe)
+			// Exécuter l'ordre immédiatement (banque moderne, pas de carnet d'ordres complexe)
 			order.execute();
 
-			// 6. Sauvegarder l'ordre et le compte
+			// Sauvegarder l'ordre et le compte
 			await this.investmentOrderRepository.save(order);
 			await this.accountRepository.save(account);
 
-			// 7. Créer la transaction correspondante
+			// Créer la transaction correspondante
 			const transactionType =
 				dto.orderType === "buy"
 					? TransactionType.INVESTMENT_BUY

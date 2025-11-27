@@ -24,25 +24,34 @@ export const transferService = {
 		currency: string;
 		description?: string;
 	}): Promise<TransferResponse> => {
-		const response = await apiClient.post<TransferResponse>("/transfers/iban", data);
+		const response = await apiClient.post<TransferResponse>(
+			"/transfers/iban",
+			data
+		);
 		return response.data;
 	},
 
 	/**
 	 * Recherche les informations d'un compte par IBAN
 	 */
-	getAccountByIban: async (iban: string): Promise<ApiResponse<{
-		accountId: string;
-		ownerName: string;
-		bankName: string;
-		isValid: boolean;
-	}>> => {
-		const response = await apiClient.get<ApiResponse<{
+	getAccountByIban: async (
+		iban: string
+	): Promise<
+		ApiResponse<{
 			accountId: string;
 			ownerName: string;
 			bankName: string;
 			isValid: boolean;
-		}>>(`/transfers/iban/lookup/${encodeURIComponent(iban)}`);
+		}>
+	> => {
+		const response = await apiClient.get<
+			ApiResponse<{
+				accountId: string;
+				ownerName: string;
+				bankName: string;
+				isValid: boolean;
+			}>
+		>(`/transfers/iban/lookup/${encodeURIComponent(iban)}`);
 		return response.data;
 	},
 
