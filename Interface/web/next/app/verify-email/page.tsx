@@ -17,15 +17,16 @@ export default function VerifyEmailPage() {
 	const [error, setError] = useState<string>("");
 
 	useEffect(() => {
-			// Rediriger si authentifié
-			if (isAuthenticated) {
-				router.push("/dashboard");
-				return;
-			}
-		}, [authLoading, isAuthenticated, router]);
-
+		// Rediriger si authentifié
+		if (isAuthenticated) {
+			router.push("/dashboard");
+			return;
+		}
+	}, [authLoading, isAuthenticated, router]);
 
 	useEffect(() => {
+		let isCancelled = false;
+
 		const verifyEmail = async () => {
 			if (!token) {
 				setError("Token de vérification manquant");
@@ -36,25 +37,37 @@ export default function VerifyEmailPage() {
 			try {
 				const response = await apiClient.get(`/users/verify-email?token=${token}`);
 
+				if (isCancelled) return;
+
 				if (response.data.success) {
 					setSuccess(true);
-					// Rediriger vers la page de connexion après 3 secondes
+					setError("");
 					setTimeout(() => {
 						router.push("/login");
 					}, 3000);
 				} else {
+					setSuccess(false);
 					setError(response.data.error || "Erreur lors de la vérification");
 				}
 			} catch (err: any) {
+				if (isCancelled) return;
+
+				setSuccess(false);
 				setError(
 					err.response?.data?.error || "Erreur lors de la vérification de l'email"
 				);
 			} finally {
-				setLoading(false);
+				if (!isCancelled) {
+					setLoading(false);
+				}
 			}
 		};
 
 		verifyEmail();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [token, router]);
 
 	return (
@@ -78,7 +91,7 @@ export default function VerifyEmailPage() {
 				)}
 
 				{/* Success */}
-				{!loading && success && (
+				{!loading && success && !error && (
 					<div className="py-8">
 						<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
 							<i className="fi fi-rr-check text-green-600 text-4xl"></i>
@@ -98,7 +111,7 @@ export default function VerifyEmailPage() {
 				)}
 
 				{/* Error */}
-				{!loading && error && (
+				{!loading && !success && error && (
 					<div className="py-8">
 						<div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
 							<i className="fi fi-rr-cross text-red-600 text-4xl"></i>

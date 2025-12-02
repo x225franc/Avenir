@@ -118,10 +118,10 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
   -  **Interface** (API/Interface utilisateur) - Controllers Express + Pages Next.js complètes
   -  **Infrastructure** (base de données, frameworks) - MySQL repositories + Email service
 - **2 adaptateurs pour les bases de données :**
-  - ⏳ **MySQL** (SQL) - en cours
+  - ✅ **MySQL** (SQL) - en cours
   - ⏳ **Postgres** - À créer pour tests
 - **2 frameworks backend :**
-  - ⏳ **Express** - en cours
+  - ✅ **Express** - en cours
   - ⏳ **NestJS** - À créer
 
 ### 3. 📝 Clean Code
@@ -208,6 +208,10 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 - Toutes les étapes sur comment installer / lancer le projet
 - Toutes les étapes pour avoir des jeux de données et les identifiants d'un compte de test (un compte utilisateur et un compte admin)
 
+
+### 5. Docker
+⏳ Le projet devra être **dockerisé** afin de faciliter son installation et son lancement.
+
 ---
 
 ## 🎁 BONUS
@@ -221,8 +225,6 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 ---
 
 
----
----
 ---
 
 

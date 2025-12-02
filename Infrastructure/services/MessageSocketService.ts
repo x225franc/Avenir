@@ -131,13 +131,23 @@ export class MessageSocketService {
 	 * Émettre un nouveau message interne (groupe ou direct)
 	 */
 	emitInternalMessage(message: any): void {
+		const payload = {
+			id: message.id,
+			fromUserId: message.fromUserId,
+			toUserId: message.toUserId || null,
+			content: message.content,
+			isGroupMessage: message.isGroupMessage,
+			isRead: message.isRead !== undefined ? message.isRead : false,
+			createdAt: message.createdAt,
+		};
+
 		if (message.isGroupMessage) {
 			// Message de groupe : notifier tous les conseillers et directeurs
-			this.io.to("staff").emit("internal_message:new", message);
+			this.io.to("staff").emit("internal_message:new", payload);
 		} else if (message.toUserId) {
 			// Message direct : notifier uniquement le destinataire et l'expéditeur
-			this.io.to(`user:${message.toUserId}`).emit("internal_message:new", message);
-			this.io.to(`user:${message.fromUserId}`).emit("internal_message:new", message);
+			this.io.to(`user:${message.toUserId}`).emit("internal_message:new", payload);
+			this.io.to(`user:${message.fromUserId}`).emit("internal_message:new", payload);
 		}
 	}
 

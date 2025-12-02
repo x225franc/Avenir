@@ -196,6 +196,25 @@ export class UserRepository implements IUserRepository {
 		}
 	}
 
+	async findByVerificationToken(token: string): Promise<User | null> {
+		const connection = await pool.getConnection();
+
+		try {
+			const [rows] = await connection.query<UserRow[]>(
+				"SELECT * FROM users WHERE verification_token = ?",
+				[token]
+			);
+
+			if (rows.length === 0) {
+				return null;
+			}
+
+			return this.mapRowToUser(rows[0]);
+		} finally {
+			connection.release();
+		}
+	}
+
 	private mapRowToUser(row: UserRow): User {
 		return User.fromPersistence({
 			id: UserId.fromNumber(row.id),

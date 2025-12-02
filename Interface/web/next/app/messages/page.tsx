@@ -5,7 +5,11 @@ import { useAuth } from "@/components/contexts/AuthContext";
 import { messageApi, type Conversation, type Message } from "@/components/lib/api/message.service";
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const SOCKET_URL = (
+    process.env.NEXT_PUBLIC_WS_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:3001"
+).replace(/\/api\/?$/, "");
 
 // --- Composants UI internes ---
 
@@ -107,7 +111,7 @@ export default function MessagesPage() {
     // Setup WebSocket
     useEffect(() => {
         if (!user) return;
-        const newSocket = io(SOCKET_URL);
+        const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
             console.log("✅ Connected to WebSocket");

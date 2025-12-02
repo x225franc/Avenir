@@ -128,13 +128,15 @@ if (require.main === module) {
 
 						if (userId) {
 							socket.join(`user:${userId}`);
-							console.log(`👤 User ${userId} joined room`);
+							console.log(`👤 User ${userId} joined room user:${userId}`);
 						}
 
-						if (role === "advisor" || role === "director") {
+						// Join staff rooms for advisors and directors (case-insensitive)
+						const normalizedRole = role ? String(role).toLowerCase() : null;
+						if (normalizedRole === "advisor" || normalizedRole === "director") {
 							socket.join("advisors");
 							socket.join("staff"); // Room pour les messages internes
-							console.log(`👔 User ${userId} joined advisors and staff rooms`);
+							console.log(`👔 User ${userId} (${role}) joined advisors and staff rooms`);
 						}
 					});
 

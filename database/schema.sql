@@ -215,16 +215,15 @@ CREATE TABLE `news` (
 
 -- Insertion d'un directeur de banque
 INSERT INTO `users` (`email`, `password_hash`, `first_name`, `last_name`, `role`, `email_verified`) 
-VALUES ('director@avenir-bank.fr', '$2b$10$example_hash', 'Jean', 'Dupont', 'director', TRUE);
+VALUES ('director@avenir-bank.fr', '$2a$12$04rk1P4hovuMECe2uV7fXeMMK7PXGltAcFX4Gu2p1jUIuv5MXBZ.C', 'Jean', 'Dupont', 'director', TRUE);
 
 -- Insertion d'un conseiller bancaire
 INSERT INTO `users` (`email`, `password_hash`, `first_name`, `last_name`, `role`, `email_verified`) 
-VALUES ('advisor@avenir-bank.fr', '$2b$10$example_hash', 'Marie', 'Martin', 'advisor', TRUE);
+VALUES ('advisor@avenir-bank.fr', '$2a$12$04rk1P4hovuMECe2uV7fXeMMK7PXGltAcFX4Gu2p1jUIuv5MXBZ.C', 'Marie', 'Martin', 'advisor', TRUE);
 
 -- Insertion d'un client exemple
 INSERT INTO `users` (`email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 
-VALUES ('client@example.com', '$2b$10$example_hash', 'Pierre', 'Durand', '0123456789', '123 Rue de la Paix, Paris', 'client', TRUE);
-
+VALUES ('client@avenir-bank.fr', '$2a$12$04rk1P4hovuMECe2uV7fXeMMK7PXGltAcFX4Gu2p1jUIuv5MXBZ.C', 'Pierre', 'Durand', '0123456789', '123 Rue de la Paix, Paris', 'client', TRUE);
 -- Insertion de quelques actions disponibles
 INSERT INTO `stocks` (`symbol`, `company_name`, `current_price`, `is_available`) VALUES
 ('AAPL', 'Apple Inc.', 150.25, TRUE),

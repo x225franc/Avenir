@@ -5,7 +5,11 @@ import { useAuth } from "@/components/contexts/AuthContext";
 import { messageApi, type Conversation, type Message } from "@/components/lib/api/message.service";
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const SOCKET_URL = (
+    process.env.NEXT_PUBLIC_WS_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:3001"
+).replace(/\/api\/?$/, "");
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 const AvatarPlaceholder = ({ name, color = "bg-gray-100 text-gray-600" }: { name: string; color?: string }) => {
@@ -108,7 +112,7 @@ export default function AdvisorMessagesPage() {
     // WebSocket Setup
     useEffect(() => {
         if (!user) return;
-        const newSocket = io(SOCKET_URL);
+        const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
             console.log("✅ Advisor Connected to WebSocket");
@@ -306,6 +310,48 @@ export default function AdvisorMessagesPage() {
                     {/* Scrollable Conversation Lists */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-6">
                         
+                        {/* Section: En attente */}
+                        {unassignedConversations.length > 0 && (
+                            <div className="space-y-1">
+                                <h3 className="px-3 text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">
+                                    ⚠️ En attente ({unassignedConversations.length})
+                                </h3>
+                                {unassignedConversations.map((conv) => (
+                                    <ConversationItem 
+                                        key={conv.id} 
+                                        conv={conv} 
+                                        isActive={selectedConversation?.id === conv.id} 
+                                        onClick={() => setSelectedConversation(conv)}
+                                        clientName={getClientName(conv.clientId)}
+                                        statusColor="bg-orange-50 border-orange-100"
+                                        textColor="text-orange-900"
+                                        activeColor="bg-orange-100 border-orange-200"
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Section: Mes conversations */}
+                        {myConversations.length > 0 && (
+                            <div className="space-y-1">
+                                <h3 className="px-3 text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">
+                                    💬 Mes conversations ({myConversations.length})
+                                </h3>
+                                {myConversations.map((conv) => (
+                                    <ConversationItem 
+                                        key={conv.id} 
+                                        conv={conv} 
+                                        isActive={selectedConversation?.id === conv.id} 
+                                        onClick={() => setSelectedConversation(conv)}
+                                        clientName={getClientName(conv.clientId)}
+                                        statusColor="bg-emerald-50 border-emerald-100"
+                                        textColor="text-emerald-900"
+                                        activeColor="bg-emerald-100 border-emerald-200"
+                                    />
+                                ))}
+                            </div>
+                        )}
+
                         {/* Section: Historique */}
                         {closedConversations.length > 0 && (
                             <div className="space-y-1">
@@ -322,6 +368,14 @@ export default function AdvisorMessagesPage() {
                                         isClosed
                                     />
                                 ))}
+                            </div>
+                        )}
+
+                        {/* Empty State */}
+                        {conversations.length === 0 && (
+                            <div className="flex flex-col items-center justify-center h-full text-gray-400 p-6">
+                                <Icons.ChatBubble />
+                                <p className="mt-3 text-sm font-medium">Aucune conversation pour le moment</p>
                             </div>
                         )}
                     </div>

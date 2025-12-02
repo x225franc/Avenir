@@ -41,4 +41,9 @@ export interface IUserRepository {
 	 * Vérifie si un email existe déjà
 	 */
 	emailExists(email: Email): Promise<boolean>;
+
+	/**
+	 * Trouve un utilisateur par son token de vérification
+	 */
+	findByVerificationToken(token: string): Promise<User | null>;
 }

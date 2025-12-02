@@ -85,11 +85,9 @@ export class RegisterUser {
 			// Sauvegarder dans le repository (pour obtenir l'ID réel de MySQL)
 			await this.userRepository.save(user);
 
-			// Générer et assigner le token de vérification APRÈS avoir l'ID réel
-			// Format: userId:timestamp encodé en base64
-			// Le timestamp permet de vérifier l'expiration (24h)
+			// Token aléatoire 
 			const verificationToken = Buffer.from(
-				`${user.id.value}:${Date.now()}`
+				`${user.id.value}:${Math.random().toString(36).substring(2)}`
 			).toString("base64");
 			user.setVerificationToken(verificationToken);
 

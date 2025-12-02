@@ -24,16 +24,16 @@ router.post("/login", (req, res) => userController.login(req, res));
 router.get("/me", authMiddleware, (req, res) => userController.getMe(req, res));
 
 /**
- * GET /api/users/:id
- * Récupérer les informations d'un utilisateur par son ID
- */
-router.get("/:id", (req, res) => userController.getUserById(req, res));
-
-/**
  * GET /api/users/verify-email?token=XXX
  * Vérifier l'email d'un utilisateur
  */
 router.get("/verify-email", (req, res) => userController.verifyEmail(req, res));
+
+/**
+ * GET /api/users/:id
+ * Récupérer les informations d'un utilisateur par son ID
+ */
+router.get("/:id", (req, res) => userController.getUserById(req, res));
 
 /**
  * POST /api/users/forgot-password

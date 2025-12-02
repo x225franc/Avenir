@@ -3,29 +3,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { io, Socket } from "socket.io-client";
+import { internalMessageApi, type InternalMessage, type StaffMember } from "@/components/lib/api/internal-message.service";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-
-interface InternalMessage {
-    id: number;
-    fromUserId: number;
-    toUserId: number | null;
-    content: string;
-    isGroupMessage: boolean;
-    isRead: boolean;
-    createdAt: string;
-}
-
-interface StaffMember {
-    id: number;
-    firstName: string;
-    lastName: string;
-    fullName: string;
-    email: string;
-    role: "advisor" | "director";
-}
+const SOCKET_URL = (
+    process.env.NEXT_PUBLIC_WS_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:3001"
+).replace(/\/api\/?$/, "");
 
 // --- Composants UI internes ---
 
@@ -88,23 +73,20 @@ export default function InternalChatPage() {
         const loadData = async () => {
             try {
                 // 1. Membres
-                const resMembers = await fetch(`${API_URL}/internal-messages/staff-members`);
-                const dataMembers = await resMembers.json();
-                if (dataMembers.success) {
-                    setStaffMembers(dataMembers.data);
+                const resMembers = await internalMessageApi.getStaffMembers();
+                if (resMembers.success && resMembers.data) {
+                    setStaffMembers(resMembers.data);
                     const map = new Map<number, StaffMember>();
-                    dataMembers.data.forEach((m: StaffMember) => map.set(m.id, m));
+                    resMembers.data.forEach((m: StaffMember) => map.set(m.id, m));
                     setStaffMemberDetails(map);
                 }
 
                 // 2. Messages
-                const params = new URLSearchParams({ userId: user.id.toString(), type: "group" });
-                const resMsg = await fetch(`${API_URL}/internal-messages?${params.toString()}`);
-                const dataMsg = await resMsg.json();
+                const resMsg = await internalMessageApi.getMessages(user.id.toString(), "group");
                 
-                if (dataMsg.success) {
+                if (resMsg.success && resMsg.data) {
                     // CORRECTION ICI : On formate chaque message reçu de la BDD
-                    const cleanMessages = dataMsg.data.map(formatMessage);
+                    const cleanMessages = resMsg.data.map(formatMessage);
                     setMessages(cleanMessages);
                 }
             } catch (error) {
@@ -121,7 +103,7 @@ export default function InternalChatPage() {
     useEffect(() => {
         if (!user) return;
 
-        const newSocket = io(SOCKET_URL, { transports: ["websocket"], reconnection: true });
+        const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
             console.log("✅ WebSocket connecté");
@@ -186,11 +168,7 @@ export default function InternalChatPage() {
         socket?.emit("internal_typing:stop", { userId: user.id, targetUserId: null });
 
         try {
-            await fetch(`${API_URL}/internal-messages`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ fromUserId: user.id.toString(), content, isGroupMessage: true }),
-            });
+            await internalMessageApi.sendMessage(user.id.toString(), content, true);
         } catch (error) {
             console.error("Erreur envoi", error);
         } finally {

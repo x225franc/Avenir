@@ -50,6 +50,7 @@ export class InternalMessageController {
 					toUserId: message.getToUserId()?.value || null,
 					content: message.getContent(),
 					isGroupMessage: message.getIsGroupMessage(),
+					isRead: message.getIsRead(),
 					createdAt: message.getCreatedAt(),
 				});
 			} catch (error) {
