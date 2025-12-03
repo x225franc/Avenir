@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "../../components/contexts/AuthContext";
 import { investmentService } from "../../components/lib/api/investment.service";
+import { useClientMetadata } from "@/components/lib/seo";
 
 /**
  * Page d'accueil des investissements
@@ -13,6 +14,9 @@ export default function InvestmentHomePage() {
 	const { user } = useAuth();
 	const [transactionFee, setTransactionFee] = useState<number>(1); // Défaut 1€
 	const [feeLoading, setFeeLoading] = useState(true);
+
+	// Métadonnées SEO
+	useClientMetadata("/investment");
 
 	// Récupérer les frais d'investissement au chargement
 	useEffect(() => {

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schema de validation Zod
@@ -30,6 +31,8 @@ export default function SavingsRatePage() {
 		newRate: number;
 		notifiedUsers: number;
 	} | null>(null);
+
+	useClientMetadata("/admin/savings");
 
 	const {
 		register,

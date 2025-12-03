@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schema de validation Zod pour éditer une action
@@ -44,6 +45,8 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 	const unwrappedParams = React.use(params);
 	const router = useRouter();
 	const stockId = unwrappedParams.id;
+
+	useClientMetadata("/admin/investments/[id]");
 
 	const [stock, setStock] = useState<Stock | null>(null);
 	const [loading, setLoading] = useState(true);

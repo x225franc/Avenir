@@ -5,6 +5,7 @@ import { useAuth } from "../../../../components/contexts/AuthContext";
 import { newsService, CreateNewsDTO } from "../../../../components/lib/api/news.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
@@ -20,6 +21,8 @@ export default function CreateNewsPage() {
 	});
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/advisor/news");
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

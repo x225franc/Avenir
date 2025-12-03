@@ -15,6 +15,7 @@ import { transferService } from "../../../../components/lib/api/transfer.service
 import { operationService } from "../../../../components/lib/api/operation.service";
 import { Transaction } from "../../../../components/lib/api/transfer.types";
 import { NotificationModal } from "../../../../components/ui/NotificationModal";
+import { useClientMetadata } from "@/components/lib/seo";
 
 // Schéma de validation pour la modification
 const updateAccountSchema = z.object({
@@ -36,6 +37,8 @@ export default function AccountDetailPage({ params }: AccountDetailPageProps) {
 	const unwrappedParams = React.use(params);
 	const router = useRouter();
 	const accountId = unwrappedParams.id;
+
+	useClientMetadata("/dashboard/accounts/[id]");
 
 	const [account, setAccount] = useState<Account | null>(null);
 	const [transactions, setTransactions] = useState<Transaction[]>([]);

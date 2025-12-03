@@ -1,4 +1,5 @@
 import apiClient, { ApiResponse } from "./client";
+import { cacheManager, CacheKeys, CacheTTL } from "../cache";
 
 /**
  * DTOs pour les actualités
@@ -35,8 +36,13 @@ export const newsService = {
 	 * Récupérer toutes les actualités (publiées seulement pour les clients)
 	 */
 	async getAll(publishedOnly: boolean = false): Promise<ApiResponse<News[]>> {
+		const cacheKey = `${CacheKeys.NEWS}:all:${publishedOnly}`;
+		const cached = cacheManager.get<ApiResponse<News[]>>(cacheKey);
+		if (cached) return cached;
+
 		const url = publishedOnly ? "/news?published=true" : "/news";
 		const response = await apiClient.get<ApiResponse<News[]>>(url);
+		cacheManager.set(cacheKey, response.data, CacheTTL.LONG);
 		return response.data;
 	},
 
@@ -53,6 +59,8 @@ export const newsService = {
 	 */
 	async create(data: CreateNewsDTO): Promise<ApiResponse<News>> {
 		const response = await apiClient.post<ApiResponse<News>>("/news", data);
+		// Invalider le cache des news
+		cacheManager.invalidatePattern(`${CacheKeys.NEWS}:.*`);
 		return response.data;
 	},
 

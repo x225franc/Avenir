@@ -1,4 +1,5 @@
 import apiClient from "./client";
+import { cacheManager, CacheKeys, CacheTTL } from "../cache";
 
 /**
  * Types pour l'investissement
@@ -119,9 +120,14 @@ export class InvestmentService {
 	async getAvailableStocks(
 		includeUnavailable = false
 	): Promise<ApiResponse<Stock[]>> {
+		const cacheKey = `${CacheKeys.STOCKS}:available:${includeUnavailable}`;
+		const cached = cacheManager.get<ApiResponse<Stock[]>>(cacheKey);
+		if (cached) return cached;
+
 		const response = await apiClient.get<ApiResponse<Stock[]>>(
 			`/investment/stocks?includeUnavailable=${includeUnavailable}`
 		);
+		cacheManager.set(cacheKey, response.data, CacheTTL.SHORT);
 		return response.data;
 	}
 
@@ -135,6 +141,9 @@ export class InvestmentService {
 			"/investment/orders",
 			order
 		);
+		// Invalider les caches après mutation
+		cacheManager.invalidatePattern(`${CacheKeys.PORTFOLIO}:.*`);
+		cacheManager.invalidatePattern(`${CacheKeys.STOCKS}:.*`);
 		return response.data;
 	}
 
@@ -162,9 +171,14 @@ export class InvestmentService {
 	 * Récupère le portefeuille de l'utilisateur
 	 */
 	async getPortfolio(): Promise<ApiResponse<Portfolio>> {
+		const cacheKey = `${CacheKeys.PORTFOLIO}:user`;
+		const cached = cacheManager.get<ApiResponse<Portfolio>>(cacheKey);
+		if (cached) return cached;
+
 		const response = await apiClient.get<ApiResponse<Portfolio>>(
 			"/investment/portfolio"
 		);
+		cacheManager.set(cacheKey, response.data, CacheTTL.MEDIUM);
 		return response.data;
 	}
 

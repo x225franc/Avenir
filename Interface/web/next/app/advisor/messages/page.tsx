@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { messageApi, type Conversation, type Message } from "@/components/lib/api/message.service";
 import { io, Socket } from "socket.io-client";
+import { useClientMetadata } from "@/components/lib/seo";
 
 const SOCKET_URL = (
     process.env.NEXT_PUBLIC_WS_URL ||
@@ -49,6 +50,8 @@ export default function AdvisorMessagesPage() {
     const [showTransferModal, setShowTransferModal] = useState(false);
     const [selectedAdvisorForTransfer, setSelectedAdvisorForTransfer] = useState<number | null>(null);
     const [clientInfo, setClientInfo] = useState<Map<string, any>>(new Map());
+
+    useClientMetadata("/advisor/messages");
     
     const selectedConversationRef = useRef<Conversation | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);

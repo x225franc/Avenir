@@ -8,6 +8,7 @@ import {
 	Portfolio,
 	Position,
 } from "../../../components/lib/api/investment.service";
+import { useClientMetadata } from "@/components/lib/seo";
 
 /**
  * Page du portefeuille d'investissement
@@ -17,6 +18,8 @@ export default function PortfolioPage() {
 	const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/investment/portfolio");
 
 
 	useEffect(() => {

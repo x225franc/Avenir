@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { userService, User } from "../../../components/lib/api/user.service";
 import Link from "next/link";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function AdminUsersPage() {
@@ -13,6 +14,8 @@ export default function AdminUsersPage() {
 		show: false,
 		user: null,
 	});
+
+	useClientMetadata("/admin/users");
 
 	useEffect(() => {
 		loadUsers();

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import apiClient from "../../components/lib/api/client";
 import { useAuth } from "../../components/contexts/AuthContext";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function VerifyEmailPage() {
@@ -15,6 +16,8 @@ export default function VerifyEmailPage() {
 	const [loading, setLoading] = useState(true);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState<string>("");
+
+	useClientMetadata("/verify-email");
 
 	useEffect(() => {
 		// Rediriger si authentifié

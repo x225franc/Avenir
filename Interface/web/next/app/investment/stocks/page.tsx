@@ -10,6 +10,7 @@ import {
 import { accountService, Account } from "../../../components/lib/api/account.service";
 import { Position } from "../../../components/lib/api/investment.service";
 import { NotificationModal } from "../../../components/ui/NotificationModal";
+import { useClientMetadata } from "@/components/lib/seo";
 
 // État pour suivre les variations de prix
 interface PriceChange {
@@ -29,6 +30,8 @@ export default function StocksPage() {
 	const [accounts, setAccounts] = useState<Account[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/investment/stocks");
 	const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
 	const [showOrderModal, setShowOrderModal] = useState(false);
 	const [hasInvestmentAccount, setHasInvestmentAccount] = useState<boolean | null>(null);

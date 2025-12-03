@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { creditService, Credit } from "../../../components/lib/api/credit.service";
+import { useClientMetadata } from "@/components/lib/seo";
 
 export default function MyCreditsPage() {
 	const router = useRouter();
@@ -11,6 +12,8 @@ export default function MyCreditsPage() {
 	const [credits, setCredits] = useState<Credit[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/dashboard/credits");
 
 	useEffect(() => {
 		if (!authLoading && !isAuthenticated) {

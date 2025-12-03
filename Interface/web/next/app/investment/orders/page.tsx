@@ -7,6 +7,7 @@ import {
 	investmentService,
 	InvestmentOrder,
 } from "../../../components/lib/api/investment.service";
+import { useClientMetadata } from "@/components/lib/seo";
 
 /**
  * Page d'historique des ordres d'investissement
@@ -17,6 +18,8 @@ export default function OrdersPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
+
+	useClientMetadata("/investment/orders");
 
 	useEffect(() => {
 		if (user) {

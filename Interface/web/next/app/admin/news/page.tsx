@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { newsService, News } from "../../../components/lib/api/news.service";
 import Link from "next/link";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
@@ -15,6 +16,8 @@ export default function AdminNewsPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
+
+	useClientMetadata("/admin/news");
 
 	useEffect(() => {
 		loadNews();

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { userService, CreateUserDTO } from "../../../../components/lib/api/user.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function CreateUserPage() {
@@ -19,6 +20,8 @@ export default function CreateUserPage() {
 		address: "",
 		role: "client",
 	});
+
+	useClientMetadata("/admin/users");
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

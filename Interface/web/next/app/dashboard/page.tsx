@@ -9,6 +9,7 @@ import {
 	Account,
 } from "../../components/lib/api/account.service";
 import { SSENotifications } from "../../components/ui/SSENotifications";
+import { useClientMetadata } from "@/components/lib/seo";
 
 export default function DashboardPage() {
 	const router = useRouter();
@@ -16,6 +17,9 @@ export default function DashboardPage() {
 	const [accounts, setAccounts] = useState<Account[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string>("");
+
+	// Métadonnées SEO
+	useClientMetadata("/dashboard");
 
 	useEffect(() => {
 		// Rediriger si non authentifié

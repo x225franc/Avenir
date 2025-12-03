@@ -244,8 +244,8 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 - ✅ Utiliser un ou plusieurs **contexts** (`React Context`) - AuthContext implémenté pour authentification globale.  
 
 ### 🧠 Gestion des formulaires
-- ⏳ Les formulaires doivent être gérés avec **React Hook Form**.  
-- ⏳ La validation doit s’appuyer sur des **schémas** (ex : `zod`).  
+- ✅ Les formulaires doivent être gérés avec **React Hook Form**.  
+- ✅ La validation doit s’appuyer sur des **schémas** (ex : `zod`).  
 
 ### ⚠️ Gestion des erreurs
 - ✅ Intégrer des pages **404** et **500**, en accord avec la charte graphique de l’application.  
@@ -254,11 +254,11 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 - ⏳ L’application doit être traduite en **français** et en **anglais**.  
 
 ### 🗺️ SEO et structure du site
-- ⏳ Fournir un fichier **`sitemap.xml`** listant les pages de l’application.  
-- ⏳ Intégrer correctement les **métadonnées SEO** (titre, description, etc.) sur la page d’accueil.  
+- ✅ Fournir un fichier **`sitemap.xml`** listant les pages de l’application.  
+- ✅ Intégrer correctement les **métadonnées SEO** (titre, description, etc.) sur la page d’accueil.  
 
 ### ⚡ Optimisation et performance
-- ⏳ Mettre en place un **système de cache**, qu’il soit **applicatif** ou côté **API**.  
+- ✅ Mettre en place un **système de cache**, qu’il soit **applicatif** ou côté **API**.  
 
 ---
 

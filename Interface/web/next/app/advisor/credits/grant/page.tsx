@@ -6,6 +6,7 @@ import { useAuth } from "../../../../components/contexts/AuthContext";
 import { creditService } from "../../../../components/lib/api/credit.service";
 import { accountService, Account } from "../../../../components/lib/api/account.service";
 import { userService, User as ApiUser } from "../../../../components/lib/api/user.service";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface User {
@@ -23,6 +24,8 @@ export default function GrantCreditPage() {
 	const [loadingData, setLoadingData] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState(false);
+
+	useClientMetadata("/advisor/credits");
 
 	const [users, setUsers] = useState<User[]>([]);
 	const [accounts, setAccounts] = useState<Account[]>([]);

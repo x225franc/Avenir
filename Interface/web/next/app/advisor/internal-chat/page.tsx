@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { io, Socket } from "socket.io-client";
 import { internalMessageApi, type InternalMessage, type StaffMember } from "@/components/lib/api/internal-message.service";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 const SOCKET_URL = (
@@ -38,6 +39,8 @@ export default function InternalChatPage() {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [typingUsers, setTypingUsers] = useState<Set<number>>(new Set());
     const [staffMemberDetails, setStaffMemberDetails] = useState<Map<number, StaffMember>>(new Map());
+
+    useClientMetadata("/advisor/internal-chat");
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);

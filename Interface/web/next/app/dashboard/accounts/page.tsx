@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { accountService, Account } from "../../../components/lib/api/account.service";
+import { useClientMetadata } from "@/components/lib/seo";
 
 export default function AccountsPage() {
 	const router = useRouter();
@@ -12,6 +13,8 @@ export default function AccountsPage() {
 	const [accounts, setAccounts] = useState<Account[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string>("");
+
+	useClientMetadata("/dashboard/accounts");
 
 	useEffect(() => {
 		if (!authLoading && !isAuthenticated) {

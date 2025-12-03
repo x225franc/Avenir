@@ -4,6 +4,7 @@ import '@flaticon/flaticon-uicons/css/all/all.css';
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../components/contexts/AuthContext";
 import { newsService, News } from "../../components/lib/api/news.service";
+import { useClientMetadata } from "@/components/lib/seo";
 
 /**
  * Page d'actualités pour les clients (lecture seule)
@@ -14,6 +15,8 @@ export default function ClientNewsPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [selectedNews, setSelectedNews] = useState<News | null>(null);
+
+	useClientMetadata("/news");
 
 	useEffect(() => {
 		loadNews();

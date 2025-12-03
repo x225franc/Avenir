@@ -8,6 +8,7 @@ import Link from "next/link";
 import { registerSchema, RegisterFormData } from "../../components/lib/validations/schemas";
 import { authService } from "../../components/lib/api/auth.service";
 import { useAuth } from "@/components/contexts/AuthContext";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function RegisterPage() {
@@ -17,6 +18,9 @@ export default function RegisterPage() {
 	const [success, setSuccess] = useState<string>("");
 	const { loading: authLoading, isAuthenticated } = useAuth();
 	const [loading, setLoading] = useState(false);
+
+	// Métadonnées SEO
+	useClientMetadata("/register");
 
 	// Détecter le type d'utilisateur basé sur l'URL
 	const getUserTypeFromPath = () => {

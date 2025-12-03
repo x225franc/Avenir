@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { userService, User, UpdateUserDTO } from "../../../../components/lib/api/user.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface EditUserPageProps {
@@ -29,6 +30,8 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 		role: "client",
 		emailVerified: false,
 	});
+
+	useClientMetadata("/admin/users");
 
 	useEffect(() => {
 		loadUser();

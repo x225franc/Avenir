@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useUiShell } from "../components/contexts/UiShellContext";
 import Link from "next/link";
 import '@flaticon/flaticon-uicons/css/all/all.css';
+import { useClientMetadata } from "@/components/lib/seo";
 
 interface ErrorProps {
 	error: Error & { digest?: string };
@@ -12,6 +13,8 @@ interface ErrorProps {
 
 export default function Error({ error, reset }: ErrorProps) {
     const { setVisibility } = useUiShell();
+	// Metadonnées SEO pour la page d'erreur (doit être appelé dans le composant)
+	useClientMetadata("/error");
 	useEffect(() => {
 		// Log l'erreur dans un service de monitoring
 		console.error("Application Error:", error);

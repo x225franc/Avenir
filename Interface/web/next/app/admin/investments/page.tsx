@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schema de validation Zod pour créer une action
@@ -47,6 +48,8 @@ export default function AdminInvestmentsPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState<string | null>(null);
 	const [showCreateForm, setShowCreateForm] = useState(false);
+
+	useClientMetadata("/admin/investments");
 
 	const {
 		register,

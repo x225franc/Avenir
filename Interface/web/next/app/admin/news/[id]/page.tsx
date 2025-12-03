@@ -5,6 +5,7 @@ import { useAuth } from "../../../../components/contexts/AuthContext";
 import { newsService, News, UpdateNewsDTO } from "../../../../components/lib/api/news.service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 interface EditAdminNewsPageProps {
@@ -29,6 +30,8 @@ export default function EditAdminNewsPage({ params }: EditAdminNewsPageProps) {
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/admin/news/[id]");
 
 	useEffect(() => {
 		loadNews();

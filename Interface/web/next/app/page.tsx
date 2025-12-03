@@ -2,6 +2,7 @@
 
 import '@flaticon/flaticon-uicons/css/all/all.css';
 import { useEffect } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../components/contexts/AuthContext";
@@ -30,6 +31,33 @@ export default function Home() {
 	}
 
 	return (
+		<>
+			<Head>
+				<meta charSet="UTF-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				<meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+
+				<title>AVENIR | Gérez vos liquidités, épargne et investissements</title>
+
+				<meta name="description" content="Gérez vos liquidités, épargne et investissements avec AVENIR. Une banque moderne qui place vos intérêts au cœur de ses priorités." />
+
+				<meta name="keywords" content="banque en ligne, compte bancaire, épargne, investissement, actions, crédit, AVENIR" />
+
+				<meta name="author" content="AVENIR" />
+
+				<meta property="og:type" content="website" />
+				{/* <meta property="og:url" content="https://avenir-bank.fr/" /> */}
+				<meta property="og:title" content="AVENIR | Gérez vos liquidités, épargne et investissements" />
+				<meta property="og:description" content="Gérez vos liquidités, épargne et investissements avec AVENIR." />
+				<meta property="og:image" content="/og-image.jpg" />
+				<meta property="og:locale" content="fr_FR" />
+
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:title" content="AVENIR | Gérez vos liquidités, épargne et investissements" />
+				<meta name="twitter:description" content="Gérez vos liquidités, épargne et investissements avec AVENIR." />
+				<meta name="twitter:image" content="/og-image.jpg" />
+			</Head>
+			
 		<div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
 			<section className="relative overflow-hidden">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 sm:pt-24 sm:pb-20">
@@ -144,5 +172,6 @@ export default function Home() {
 				</div>
 			</section>
 		</div>
+		</>
 	);
 }

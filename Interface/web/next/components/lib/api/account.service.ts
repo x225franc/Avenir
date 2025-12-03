@@ -1,4 +1,5 @@
 import apiClient, { ApiResponse } from "./client";
+import { cacheManager, CacheKeys, CacheTTL } from "../cache";
 
 /**
  * DTOs pour les comptes
@@ -35,6 +36,8 @@ export const accountService = {
 		const response = await apiClient.post<
 			ApiResponse<{ accountId: string; iban: string }>
 		>("/accounts", data);
+		// Invalider le cache des comptes
+		cacheManager.invalidatePattern(`${CacheKeys.ACCOUNTS}:.*`);
 		return response.data;
 	},
 
@@ -42,7 +45,12 @@ export const accountService = {
 	 * Récupérer tous les comptes de l'utilisateur
 	 */
 	async getAll(): Promise<ApiResponse<Account[]>> {
+		const cacheKey = `${CacheKeys.ACCOUNTS}:list`;
+		const cached = cacheManager.get<ApiResponse<Account[]>>(cacheKey);
+		if (cached) return cached;
+
 		const response = await apiClient.get<ApiResponse<Account[]>>("/accounts");
+		cacheManager.set(cacheKey, response.data, CacheTTL.MEDIUM);
 		return response.data;
 	},
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { userService, User } from "../../../components/lib/api/user.service";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function AdvisorClientsPage() {
@@ -15,6 +16,8 @@ export default function AdvisorClientsPage() {
 	const [notificationMessage, setNotificationMessage] = useState("");
 	const [isSending, setIsSending] = useState(false);
 	const [notificationSuccess, setNotificationSuccess] = useState(false);
+
+	useClientMetadata("/advisor/clients");
 
 	useEffect(() => {
 		loadClients();

@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../components/contexts/AuthContext";
 import LayoutWrapper from "../components/LayoutWrapper";
-
 import { UiShellProvider } from "../components/contexts/UiShellContext";
+import { defaultMetadata } from "@/components/lib/seo";
+import type { Viewport } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,9 +17,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Banque AVENIR - Gestion bancaire moderne",
-  description: "Plateforme de gestion bancaire pour clients, conseillers et directeurs",
+export const metadata: Metadata = defaultMetadata;
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

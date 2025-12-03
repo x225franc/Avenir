@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountService } from "../../../../components/lib/api/account.service";
 import { useAuth } from "../../../../components/contexts/AuthContext";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 // Schéma de validation
@@ -29,7 +30,9 @@ export default function CreateAccountPage() {
 	const router = useRouter();
 	const { user, isAuthenticated } = useAuth();
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string>("");
+	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/dashboard/accounts/create");
 	const [success, setSuccess] = useState(false);
 
 	const {

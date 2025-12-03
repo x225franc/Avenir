@@ -8,6 +8,7 @@ import * as z from "zod";
 import { accountService, Account } from "@/components/lib/api/account.service";
 import { transferService } from "@/components/lib/api/transfer.service";
 import { useAuth } from "@/components/contexts/AuthContext";
+import { useClientMetadata } from "@/components/lib/seo";
 import Link from "next/link";
 
 const transferSchema = z.object({
@@ -54,6 +55,8 @@ export default function TransfersPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useClientMetadata("/dashboard/transfers");
   
   // États pour la recherche IBAN
   const [ibanLoading, setIbanLoading] = useState(false);

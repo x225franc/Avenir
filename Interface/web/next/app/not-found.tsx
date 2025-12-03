@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useUiShell } from "../components/contexts/UiShellContext";
 import '@flaticon/flaticon-uicons/css/all/all.css';
+import { useClientMetadata } from "@/components/lib/seo";
 
 export default function NotFound() {
     const { setVisibility } = useUiShell();
     useEffect(() => {
         setVisibility({ showHeader: false, showFooter: false });
     }, []);
+	useClientMetadata("/not-found");
 	return (
 		<div className='min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4'>
 			<div className='max-w-2xl mx-auto text-center'>

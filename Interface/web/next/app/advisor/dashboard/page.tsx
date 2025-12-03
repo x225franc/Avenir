@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../components/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { newsService, News } from "../../../components/lib/api/news.service";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 /**
@@ -15,6 +16,8 @@ export default function AdvisorDashboard() {
 	const [news, setNews] = useState<News[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	useClientMetadata("/advisor/dashboard");
 
 	useEffect(() => {
 		if (!authLoading) {

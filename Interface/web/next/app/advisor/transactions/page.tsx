@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { transactionService, Transaction } from "../../../components/lib/api/transaction.service";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 export default function AdvisorTransactionsPage() {
@@ -9,6 +10,8 @@ export default function AdvisorTransactionsPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [processingId, setProcessingId] = useState<string | null>(null);
+
+	useClientMetadata("/advisor/dashboard");
 
 	useEffect(() => {
 		loadTransactions();

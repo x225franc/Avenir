@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { resetPasswordSchema, ResetPasswordFormData } from "@/components/lib/validations/schemas";
+import { useClientMetadata } from "@/components/lib/seo";
 import '@flaticon/flaticon-uicons/css/all/all.css';
 
 function ResetPasswordContent() {
@@ -18,6 +19,8 @@ function ResetPasswordContent() {
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
+
+	useClientMetadata("/reset-password");
 
 	const {
 		register,
