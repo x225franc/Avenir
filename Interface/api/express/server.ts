@@ -128,7 +128,7 @@ if (require.main === module) {
 
 						if (userId) {
 							socket.join(`user:${userId}`);
-							console.log(`👤 User ${userId} joined room user:${userId}`);
+							// console.log(`User ${userId} joined room user:${userId}`);
 						}
 
 						// Join staff rooms for advisors and directors (case-insensitive)

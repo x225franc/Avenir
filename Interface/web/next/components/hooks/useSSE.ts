@@ -33,13 +33,13 @@ export function useSSE(options: SSEHookOptions = {}) {
 		const eventSource = new EventSource(url);
 
 		eventSource.onopen = () => {
-			console.log("✅ SSE Connected");
+			console.log("✅ SSE Connecté");
 			setIsConnected(true);
 			options.onConnected?.();
 		};
 
 		eventSource.onerror = (error) => {
-			console.error("❌ SSE Error:", error);
+			console.error("⚠️ SSE Erreur:", error);
 			setIsConnected(false);
 			options.onError?.(error);
 		};

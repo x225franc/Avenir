@@ -118,7 +118,7 @@ export default function AdvisorMessagesPage() {
         const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
-            console.log("✅ Advisor Connected to WebSocket");
+            console.log("✅ Conseiller connecté au WebSocket");
             newSocket.emit("join", { userId: parseInt(user.id), role: "advisor" });
         });
 
@@ -317,7 +317,7 @@ export default function AdvisorMessagesPage() {
                         {unassignedConversations.length > 0 && (
                             <div className="space-y-1">
                                 <h3 className="px-3 text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">
-                                    ⚠️ En attente ({unassignedConversations.length})
+                                    En attente ({unassignedConversations.length})
                                 </h3>
                                 {unassignedConversations.map((conv) => (
                                     <ConversationItem 
@@ -401,7 +401,7 @@ export default function AdvisorMessagesPage() {
                                             {selectedConversation.isClosed ? (
                                                 <span className="flex items-center gap-1 text-gray-400"><Icons.Lock /> Clôturée</span>
                                             ) : !selectedConversation.isAssigned ? (
-                                                <span className="text-orange-500 font-medium">⚠️ En attente d'assignation</span>
+                                                <span className="text-orange-500 font-medium">En attente d'assignation</span>
                                             ) : (
                                                 <span className="text-emerald-500 font-medium">● Active</span>
                                             )}

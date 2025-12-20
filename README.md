@@ -1,233 +1,290 @@
-# 🏦 Banque AVENIR
+# Banque AVENIR
 
 ## Clean Code & Clean Architecture - Projet Pédagogique
 
----
-
-## 📋 Introduction
-
-La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies Responsablement) vous a recruté comme développeur Web afin de pouvoir l'aider à développer son métier et concurrencer les banques traditionnelles.
-
-**Objectif :** Créer une application Web permettant à ses clients de gérer efficacement leurs liquidités, épargne et investissements.
+**Alliance de Valeurs Économiques et Nationales Investies Responsablement**
 
 ---
 
-## 🏗️ Architecture du Projet
+## Équipe du Projet
 
-Ce projet utilise une architecture **monorepo** avec plusieurs interfaces et implémentations :
+- **Diawara Alpha Malick** - 5IW2
+- **Difuidi Mijosé** - 5IW2
+- **Classe** : 5IW (Ingénierie Web)
+- **Année** : 2025-2026
+
+---
+
+## Introduction
+
+**AVENIR** est une application bancaire moderne permettant la gestion complète de liquidités, épargne et investissements. Le projet implémente une **Clean Architecture** avec TypeScript, plusieurs frameworks (Express/NestJS, Next.js/Nuxt), et des fonctionnalités temps réel (WebSocket, SSE).
+
+### Fonctionnalités Principales
+
+**Authentification complète** (inscription, vérification email, reset password)  
+**Gestion multi-comptes** (courant, épargne, investissement)  
+**Transferts d'argent** entre comptes  
+**Système d'épargne** avec intérêts quotidiens  
+**Investissement boursier** (achat/vente d'actions, portefeuille)  
+**Crédits bancaires** (calcul mensualités, gestion)  
+**Messagerie temps réel** (client-conseiller via WebSocket)  
+**Chat interne** (équipe bancaire)  
+**Actualités** avec feed temps réel (SSE)  
+**Interface admin** (gestion utilisateurs, taux, actions)  
+**SEO optimisé** (sitemap, métadonnées)  
+**Système de cache** (optimisation performances)  
+
+---
+
+## Architecture du Projet
+
+En **Clean Architecture** avec une séparation en 4 couches indépendantes :
 
 ```
 Avenir/
-├── Interface/
-│   ├── api/
-│   │   ├── express/          # Backend Express + TypeScript
-│   │   └── nestjs/           # Backend NestJS (alternatif)
-│   └── web/
-│       ├── next/             # Frontend Next.js + React
-│       └── nuxt/             # Frontend Nuxt + Vue (alternatif)
-├── package.json              # Configuration monorepo
-└── README.md                 # Ce fichier
+├── Domain/                # Couche Domaine (Entités & Logique métier)
+│   ├── entities/          # Entités métier (User, Account, Transaction...)
+│   ├── enums/             # Énumérations (TransactionType, Status...)
+│   ├── repositories/      # Interfaces des repositories (contrats)
+│   └── value-objects/     # Value Objects (Email, IBAN, Money...)
+│
+├── Application/           # Couche Application (Cas d'usage)
+│   ├── use-cases/         # Use Cases métier (CreateAccount, TransferMoney...)
+│   ├── services/          # Services applicatifs
+│
+├── Infrastructure/        # Couche Infrastructure (Implémentations)
+│   ├── database/          # Implémentations des repositories
+│   │   └── mysql/         # Repositories MySQL 
+│   │   └── postgresql/    # Repositories PostgreSQL 
+│   ├── jobs/              # Tâches planifiées (Cron)
+│   └── services/          # Services externes (Email, WebSocket...)
+│
+└── Interface/             # Couche Interface (Points d'entrée)
+    ├── api/
+    │   ├── express/       # Backend Express + TypeScript
+    │   └── nestjs/        # Backend NestJS (alternatif)
+    └── web/
+        ├── next/          # Frontend Next.js + React
+        └── nuxt/          # Frontend Nuxt + Vue (alternatif)
 ```
 
-### 🎯 Frameworks disponibles
+### Frameworks disponibles
 
 **Backend (2 implémentations) :**
-- ✅ **Express** : API REST complète avec Clean Architecture
-- ⏳ **NestJS** : Alternative avec modules et décorateurs
+- **Express** : API REST avec Clean Architecture
+- **NestJS** : Alternative avec modules et décorateurs
 
 **Frontend (2 implémentations) :**
-- ✅ **Next.js** : Application React avec App Router
-- ⏳ **Nuxt** : Alternative Vue.js avec SSR
+- **Next.js** : Application React avec App Router
+- **Nuxt** : Alternative Vue.js avec SSR
+---
+
+### Prérequis Système
+
+Avant de commencer, assurez-vous d'avoir :
+
+| Logiciel | Version Minimale |
+|----------|------------------|
+| **Node.js** | 20.0.0+ |
+| **npm** | 9.0.0+ |
+| **MySQL** | 8.0+ |
 
 ---
 
-## 🚀 Installation et Lancement
+## Installation du Projet
 
-### 📋 Prérequis
+### 1. Cloner le projet
 
-- **Node.js** 18+ 
-- **MySQL** (Laragon ou XAMPP)
-- **Git**
-
-### 📦 Installation
-
-1. **Cloner le projet :**
 ```bash
 git clone https://github.com/x225franc/Avenir.git
 cd Avenir
 ```
 
-2. **Installer toutes les dépendances :**
+### 2. Installer les dépendances Node.js
+
 ```bash
 npm run install:all
 ```
 
-### 🗄️ Configuration Base de Données
+### 3. Configurer la base de données avec Laragon
 
-1. **Démarrer MySQL** (via Laragon/XAMPP)
+1. **Démarrer Laragon** : Cliquer sur "Démarrer tout"
+2. **Créer la base de données** :
+   - Ouvrir PHPMyAdmin : [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+   - Créer une nouvelle base : `avenir_bank` (interclassement: `utf8mb4_unicode_ci`)
+3. **Importer le schéma** :
+   - Sélectionner `avenir_bank`
+   - Onglet "Importer" → Fichier `db/schema.sql` → "Exécuter"
 
-2. **Créer la base de données :**
-```sql
-CREATE DATABASE avenir_bank CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-```
+La base contient maintenant les utilisateurs de test, actions boursières et configuration
 
-3. **Configurer les variables d'environnement :**
+### 4. Configurer les variables d'environnement
 
-**Pour Express :** `Interface/api/express/.env`
-```env
-# Base de données
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=avenir_bank
 
-# JWT
-JWT_SECRET=votre_secret_jwt_tres_long_et_securise
-
-# Email
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=contact.omnimatci@gmail.com
-EMAIL_PASS=qcxrqurnnignfobz
-
-# URLs
-FRONTEND_URL=http://localhost:3000
-```
-
-4. **Importer le schéma :**
 ```bash
-mysql -u root -p avenir_bank < database/schema.sql
+Utilisez le fichier `.env` fourni 
+et ajustez si nécessaire (ex. paramètres email).
 ```
 
-### 🎮 Lancement du Projet
+### 5. Lancer l'application (Express + Next.js)
 
-#### 🔥 Option 1 : Express + Next.js (Recommandé)
 ```bash
 npm run dev:1
 ```
-- **Backend Express** : http://localhost:3001
-- **Frontend Next.js** : http://localhost:3000
 
-#### 🔄 Option 2 : NestJS + Nuxt
-```bash
-npm run dev:2
-```
-- **Backend NestJS** : http://localhost:3002
-- **Frontend Nuxt** : http://localhost:3001
+**Accès :**
+- 🌐 Frontend : [http://localhost:3000](http://localhost:3000)
+- 🔧 API : [http://localhost:3001](http://localhost:3001)
 
-#### 🧩 Lancement individuel
+**Pour arrêter :**
+- `Ctrl+C` dans le terminal
 
-**Express uniquement :**
-```bash
-npm run dev:express
-```
+### 6. Premier test
 
-**Next.js uniquement :**
-```bash
-npm run dev:next
-```
-
-**NestJS uniquement :**
-```bash
-npm run dev:nestjs
-```
-
-**Nuxt uniquement :**
-```bash
-npm run dev:nuxt
-```
+1. Ouvrir [http://localhost:3000](http://localhost:3000)
+2. Se connecter avec : `client@avenir-bank.fr` / `123`
+3. Explorer le dashboard, comptes, investissements, etc.
 
 ---
 
-## 🧪 Comptes de Test
+## Comptes de Test
 
-### 👤 Client Test
-- **Email :** `client@example.com`
-- **Mot de passe :** `password123`
-- **Rôle :** Client
+### Identifiants de Connexion
 
-### 👨‍💼 Conseiller Test
-- **Email :** `advisor@avenir-bank.fr`
-- **Mot de passe :** `password123`
-- **Rôle :** Conseiller
+**Mot de passe identique pour tous les comptes :** `123`
 
-### 👔 Directeur Test
-- **Email :** `director@avenir-bank.fr`
-- **Mot de passe :** `password123`
-- **Rôle :** Directeur
+| Email | Mot de passe | Rôle |
+|-------|--------------|------|
+| `client@avenir-bank.fr` | `123` | **Client**|
+| `advisor@avenir-bank.fr` | `123` | **Conseiller**|
+| `director@avenir-bank.fr` | `123` | **Directeur**|
+
+### Status des Comptes
+
+- Tous les comptes ci dessus sont vérifiés
+- Chaque compte **client** possède un **compte courant** pré-chargé
+- Mots de passe de test simplifiés (hashés avec bcrypt en production)
 
 ---
 
-## 🔧 Scripts Disponibles
+## Scripts NPM Disponibles
 
 ```bash
 # Installation
-npm run install:all           # Installer toutes les dépendances
+npm run install:all           # Installer toutes les dépendances (root + workspaces)
 
 # Développement
-npm run dev:1                 # Express + Next.js
-npm run dev:2                 # NestJS + Nuxt
-npm run dev:express           # Express uniquement
-npm run dev:nestjs            # NestJS uniquement  
-npm run dev:next              # Next.js uniquement
-npm run dev:nuxt              # Nuxt uniquement
+npm run dev:1                 # Express + Next.js (workspace 1)
+npm run dev:2                 # NestJS + Nuxt (workspace 2)
+npm run dev:express           # Express API uniquement
+npm run dev:nestjs            # NestJS API uniquement
+npm run dev:next              # Next.js frontend uniquement
+npm run dev:nuxt              # Nuxt frontend uniquement
 
-# Production
-npm run build                 # Build tous les projets
 ```
 
 ---
 
-## 🎯 Fonctionnalités Actuelles
+## API Endpoints Principaux
 
-### ✅ Fonctionnelles
-- **Authentification complète** : Inscription, vérification email, connexion, reset password
-- **Dashboard moderne** : Vue d'ensemble des comptes avec stats
-- **Gestion des comptes** : Création automatique, types (courant, épargne, investissement)
-- **Système email** : Templates HTML professionnels
-- **Sécurité** : JWT, bcrypt, validation Zod
-
-### ⏳ En Développement
-- **Transferts d'argent** : Entre comptes de la banque
-- **Chat temps réel** : WebSocket client-conseiller
-- **Feed actualités** : SSE pour notifications temps réel
-- **Interface admin** : Gestion taux épargne, actions
-- **Système de crédit** : Calcul mensualités, gestion
-
----
-
-## 🔍 API Endpoints (Express)
-
+### Authentification
 ```
-# Authentification
-POST   /api/users/register           # Inscription
-POST   /api/users/login              # Connexion  
-GET    /api/users/me                 # Profil utilisateur
+POST   /api/users/register           # Inscription utilisateur
+POST   /api/users/login              # Connexion (retourne JWT)
+GET    /api/users/me                 # Profil utilisateur connecté
 GET    /api/users/verify-email       # Vérification email
 POST   /api/users/forgot-password    # Demande reset password
-POST   /api/users/reset-password     # Reset password
+POST   /api/users/reset-password     # Réinitialiser password
+```
 
-# Comptes
-GET    /api/accounts                 # Liste comptes
-POST   /api/accounts                 # Créer compte
-GET    /api/accounts/:id             # Détail compte
-PUT    /api/accounts/:id             # Modifier compte
-DELETE /api/accounts/:id             # Supprimer compte
+### Gestion des Comptes
+```
+GET    /api/accounts                 # Liste des comptes de l'utilisateur
+POST   /api/accounts                 # Créer un nouveau compte
+GET    /api/accounts/:id             # Détails d'un compte
+GET    /api/accounts/:id/transactions # Transactions d'un compte
+POST   /api/accounts/transfer        # Virement entre comptes
+```
+
+### Administration
+```
+GET    /api/admin/stocks             # Liste des actions boursières
+POST   /api/admin/stocks             # Créer une action
+PUT    /api/admin/stocks/:id         # Modifier une action
+DELETE /api/admin/stocks/:id         # Supprimer une action
+GET    /api/admin/savings-rate       # Taux d'épargne actuel
+PUT    /api/admin/savings-rate       # Modifier le taux d'épargne
+```
+
+### Investissements
+```
+GET    /api/investments/stocks       # Actions disponibles
+GET    /api/investments/portfolio    # Portfolio de l'utilisateur
+POST   /api/investments/orders       # Passer un ordre d'achat/vente
+GET    /api/investments/orders       # Historique des ordres
+DELETE /api/investments/orders/:id   # Annuler un ordre
+```
+
+### Crédits
+```
+GET    /api/credits                  # Crédits de l'utilisateur
+POST   /api/credits                  # Demander un crédit
+GET    /api/credits/:id              # Détails d'un crédit
+POST   /api/credits/:id/pay          # Effectuer un paiement
+```
+
+### Actualités
+```
+GET    /api/news                     # Liste des actualités
+GET    /api/news/:id                 # Détail d'une actualité
+POST   /api/news                     # Créer une actualité (conseiller/directeur)
+PUT    /api/news/:id                 # Modifier une actualité
+DELETE /api/news/:id                 # Supprimer une actualité
 ```
 
 ---
 
-## 💡 Notes Techniques
+## Technologies Utilisées
 
-- **TypeScript** strict sur backend et frontend
-- **Clean Architecture** : Domain → Application → Interface → Infrastructure
-- **Validation** : Zod schemas côté client et serveur
-- **Base de données** : MySQL avec pool de connexions
-- **Email** : Nodemailer + Gmail SMTP
-- **Authentification** : JWT avec expiration 7 jours
-- **Responsive** : Tailwind CSS mobile-first
+### Backend
+- **TypeScript** 5.0+
+- **Express.js** 4.18+
+- **MySQL** 8.0+
+- **JWT** pour l'authentification
+- **bcrypt** pour le hashage des mots de passe
+- **Zod** pour la validation des données
+- **Nodemailer** pour les emails transactionnels
 
+### Frontend
+- **Next.js** 15+ (App Router)
+- **React** 19+ avec hooks
+- **TypeScript** strict
+- **Tailwind CSS** 3.4+ (mobile-first)
+- **Zod** pour la validation côté client
+- **Axios** pour les appels API
+- **React Hook Form** pour les formulaires
 ---
 
-**🎉 Le projet est prêt ! Lancez `npm run dev:1` et rendez-vous sur http://localhost:3000**
+## Notes Importantes
+
+### Sécurité
+- Tokens JWT avec expiration
+- Validation des entrées (Zod)
+- Protection CORS configurée
+- Middleware d'authentification sur routes protégées
+
+### Base de Données
+- Les **fixtures** sont importées via PHPMyAdmin (voir section installation)
+- Le schéma utilise **utf8mb4** pour les emojis et caractères spéciaux
+- Les **IBANs** sont générés automatiquement (format FR76 XXXX XXXX XXXX XXXX XXXX XXX)
+- Les **transactions** sont trackées avec status (PENDING, COMPLETED, FAILED)
+
+### Performance
+- **Cache système** : Headers HTTP pour assets statiques
+- **Image optimization** : AVIF/WebP avec Next.js
+- **Database indexing** : Index sur colonnes fréquemment requêtées
+- **Connection pooling** : Pool MySQL réutilisable
+
+### Email
+- Email de test configuré dans `.env`
+- Les comptes de test sont déjà vérifiés (pas besoin de confirmer l'email)

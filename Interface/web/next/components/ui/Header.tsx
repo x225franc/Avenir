@@ -156,7 +156,9 @@ export default function Header() {
 									: "from-blue-600 to-blue-800"
 							} rounded-lg flex items-center justify-center`}
 						>
-							<span className='text-white font-bold text-xl'>A</span>
+							<span className='text-white font-bold text-xl'>
+								<img src="/logo.png" alt="AVENIR Logo" className="w-8 h-8" />
+							</span>
 						</div>
 						<div className='flex flex-col justify-center'>
 							<span className='text-xl font-bold text-gray-900 leading-tight'>

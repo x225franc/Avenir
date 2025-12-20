@@ -116,7 +116,7 @@ export default function MessagesPage() {
         const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
-            console.log("✅ Connected to WebSocket");
+            console.log("✅ Connection au WebSocket établie");
             newSocket.emit("join", { userId: user.id, role: "client" });
         });
 
@@ -442,7 +442,7 @@ export default function MessagesPage() {
                                             {selectedConversation.isClosed ? (
                                                 <span className="flex items-center gap-1 text-gray-400"><Icons.Lock /> Clôturée</span>
                                             ) : !selectedConversation.isAssigned ? (
-                                                <span className="text-orange-500 font-medium">⚠️ En attente d'assignation</span>
+                                                <span className="text-orange-500 font-medium">En attente d'assignation</span>
                                             ) : (
                                                 <span className="text-emerald-500 font-medium">● Active</span>
                                             )}

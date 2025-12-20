@@ -130,22 +130,6 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 
 ---
 
-## 🎁 Bonus
-
-### 1. 🔄 CQRS
-- Utiliser des **commandes** pour les requêtes
-- Utiliser des **queries** pour les demandes
-- Permet de préparer l'Event-Sourcing
-
-### 2. 📊 Event-Sourcing
-- Utiliser l'Event-Sourcing avec comme objectif le retour dans le temps des événements passés
-- Utilisation de **microservices** bienvenue
-
-### 3. 🖥️ Framework Frontend
-- Utilisation de plusieurs frameworks frontend
-- **Angular**, **React** & **Solid.js** à privilégier
-
----
 
 # 🌐 Web en Temps Réel
 
@@ -208,21 +192,12 @@ La banque **AVENIR** (Alliance de Valeurs Économiques et Nationnales Investies 
 - Toutes les étapes sur comment installer / lancer le projet
 - Toutes les étapes pour avoir des jeux de données et les identifiants d'un compte de test (un compte utilisateur et un compte admin)
 
-
-### 5. Docker
-⏳ Le projet devra être **dockerisé** afin de faciliter son installation et son lancement.
-
 ---
 
 ## 🎁 BONUS
 
 ### 💭 Statut "En train d'écrire"
 ✅ Afficher le statut « En train d'écrire » si un client ou un conseiller est en train d'envoyer un message dans la partie « contacter un conseiller ».
-
-### 🔔 Notifications Push
-⏳ Faire le lien entre les notifications administrateur et l'API web « notification push ».
-
----
 
 
 ---
@@ -250,22 +225,12 @@ Le travail sera **évalué** et constituera la **note de partiel** pour la mati�
 ### ⚠️ Gestion des erreurs
 - ✅ Intégrer des pages **404** et **500**, en accord avec la charte graphique de l’application.  
 
-### 🌐 Internationalisation
-- ⏳ L’application doit être traduite en **français** et en **anglais**.  
-
 ### 🗺️ SEO et structure du site
 - ✅ Fournir un fichier **`sitemap.xml`** listant les pages de l’application.  
 - ✅ Intégrer correctement les **métadonnées SEO** (titre, description, etc.) sur la page d’accueil.  
 
 ### ⚡ Optimisation et performance
 - ✅ Mettre en place un **système de cache**, qu’il soit **applicatif** ou côté **API**.  
-
----
-
-## 💎 Bonus (optionnel)
-- ⏳ Gestion du **cache** via **Redis**.  
-- ⏳ Ajout d’**animations** sur les tableaux, cartes ou listes.  
-- ⏳ Mise en place d’un **Drag & Drop** (ex : déplacer de l’argent d’un compte à un autre).  
 
 ---
 

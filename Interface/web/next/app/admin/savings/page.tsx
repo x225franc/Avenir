@@ -244,7 +244,7 @@ export default function SavingsRatePage() {
 								</p>
 							)}
 							<p className="mt-2 text-sm text-gray-500">
-								⚠️ La modification du taux enverra automatiquement une
+								La modification du taux enverra automatiquement une
 								notification par email à tous les clients possédant un compte
 								d&apos;épargne.
 							</p>
