@@ -12,6 +12,8 @@ import { CreditsModule } from './modules/credits/credits.module';
 import { NewsModule } from './modules/news/news.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AdvisorModule } from './modules/advisor/advisor.module';
+import { GatewaysModule } from './gateways/gateways.module';
+import { SseController } from './controllers/sse.controller';
 
 @Module({
   imports: [
@@ -29,8 +31,9 @@ import { AdvisorModule } from './modules/advisor/advisor.module';
     NewsModule,
     AdminModule,
     AdvisorModule,
+    GatewaysModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, SseController],
   providers: [AppService],
 })
 export class AppModule {}
