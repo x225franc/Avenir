@@ -6,6 +6,12 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { MessagesModule } from './modules/messages/messages.module';
+import { InvestmentsModule } from './modules/investments/investments.module';
+import { CreditsModule } from './modules/credits/credits.module';
+import { NewsModule } from './modules/news/news.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { AdvisorModule } from './modules/advisor/advisor.module';
 
 @Module({
   imports: [
@@ -17,6 +23,12 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
     UsersModule,
     AccountsModule,
     TransactionsModule,
+    MessagesModule,
+    InvestmentsModule,
+    CreditsModule,
+    NewsModule,
+    AdminModule,
+    AdvisorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
