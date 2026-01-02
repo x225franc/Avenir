@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { config } from "../../config/database";
+import { config } from "../../config/database-postgres";
 
 /**
  * Pool de connexions PostgreSQL
