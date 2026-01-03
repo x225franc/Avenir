@@ -30,4 +30,12 @@ export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callba
 export { setInterval } from '#app/compat/interval';
 export { definePageMeta } from '../node_modules/nuxt/dist/pages/runtime/composables';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
+export { useApi } from '../composables/useApi';
+export { useAuth } from '../composables/useAuth';
+export { useSocket } from '../composables/useSocket';
+export { passwordSchema, loginSchema, registerSchema, resetPasswordSchema, forgotPasswordSchema, LoginFormData, RegisterFormData, ResetPasswordFormData, ForgotPasswordFormData } from '../utils/validation';
+export { useAuthStore } from '../stores/auth';
+export { useNotificationsStore } from '../stores/notifications';
+export { useUiStore } from '../stores/ui';
+export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../../../../node_modules/@pinia/nuxt/dist/runtime/composables';
 export { useNuxtDevTools } from '../../../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
