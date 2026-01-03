@@ -66,24 +66,29 @@ const menuItems = computed(() => {
     return [
       { path: '/dashboard', label: 'Dashboard', icon: 'heroicons:home' },
       { path: '/dashboard/accounts', label: 'Mes Comptes', icon: 'heroicons:credit-card' },
-      { path: '/dashboard/transactions', label: 'Transactions', icon: 'heroicons:arrow-path' },
+      { path: '/dashboard/transfers', label: 'Virements', icon: 'heroicons:arrow-path' },
+      { path: '/dashboard/credits', label: 'Crédits', icon: 'heroicons:banknotes' },
       { path: '/dashboard/investments', label: 'Investissements', icon: 'heroicons:chart-bar' },
       { path: '/messages', label: 'Messages', icon: 'heroicons:chat-bubble-left-right' },
+      { path: '/news', label: 'Actualités', icon: 'heroicons:newspaper' },
     ];
   } else if (role === 'advisor') {
     return [
-      { path: '/advisor', label: 'Dashboard', icon: 'heroicons:home' },
+      { path: '/advisor/dashboard', label: 'Dashboard', icon: 'heroicons:home' },
       { path: '/advisor/clients', label: 'Clients', icon: 'heroicons:users' },
       { path: '/advisor/messages', label: 'Messages', icon: 'heroicons:chat-bubble-left-right' },
-      { path: '/advisor/credits', label: 'Crédits', icon: 'heroicons:currency-euro' },
+      { path: '/advisor/credits/grant', label: 'Crédits', icon: 'heroicons:currency-euro' },
+      { path: '/advisor/news', label: 'Actualités', icon: 'heroicons:newspaper' },
+      { path: '/advisor/internal-chat', label: 'Chat Interne', icon: 'heroicons:chat-bubble-oval-left-ellipsis' },
     ];
   } else if (role === 'director') {
     return [
-      { path: '/admin', label: 'Dashboard', icon: 'heroicons:home' },
+      { path: '/admin/dashboard', label: 'Dashboard', icon: 'heroicons:home' },
       { path: '/admin/users', label: 'Utilisateurs', icon: 'heroicons:users' },
-      { path: '/admin/stocks', label: 'Actions', icon: 'heroicons:chart-bar' },
+      { path: '/admin/investments', label: 'Actions', icon: 'heroicons:chart-bar' },
       { path: '/admin/news', label: 'Actualités', icon: 'heroicons:newspaper' },
-      { path: '/admin/settings', label: 'Paramètres', icon: 'heroicons:cog-6-tooth' },
+      { path: '/admin/savings', label: 'Épargne', icon: 'heroicons:banknotes' },
+      { path: '/admin/internal-chat', label: 'Chat Interne', icon: 'heroicons:chat-bubble-oval-left-ellipsis' },
     ];
   }
 

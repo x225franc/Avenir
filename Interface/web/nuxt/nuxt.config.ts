@@ -25,5 +25,9 @@ export default defineNuxtConfig({
     }
   },
 
+  devServer: {
+    port: 3003,
+  },
+
   ssr: false, // SPA mode for easier authentication handling
 })

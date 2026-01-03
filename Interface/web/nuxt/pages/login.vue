@@ -143,9 +143,9 @@ onMounted(() => {
   if (authStore.isAuthenticated && authStore.user) {
     const user = authStore.user;
     if (user.role === 'director') {
-      router.push('/admin');
+      router.push('/admin/dashboard');
     } else if (user.role === 'advisor') {
-      router.push('/advisor');
+      router.push('/advisor/dashboard');
     } else {
       router.push('/dashboard');
     }
@@ -175,9 +175,9 @@ const handleSubmit = async () => {
     // Redirection selon le rôle réel de l'utilisateur (depuis authStore après login)
     const user = authStore.user;
     if (user?.role === 'director') {
-      router.push('/admin');
+      router.push('/admin/dashboard');
     } else if (user?.role === 'advisor') {
-      router.push('/advisor');
+      router.push('/advisor/dashboard');
     } else {
       router.push('/dashboard');
     }

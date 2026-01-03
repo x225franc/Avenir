@@ -15,6 +15,20 @@ import { Roles } from '../../common/decorators/roles.decorator';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  // ============ STATS ============
+
+  @Get('stats')
+  async getStats() {
+    return this.adminService.getStats();
+  }
+
+  // ============ TEAM MANAGEMENT ============
+
+  @Get('team-members')
+  async getTeamMembers() {
+    return this.adminService.getTeamMembers();
+  }
+
   // ============ USER MANAGEMENT (7 endpoints) ============
 
   @Get('users')

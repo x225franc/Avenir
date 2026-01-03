@@ -27,9 +27,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (userRole === 'client') {
       return navigateTo('/dashboard');
     } else if (userRole === 'advisor') {
-      return navigateTo('/advisor');
+      return navigateTo('/advisor/dashboard');
     } else if (userRole === 'director') {
-      return navigateTo('/admin');
+      return navigateTo('/admin/dashboard');
     }
   }
 });

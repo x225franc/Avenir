@@ -26,6 +26,57 @@ export class AdminService {
     private readonly bankSettingsRepository: BankSettingsRepository,
   ) {}
 
+  // ============ STATS ============
+
+  async getStats() {
+    try {
+      const users = await this.userRepository.findAll();
+
+      const totalClients = users.filter(u => u.role === UserRole.CLIENT).length;
+      const totalAdvisors = users.filter(u => u.role === UserRole.ADVISOR).length;
+
+      // Pour les comptes, on va utiliser findByUserId pour chaque utilisateur
+      let totalAccounts = 0;
+      let totalVolume = 0;
+
+      for (const user of users) {
+        const userAccounts = await this.accountRepository.findByUserId(user.id);
+        totalAccounts += userAccounts.length;
+        totalVolume += userAccounts.reduce((sum: number, account) => sum + account.balance.amount, 0);
+      }
+
+      return {
+        totalClients,
+        totalAdvisors,
+        totalAccounts,
+        totalVolume,
+      };
+    } catch (error) {
+      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des statistiques');
+    }
+  }
+
+  // ============ TEAM MANAGEMENT ============
+
+  async getTeamMembers() {
+    try {
+      const users = await this.userRepository.findAll();
+
+      // Return only advisors and directors (staff members)
+      const teamMembers = users.filter(u => u.role === UserRole.ADVISOR || u.role === UserRole.DIRECTOR);
+
+      return teamMembers.map(user => ({
+        id: user.id.value,
+        email: user.email.value,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      }));
+    } catch (error) {
+      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des membres de l\'équipe');
+    }
+  }
+
   // ============ USER MANAGEMENT ============
 
   async getAllUsers() {
@@ -248,8 +299,10 @@ export class AdminService {
       return stocks.map(stock => ({
         id: stock.id.value,
         symbol: stock.symbol,
+        name: stock.companyName,
         companyName: stock.companyName,
         currentPrice: stock.currentPrice.amount,
+        change: 0,
         isAvailable: stock.isAvailable,
         createdAt: stock.createdAt,
         updatedAt: stock.updatedAt,
@@ -459,7 +512,14 @@ export class AdminService {
       const rate = await this.bankSettingsRepository.getSavingsRate();
 
       return {
-        rate,
+        currentRate: rate,
+        lastUpdate: new Date().toISOString(),
+        history: [
+          {
+            rate,
+            date: new Date().toISOString(),
+          },
+        ],
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération du taux d épargne');
