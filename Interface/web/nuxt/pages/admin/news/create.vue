@@ -133,7 +133,7 @@ const handleSubmit = async () => {
   loading.value = true;
 
   try {
-    await apiFetch('/admin/news', {
+    await apiFetch('/news', {
       method: 'POST',
       body: {
         ...formData.value,

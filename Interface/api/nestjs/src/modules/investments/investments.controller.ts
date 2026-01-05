@@ -5,7 +5,7 @@ import { CancelOrderDto } from './dto/cancel-order.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
-@Controller('investment')
+@Controller('investments')
 @UseGuards(JwtAuthGuard)
 export class InvestmentsController {
   constructor(private readonly investmentsService: InvestmentsService) {}
@@ -35,5 +35,19 @@ export class InvestmentsController {
   @Get('portfolio')
   async getPortfolio(@CurrentUser() user: any) {
     return this.investmentsService.getPortfolio(user.userId);
+  }
+
+  @Get('fee')
+  async getFee() {
+    // Retourner les frais de transaction fixes
+    return {
+      transactionFee: 1.00,
+      currency: 'EUR',
+    };
+  }
+
+  @Get('orders')
+  async getUserOrders(@CurrentUser() user: any) {
+    return this.investmentsService.getUserOrders(user.userId);
   }
 }

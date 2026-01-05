@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { CreditsService } from './credits.service';
 import { GrantCreditDto } from './dto/grant-credit.dto';
+import { CalculateCreditDto } from './dto/calculate-credit.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -29,5 +30,10 @@ export class CreditsController {
   @Roles('director')
   async processMonthlyPayments() {
     return this.creditsService.processMonthlyPayments();
+  }
+
+  @Post('calculate')
+  async calculateCredit(@Body() calculateDto: CalculateCreditDto) {
+    return this.creditsService.calculateMonthlyPayment(calculateDto);
   }
 }

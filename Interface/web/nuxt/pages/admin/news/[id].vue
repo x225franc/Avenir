@@ -132,8 +132,8 @@ const handleSubmit = async () => {
   saving.value = true;
 
   try {
-    await apiFetch(`/admin/news/${newsId}`, {
-      method: 'PATCH',
+    await apiFetch(`/news/${newsId}`, {
+      method: 'PUT',
       body: formData.value,
     });
 

@@ -7,14 +7,17 @@ import { UpdateSavingsRateDto } from './dto/update-savings-rate.dto';
 import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
 import { StockRepository } from '@infrastructure/database/postgresql/StockRepository';
 import { AccountRepository } from '@infrastructure/database/postgresql/AccountRepository';
+import { TransactionRepository } from '@infrastructure/database/postgresql/TransactionRepository';
 import { BankSettingsRepository } from '@infrastructure/database/postgresql/BankSettingsRepository';
+import { InvestmentOrderRepository } from '@infrastructure/database/postgresql/InvestmentOrderRepository';
 import { User, UserRole } from '@domain/entities/User';
 import { UserId } from '@domain/value-objects/UserId';
 import { Email } from '@domain/value-objects/Email';
-import { Stock } from '@domain/entities/Stock';
-import { StockId } from '@domain/value-objects/StockId';
-import { Money } from '@domain/value-objects/Money';
-import { AccountType } from '@domain/entities/Account';
+import { ApplyDailyInterest } from '@application/use-cases/account/ApplyDailyInterest';
+import { CreateStock } from '@application/use-cases/admin/CreateStock';
+import { UpdateStock } from '@application/use-cases/admin/UpdateStock';
+import { DeleteStock } from '@application/use-cases/admin/DeleteStock';
+import { GetAllStocks } from '@application/use-cases/admin/GetAllStocks';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -23,7 +26,9 @@ export class AdminService {
     private readonly userRepository: UserRepository,
     private readonly stockRepository: StockRepository,
     private readonly accountRepository: AccountRepository,
+    private readonly transactionRepository: TransactionRepository,
     private readonly bankSettingsRepository: BankSettingsRepository,
+    private readonly investmentOrderRepository: InvestmentOrderRepository,
   ) {}
 
   // ============ STATS ============
@@ -294,19 +299,19 @@ export class AdminService {
 
   async getAllStocks() {
     try {
-      const stocks = await this.stockRepository.findAll(false);
+      // Utiliser le Use Case GetAllStocks
+      const getAllStocksUseCase = new GetAllStocks(
+        this.stockRepository,
+        this.investmentOrderRepository
+      );
 
-      return stocks.map(stock => ({
-        id: stock.id.value,
-        symbol: stock.symbol,
-        name: stock.companyName,
-        companyName: stock.companyName,
-        currentPrice: stock.currentPrice.amount,
-        change: 0,
-        isAvailable: stock.isAvailable,
-        createdAt: stock.createdAt,
-        updatedAt: stock.updatedAt,
-      }));
+      const result = await getAllStocksUseCase.execute(false);
+
+      if (!result.success) {
+        throw new BadRequestException(result.message || 'Erreur lors de la récupération des actions');
+      }
+
+      return result.data;
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des actions');
     }
@@ -314,33 +319,26 @@ export class AdminService {
 
   async createStock(createStockDto: CreateStockDto) {
     try {
-      // Check if symbol already exists
-      const existingStock = await this.stockRepository.findBySymbol(createStockDto.symbol);
-      if (existingStock) {
-        throw new ConflictException('Ce symbole d action existe déjà');
-      }
+      // Utiliser le Use Case CreateStock
+      const createStockUseCase = new CreateStock(this.stockRepository);
 
-      // Create stock entity using factory
-      const stock = Stock.create({
+      const result = await createStockUseCase.execute({
         symbol: createStockDto.symbol,
         companyName: createStockDto.companyName,
-        currentPrice: new Money(createStockDto.currentPrice),
-        isAvailable: createStockDto.isAvailable ?? true,
+        currentPrice: createStockDto.currentPrice,
+        isAvailable: createStockDto.isAvailable,
       });
 
-      // Save stock
-      await this.stockRepository.save(stock);
+      if (!result.success) {
+        throw new BadRequestException(result.message);
+      }
 
       return {
-        id: stock.id.value,
-        symbol: stock.symbol,
-        companyName: stock.companyName,
-        currentPrice: stock.currentPrice.amount,
-        isAvailable: stock.isAvailable,
-        createdAt: stock.createdAt,
+        stockId: result.stockId,
+        message: result.message,
       };
     } catch (error) {
-      if (error instanceof ConflictException) {
+      if (error instanceof ConflictException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l action');
@@ -349,47 +347,25 @@ export class AdminService {
 
   async updateStock(id: string, updateStockDto: UpdateStockDto) {
     try {
-      const stockIdVO = StockId.fromNumber(parseInt(id));
-      const stock = await this.stockRepository.findById(stockIdVO);
+      // Utiliser le Use Case UpdateStock
+      const updateStockUseCase = new UpdateStock(this.stockRepository);
 
-      if (!stock) {
-        throw new NotFoundException('Action non trouvée');
-      }
+      const result = await updateStockUseCase.execute({
+        id,
+        symbol: updateStockDto.symbol,
+        companyName: updateStockDto.companyName,
+        isAvailable: updateStockDto.isAvailable,
+      });
 
-      // Check symbol uniqueness if changing symbol
-      if (updateStockDto.symbol && updateStockDto.symbol !== stock.symbol) {
-        const existingStock = await this.stockRepository.findBySymbol(updateStockDto.symbol);
-        if (existingStock) {
-          throw new ConflictException('Ce symbole d action existe déjà');
-        }
+      if (!result.success) {
+        throw new BadRequestException(result.message);
       }
-
-      // Update stock properties
-      if (updateStockDto.symbol) {
-        (stock as any).props.symbol = updateStockDto.symbol.toUpperCase().trim();
-      }
-      if (updateStockDto.companyName) {
-        (stock as any).props.companyName = updateStockDto.companyName;
-      }
-      if (updateStockDto.currentPrice !== undefined) {
-        stock.updatePrice(new Money(updateStockDto.currentPrice));
-      }
-      if (updateStockDto.isAvailable !== undefined) {
-        stock.setAvailability(updateStockDto.isAvailable);
-      }
-
-      await this.stockRepository.save(stock);
 
       return {
-        id: stock.id.value,
-        symbol: stock.symbol,
-        companyName: stock.companyName,
-        currentPrice: stock.currentPrice.amount,
-        isAvailable: stock.isAvailable,
-        updatedAt: stock.updatedAt,
+        message: result.message,
       };
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (error instanceof NotFoundException || error instanceof ConflictException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour de l action');
@@ -398,21 +374,23 @@ export class AdminService {
 
   async deleteStock(id: string) {
     try {
-      const stockIdVO = StockId.fromNumber(parseInt(id));
-      const stock = await this.stockRepository.findById(stockIdVO);
+      // Utiliser le Use Case DeleteStock
+      const deleteStockUseCase = new DeleteStock(
+        this.stockRepository,
+        this.investmentOrderRepository
+      );
 
-      if (!stock) {
-        throw new NotFoundException('Action non trouvée');
+      const result = await deleteStockUseCase.execute(id);
+
+      if (!result.success) {
+        throw new BadRequestException(result.message);
       }
 
-      await this.stockRepository.delete(stockIdVO);
-
       return {
-        message: 'Action supprimée avec succès',
-        id,
+        message: result.message,
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la suppression de l action');
@@ -423,37 +401,24 @@ export class AdminService {
 
   async applyInterest() {
     try {
-      const savingsRate = await this.bankSettingsRepository.getSavingsRate();
-      const dailyRate = savingsRate / 100 / 365; // Convert annual % to daily decimal
+      // Utiliser le Use Case ApplyDailyInterest
+      const applyInterestUseCase = new ApplyDailyInterest(
+        this.accountRepository,
+        this.transactionRepository,
+        this.bankSettingsRepository
+      );
 
-      // Get all savings accounts
-      const savingsAccounts = await this.accountRepository.findAllSavingsAccounts();
+      const result = await applyInterestUseCase.execute();
 
-      let totalInterestPaid = 0;
-      const results = [];
-
-      for (const account of savingsAccounts) {
-        const interest = account.balance.amount * dailyRate;
-        const interestMoney = new Money(interest);
-
-        account.credit(interestMoney);
-        await this.accountRepository.save(account);
-
-        totalInterestPaid += interest;
-        results.push({
-          accountId: account.id.value,
-          balance: account.balance.amount,
-          interestPaid: interest,
-        });
+      if (!result.success) {
+        throw new BadRequestException(result.errors.join(', ') || 'Erreur lors de l\'application des intérêts');
       }
 
       return {
         message: 'Intérêts appliqués avec succès',
-        savingsRate,
-        dailyRate,
-        accountsProcessed: savingsAccounts.length,
-        totalInterestPaid,
-        results,
+        processedAccounts: result.processedAccounts,
+        totalInterestApplied: result.totalInterestApplied,
+        errors: result.errors,
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de l application des intérêts');

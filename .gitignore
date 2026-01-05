@@ -32,6 +32,11 @@ coverage/
 build/
 out/
 
+# Nuxt
+.nuxt/
+.output/
+.cache/
+
 # Misc
 *.bak
 *.tmp

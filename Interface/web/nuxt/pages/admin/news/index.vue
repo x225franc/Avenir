@@ -118,7 +118,7 @@ const deleteArticle = async () => {
 
   try {
     deleting.value = true;
-    await apiFetch(`/admin/news/${selectedArticle.value.id}`, { method: 'DELETE' });
+    await apiFetch(`/news/${selectedArticle.value.id}`, { method: 'DELETE' });
 
     notificationsStore.addNotification({
       type: 'success',

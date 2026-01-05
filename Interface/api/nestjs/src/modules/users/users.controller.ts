@@ -7,6 +7,11 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('advisors')
+  async findAdvisors() {
+    return this.usersService.findByRole('advisor');
+  }
+
   @Get()
   async findAll(@Query('role') role?: string) {
     if (role) {
