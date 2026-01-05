@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
+import { AccountRepository } from '@infrastructure/database/postgresql/AccountRepository';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { UserRepository } from '@infrastructure/database/postgresql/UserReposito
   providers: [
     AuthService,
     JwtStrategy,
-    UserRepository,
+    { provide: UserRepository, useFactory: () => new UserRepository() },
+    { provide: AccountRepository, useFactory: () => new AccountRepository() },
   ],
   exports: [AuthService, JwtStrategy, PassportModule],
 })

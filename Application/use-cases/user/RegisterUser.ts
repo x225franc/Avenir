@@ -4,7 +4,7 @@ import { User, UserRole } from "@domain/entities/User";
 import { Account, AccountType } from "@domain/entities/Account";
 import { Email } from "@domain/value-objects/Email";
 import { emailService } from "@infrastructure/services/email.service";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 export interface RegisterUserDTO {
 	email: string;

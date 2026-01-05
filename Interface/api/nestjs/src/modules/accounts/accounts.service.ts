@@ -2,48 +2,46 @@ import { Injectable, NotFoundException, ForbiddenException, BadRequestException 
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountRepository } from '@infrastructure/database/postgresql/AccountRepository';
+import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
 import { UserId } from '@domain/value-objects/UserId';
 import { AccountId } from '@domain/value-objects/AccountId';
-import { Account } from '@domain/entities/Account';
+import { CreateAccount } from '@application/use-cases/account/CreateAccount';
 
-/**
- * ⚠️ VERSION SIMPLIFIÉE - SANS USE CASES
- *
- * Ce service utilise directement les repositories au lieu des Use Cases.
- * Voir SIMPLIFICATIONS.md pour la liste des Use Cases à réintégrer.
- *
- * Use Cases manquants:
- * - CreateAccountUseCase
- * - GetUserAccountsUseCase
- * - UpdateAccountUseCase
- * - DeleteAccountUseCase
- */
 @Injectable()
 export class AccountsService {
-  constructor(private readonly accountRepository: AccountRepository) {}
+  constructor(
+    private readonly accountRepository: AccountRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async create(userId: string, createAccountDto: CreateAccountDto) {
-    const userIdVO = UserId.fromString(userId);
+    try {
+      // Utiliser le Use Case CreateAccount
+      const createAccountUseCase = new CreateAccount(
+        this.accountRepository,
+        this.userRepository
+      );
 
-    // Account.create() génère automatiquement l'IBAN et initialise le solde à 0
-    const account = Account.create({
-      userId: userIdVO,
-      accountName: createAccountDto.accountName,
-      accountType: createAccountDto.accountType,
-    });
+      const result = await createAccountUseCase.execute({
+        userId,
+        accountName: createAccountDto.accountName,
+        accountType: createAccountDto.accountType,
+      });
 
-    await this.accountRepository.save(account);
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Erreur lors de la création du compte');
+      }
 
-    return {
-      id: account.id.value,
-      userId: account.userId.value,
-      iban: account.iban.value,
-      accountName: account.accountName,
-      accountType: account.accountType,
-      balance: account.balance.amount,
-      isActive: account.isActive,
-      createdAt: account.createdAt,
-    };
+      return {
+        accountId: result.accountId,
+        iban: result.iban,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException((error as Error).message || 'Erreur lors de la création du compte');
+    }
   }
 
   async findAll() {
