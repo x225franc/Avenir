@@ -121,7 +121,7 @@ const handleSubmit = async () => {
   loading.value = true;
 
   try {
-    await apiFetch('/auth/reset-password', {
+    await apiFetch('/users/reset-password', {
       method: 'POST',
       body: {
         token,

@@ -175,7 +175,9 @@ npm run install:all           # Installer toutes les dépendances (root + worksp
 
 # Développement
 npm run dev:1                 # Express + Next.js (workspace 1)
-npm run dev:2                 # NestJS + Nuxt (workspace 2)
+npm run dev:2                 # NestJS + Next.js (workspace 2)
+npm run dev:3                 # Express + Nuxt (workspace 3)
+npm run dev:4                 # NestJS + Nuxt (workspace 4)
 npm run dev:express           # Express API uniquement
 npm run dev:nestjs            # NestJS API uniquement
 npm run dev:next              # Next.js frontend uniquement
@@ -218,11 +220,11 @@ PUT    /api/admin/savings-rate       # Modifier le taux d'épargne
 
 ### Investissements
 ```
-GET    /api/investments/stocks       # Actions disponibles
-GET    /api/investments/portfolio    # Portfolio de l'utilisateur
-POST   /api/investments/orders       # Passer un ordre d'achat/vente
-GET    /api/investments/orders       # Historique des ordres
-DELETE /api/investments/orders/:id   # Annuler un ordre
+GET    /api/investment/stocks        # Actions disponibles
+GET    /api/investment/portfolio     # Portfolio de l'utilisateur
+POST   /api/investment/orders        # Passer un ordre d'achat/vente
+GET    /api/investment/orders        # Historique des ordres
+DELETE /api/investment/orders/:id    # Annuler un ordre
 ```
 
 ### Crédits

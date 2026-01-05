@@ -1,16 +1,15 @@
-import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Query, Param, UseGuards } from '@nestjs/common';
 import { InvestmentsService } from './investments.service';
 import { PlaceOrderDto } from './dto/place-order.dto';
-import { CancelOrderDto } from './dto/cancel-order.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
-@Controller('investments')
+@Controller('investment')
 @UseGuards(JwtAuthGuard)
 export class InvestmentsController {
   constructor(private readonly investmentsService: InvestmentsService) {}
 
-  @Post('place-order')
+  @Post('orders')
   async placeOrder(
     @CurrentUser() user: any,
     @Body() placeOrderDto: PlaceOrderDto,
@@ -18,12 +17,12 @@ export class InvestmentsController {
     return this.investmentsService.placeOrder(user.userId, placeOrderDto);
   }
 
-  @Post('cancel-order')
+  @Delete('orders/:orderId')
   async cancelOrder(
     @CurrentUser() user: any,
-    @Body() cancelOrderDto: CancelOrderDto,
+    @Param('orderId') orderId: string,
   ) {
-    return this.investmentsService.cancelOrder(user.userId, cancelOrderDto);
+    return this.investmentsService.cancelOrder(user.userId, { orderId: parseInt(orderId) });
   }
 
   @Get('stocks')

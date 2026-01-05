@@ -11,7 +11,7 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3003',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
   });
 
@@ -27,7 +27,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || 3002;
+  const port = process.env.PORT || 3001;
   await app.listen(port);
 
   console.log(`✅ NestJS API running on http://localhost:${port}`);

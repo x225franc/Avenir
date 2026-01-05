@@ -167,9 +167,9 @@ const loadData = async () => {
     loading.value = true;
 
     const [stocksData, accountsData, portfolioData] = await Promise.all([
-      apiFetch<Stock[]>('/investments/stocks'),
+      apiFetch<Stock[]>('/investment/stocks'),
       apiFetch<Account[]>('/accounts'),
-      apiFetch<{ positions: Array<{ stockId: string; quantity: number }> }>('/investments/portfolio'),
+      apiFetch<{ positions: Array<{ stockId: string; quantity: number }> }>('/investment/portfolio'),
     ]);
 
     stocks.value = stocksData;
@@ -205,7 +205,7 @@ const placeOrder = async () => {
 
   try {
     orderLoading.value = true;
-    await apiFetch('/investments/orders', {
+    await apiFetch('/investment/orders', {
       method: 'POST',
       body: {
         accountId: accountId.value,

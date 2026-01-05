@@ -27,7 +27,7 @@ export class MessagesController {
   // GET /api/messages/conversations - Obtenir toutes les conversations
   @Get('conversations')
   async getConversations(@CurrentUser() user: any) {
-    return this.messagesService.getConversations(user.userId);
+    return this.messagesService.getConversations(user.userId, user.role);
   }
 
   // GET /api/messages/conversation/:conversationId - Obtenir les messages d'une conversation

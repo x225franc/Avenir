@@ -276,7 +276,7 @@ const loadData = async () => {
           totalGainLoss: number;
           totalGainLossPercent: number;
         };
-      }>('/investments/portfolio'),
+      }>('/investment/portfolio'),
       apiFetch<Account[]>('/accounts'),
     ]);
 
@@ -307,7 +307,7 @@ const handleSell = async () => {
 
   try {
     sellLoading.value = true;
-    await apiFetch('/investments/orders', {
+    await apiFetch('/investment/orders', {
       method: 'POST',
       body: {
         accountId: sellAccountId.value,

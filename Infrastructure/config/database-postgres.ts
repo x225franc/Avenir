@@ -19,7 +19,7 @@ export interface AppConfig {
 }
 
 export const config: AppConfig = {
-	port: parseInt(process.env.PORT || '3002', 10),
+	port: parseInt(process.env.PORT || '3001', 10),
 	nodeEnv: process.env.NODE_ENV || 'development',
 	jwtSecret: process.env.JWT_SECRET || 'null',
 	database: {

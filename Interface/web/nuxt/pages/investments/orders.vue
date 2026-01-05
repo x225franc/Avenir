@@ -251,7 +251,7 @@ const filteredOrders = computed(() => {
 const loadOrders = async () => {
   try {
     loading.value = true;
-    const data = await apiFetch<Order[]>('/investments/orders');
+    const data = await apiFetch<Order[]>('/investment/orders');
     orders.value = data;
   } catch (err: any) {
     notificationsStore.addNotification({

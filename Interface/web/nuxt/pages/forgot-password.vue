@@ -85,7 +85,7 @@ const handleSubmit = async () => {
   loading.value = true;
 
   try {
-    await apiFetch('/auth/forgot-password', {
+    await apiFetch('/users/forgot-password', {
       method: 'POST',
       body: {
         email: formData.value.email,

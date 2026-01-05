@@ -4,7 +4,7 @@ export const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await apiFetch<{ access_token: string; user: any }>('/auth/login', {
+      const response = await apiFetch<{ access_token: string; user: any }>('/users/login', {
         method: 'POST',
         body: { email, password },
       });
@@ -25,7 +25,7 @@ export const useAuth = () => {
     lastName: string;
   }) => {
     try {
-      const response = await apiFetch('/auth/register', {
+      const response = await apiFetch('/users/register', {
         method: 'POST',
         body: data,
       });
@@ -43,7 +43,7 @@ export const useAuth = () => {
 
   const fetchCurrentUser = async () => {
     try {
-      const user = await apiFetch('/auth/me');
+      const user = await apiFetch('/users/me');
       authStore.setUser(user);
       return user;
     } catch (error) {
@@ -53,14 +53,14 @@ export const useAuth = () => {
   };
 
   const forgotPassword = async (email: string) => {
-    return await apiFetch('/auth/forgot-password', {
+    return await apiFetch('/users/forgot-password', {
       method: 'POST',
       body: { email },
     });
   };
 
   const resetPassword = async (token: string, password: string) => {
-    return await apiFetch('/auth/reset-password', {
+    return await apiFetch('/users/reset-password', {
       method: 'POST',
       body: { token, password },
     });

@@ -166,7 +166,7 @@ const feeLoading = ref(true);
 const loadInvestmentFee = async () => {
   try {
     feeLoading.value = true;
-    const data = await apiFetch<{ fee: number }>('/investments/fee');
+    const data = await apiFetch<{ fee: number }>('/investment/fee');
     transactionFee.value = data.fee;
   } catch (err: any) {
     // Garder la valeur par défaut en cas d'erreur

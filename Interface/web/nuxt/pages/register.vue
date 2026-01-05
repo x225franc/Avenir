@@ -206,7 +206,7 @@ const handleSubmit = async () => {
   loading.value = true;
 
   try {
-    const response = await apiFetch<{ message: string }>('/auth/register', {
+    const response = await apiFetch<{ message: string }>('/users/register', {
       method: 'POST',
       body: {
         email: formData.value.email,

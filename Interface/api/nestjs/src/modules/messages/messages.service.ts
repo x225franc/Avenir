@@ -167,6 +167,7 @@ export class MessagesService {
       await transferConversationUseCase.execute({
         conversationId: transferDto.conversationId,
         newAdvisorId: transferDto.newAdvisorId,
+        currentAdvisorId: transferDto.currentAdvisorId,
       });
 
       return { message: 'Conversation transférée avec succès' };
@@ -185,7 +186,7 @@ export class MessagesService {
 
       await closeConversationUseCase.execute({
         conversationId: closeDto.conversationId,
-        advisorId: parseInt(closeDto.advisorId || '0'),
+        advisorId: closeDto.advisorId || 0,
       });
 
       return { message: 'Conversation fermée avec succès' };
