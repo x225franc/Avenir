@@ -58,9 +58,9 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
-          <div class="p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 hover:shadow-xl transition-shadow">
+          <div class="p-8 rounded-2xl bg-white hover:shadow-xl transition-shadow">
             <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
-              <Icon name="material-symbols:shield-check" class="text-white text-3xl" />
+              <Icon name="heroicons:shield-check-20-solid" class="text-white text-3xl w-8 h-8" />
             </div>
             <h3 class="text-2xl font-bold text-gray-900 mb-3">
               Sécurité maximale
@@ -71,9 +71,9 @@
             </p>
           </div>
 
-          <div class="p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-xl transition-shadow">
+          <div class="p-8 rounded-2xl bg-white hover:shadow-xl transition-shadow">
             <div class="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
-              <Icon name="material-symbols:trending-up" class="text-white text-3xl" />
+              <Icon name="heroicons:chart-bar-20-solid" class="text-white text-3xl w-8 h-8" />
             </div>
             <h3 class="text-2xl font-bold text-gray-900 mb-3">
               Investissement facile
@@ -84,9 +84,9 @@
             </p>
           </div>
 
-          <div class="p-8 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-xl transition-shadow">
+          <div class="p-8 rounded-2xl bg-white hover:shadow-xl transition-shadow">
             <div class="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mb-6">
-              <Icon name="material-symbols:savings" class="text-white text-3xl" />
+              <Icon name="heroicons:currency-euro-20-solid" class="text-white text-3xl w-8 h-8" />
             </div>
             <h3 class="text-2xl font-bold text-gray-900 mb-3">
               Épargne rémunérée
@@ -139,25 +139,72 @@ useSeoMeta({
 // }
 </script>
 
-<style scoped>
-/* Classes personnalisées pour les gradients si nécessaire */
+<style>
+/* Styles globaux pour les gradients (non-scoped pour fonctionner correctement) */
 .bg-gradient-to-br {
-  background: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important;
 }
 
 .bg-gradient-to-r {
-  background: linear-gradient(to right, var(--tw-gradient-stops));
+  background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+}
+
+.from-blue-50 {
+  --tw-gradient-from: #eff6ff !important;
+  --tw-gradient-to: rgb(239 246 255 / 0) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.via-indigo-50 {
+  --tw-gradient-to: rgb(238 242 255 / 0) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #eef2ff, var(--tw-gradient-to) !important;
+}
+
+.to-purple-50 {
+  --tw-gradient-to: #faf5ff !important;
+}
+
+.to-indigo-50 {
+  --tw-gradient-to: #eef2ff !important;
+}
+
+.to-pink-50 {
+  --tw-gradient-to: #fdf2f8 !important;
+}
+
+.to-emerald-50 {
+  --tw-gradient-to: #ecfdf5 !important;
+}
+
+.from-blue-600 {
+  --tw-gradient-from: #2563eb !important;
+  --tw-gradient-to: rgb(37 99 235 / 0) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-purple-600 {
+  --tw-gradient-to: #9333ea !important;
+}
+
+.from-blue-700 {
+  --tw-gradient-from: #1d4ed8 !important;
+}
+
+.to-purple-700 {
+  --tw-gradient-to: #7e22ce !important;
 }
 
 .bg-clip-text {
-  background-clip: text;
-  -webkit-background-clip: text;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
 }
 
 .text-transparent {
-  color: transparent;
+  color: transparent !important;
 }
+</style>
 
+<style scoped>
 /* Animations pour les blobs */
 .animate-blob {
   animation: blob 7s infinite;

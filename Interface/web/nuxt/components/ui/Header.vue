@@ -4,7 +4,7 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <NuxtLink to="/" class="flex items-center">
-            <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span class="text-2xl font-bold gradient-text">
               AVENIR
             </span>
           </NuxtLink>
@@ -18,7 +18,7 @@
           </NuxtLink>
           <NuxtLink 
             to="/register" 
-            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:from-blue-700 hover:to-purple-700"
+            class="gradient-button text-white px-4 py-2 rounded-md text-sm font-medium"
           >
             Ouvrir un compte
           </NuxtLink>
@@ -27,4 +27,23 @@
     </nav>
   </header>
 </template>
+
+<style scoped>
+.gradient-text {
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.gradient-button {
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  transition: all 0.3s ease;
+}
+
+.gradient-button:hover {
+  background: linear-gradient(to right, #1d4ed8, #7e22ce);
+}
+</style>
 
