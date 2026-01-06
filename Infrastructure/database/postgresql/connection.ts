@@ -24,6 +24,8 @@ class DatabaseConnection {
             });
 
             // console.log(`✅ PostgreSQL connection pool created`);
+            console.log('DB_PASSWORD =', process.env.DB_PASSWORD);
+
         }
 
         return DatabaseConnection.instance;

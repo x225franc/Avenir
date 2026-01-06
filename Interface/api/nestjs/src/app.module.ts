@@ -21,7 +21,7 @@ import { SseController } from './controllers/sse.controller';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../../../.env',
+      envFilePath: '.env', // Utilise le .env local du dossier nestjs
     }),
     AuthModule,
     UsersModule,

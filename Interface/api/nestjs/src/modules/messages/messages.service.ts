@@ -54,14 +54,20 @@ export class MessagesService {
         isSystem: false,
       });
 
+      // Format standardisé compatible avec Express
       return {
-        id: message.getId()?.getValue(),
-        conversationId: message.getConversationId(),
-        fromUserId: message.getFromUserId()?.value,
-        toUserId: message.getToUserId()?.value,
-        content: message.getContent(),
-        isRead: message.getIsRead(),
-        createdAt: message.getCreatedAt(),
+        success: true,
+        message: 'Message envoyé',
+        data: {
+          id: message.getId()?.getValue(),
+          conversationId: message.getConversationId(),
+          fromUserId: message.getFromUserId()?.value || null,
+          toUserId: message.getToUserId()?.value || null,
+          content: message.getContent(),
+          isSystem: message.getIsSystem(),
+          isRead: message.getIsRead(),
+          createdAt: message.getCreatedAt(),
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
@@ -81,14 +87,29 @@ export class MessagesService {
         role: userRole,
       });
 
-      return conversations.map(conv => ({
-        conversationId: conv.getId(),
-        clientId: conv.getClientId()?.value,
-        advisorId: conv.getAdvisorId()?.value,
-        isClosed: conv.getIsClosed(),
-        lastMessageAt: conv.getLastMessageAt(),
-        unreadCount: conv.getUnreadCount(),
-      }));
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: conversations.map(conv => ({
+          id: conv.getId(),
+          clientId: conv.getClientId().value,
+          advisorId: conv.getAdvisorId()?.value || null,
+          isClosed: conv.getIsClosed(),
+          isAssigned: conv.isAssigned(),
+          unreadCount: conv.getUnreadCount(),
+          lastMessageAt: conv.getLastMessageAt(),
+          createdAt: conv.getCreatedAt(),
+          messages: conv.getMessages().map(msg => ({
+            id: msg.getId()?.getValue(),
+            fromUserId: msg.getFromUserId()?.value || null,
+            toUserId: msg.getToUserId()?.value || null,
+            content: msg.getContent(),
+            isRead: msg.getIsRead(),
+            isSystem: msg.getIsSystem(),
+            createdAt: msg.getCreatedAt(),
+          })),
+        })),
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des conversations');
     }
@@ -113,19 +134,29 @@ export class MessagesService {
         throw new ForbiddenException('Accès interdit à cette conversation');
       }
 
-      // Récupérer les messages (lecture simple)
-      const messages = await this.messageRepository.findByConversationId(conversationId);
-
-      return messages.map(message => ({
-        id: message.getId()?.getValue(),
-        conversationId: message.getConversationId(),
-        fromUserId: message.getFromUserId()?.value,
-        toUserId: message.getToUserId()?.value,
-        content: message.getContent(),
-        isRead: message.getIsRead(),
-        isSystem: message.getIsSystem(),
-        createdAt: message.getCreatedAt(),
-      }));
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: {
+          id: conversation.getId(),
+          clientId: conversation.getClientId().value,
+          advisorId: conversation.getAdvisorId()?.value || null,
+          isClosed: conversation.getIsClosed(),
+          isAssigned: conversation.isAssigned(),
+          unreadCount: conversation.getUnreadCount(),
+          lastMessageAt: conversation.getLastMessageAt(),
+          createdAt: conversation.getCreatedAt(),
+          messages: conversation.getMessages().map(msg => ({
+            id: msg.getId()?.getValue(),
+            fromUserId: msg.getFromUserId()?.value || null,
+            toUserId: msg.getToUserId()?.value || null,
+            content: msg.getContent(),
+            isRead: msg.getIsRead(),
+            isSystem: msg.getIsSystem(),
+            createdAt: msg.getCreatedAt(),
+          })),
+        },
+      };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof ForbiddenException) {
         throw error;
@@ -147,7 +178,11 @@ export class MessagesService {
         advisorId: assignDto.advisorId,
       });
 
-      return { message: 'Conversation assignée avec succès' };
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: 'Conversation assignée avec succès',
+      };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
@@ -170,7 +205,11 @@ export class MessagesService {
         currentAdvisorId: transferDto.currentAdvisorId,
       });
 
-      return { message: 'Conversation transférée avec succès' };
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: 'Conversation transférée avec succès',
+      };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
@@ -189,7 +228,11 @@ export class MessagesService {
         advisorId: closeDto.advisorId || 0,
       });
 
-      return { message: 'Conversation fermée avec succès' };
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: 'Conversation clôturée avec succès',
+      };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
@@ -208,7 +251,11 @@ export class MessagesService {
         userId: parseInt(userId),
       });
 
-      return { message: 'Messages marqués comme lus' };
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: 'Conversation marquée comme lue',
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors du marquage des messages comme lus');
     }
@@ -223,9 +270,10 @@ export class MessagesService {
         clientId: parseInt(clientId),
       });
 
+      // Format standardisé compatible avec Express
       return {
-        hasOpenConversation,
-        conversationId: hasOpenConversation ? `client-${clientId}` : null,
+        success: true,
+        data: { hasOpenConversation },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la vérification de conversation ouverte');

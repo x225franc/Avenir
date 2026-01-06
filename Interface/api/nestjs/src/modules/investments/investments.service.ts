@@ -44,18 +44,20 @@ export class InvestmentsService {
       });
 
       if (!result.success) {
-        throw new BadRequestException(result.errors.join(', ') || result.message);
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
+      // Format standardisé compatible avec Express
       return {
-        orderId: result.orderId,
+        success: true,
+        data: { orderId: result.orderId },
         message: result.message,
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException || error instanceof ForbiddenException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l ordre');
+      throw new BadRequestException('Erreur interne du serveur');
     }
   }
 
@@ -73,17 +75,19 @@ export class InvestmentsService {
       });
 
       if (!result.success) {
-        throw new BadRequestException(result.errors.join(', ') || result.message);
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: result.message,
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException || error instanceof ForbiddenException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de l\'annulation de l\'ordre');
+      throw new BadRequestException('Erreur interne du serveur');
     }
   }
 
@@ -98,12 +102,17 @@ export class InvestmentsService {
       const result = await getStocksUseCase.execute(!availableOnly);
 
       if (!result.success) {
-        throw new BadRequestException(result.errors.join(', ') || result.message);
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      return result.stocks;
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: result.stocks,
+        message: result.message,
+      };
     } catch (error) {
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des actions');
+      throw new BadRequestException('Erreur interne du serveur');
     }
   }
 
@@ -118,12 +127,17 @@ export class InvestmentsService {
       const result = await getPortfolioUseCase.execute({ userId });
 
       if (!result.success) {
-        throw new BadRequestException(result.errors.join(', ') || result.message);
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      return result.portfolio;
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: result.portfolio,
+        message: result.message,
+      };
     } catch (error) {
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération du portefeuille');
+      throw new BadRequestException('Erreur interne du serveur');
     }
   }
 
@@ -131,19 +145,27 @@ export class InvestmentsService {
     const userIdVO = UserId.fromString(userId);
     const orders = await this.investmentOrderRepository.findByUserId(userIdVO);
 
-    return orders.map(order => ({
-      id: order.id.value,
-      stockId: order.stockId.value,
-      stockSymbol: (order as any).stockSymbol || 'UNKNOWN',
-      companyName: (order as any).companyName || 'Unknown Company',
-      orderType: order.orderType,
-      quantity: order.quantity,
-      pricePerShare: order.pricePerShare.amount,
-      totalAmount: order.totalAmount.amount,
-      fees: order.fees.amount,
-      status: order.status,
-      executedAt: order.executedAt,
-      createdAt: order.createdAt,
-    }));
+    // Format standardisé compatible avec Express
+    // toJSON() retourne toutes les propriétés de l'ordre (id, stockId, orderType, quantity, etc.)
+    return {
+      success: true,
+      data: orders.map(order => order.toJSON()),
+      message: `${orders.length} ordre(s) trouvé(s)`,
+    };
+  }
+
+  async getInvestmentFee() {
+    try {
+      const fee = await this.bankSettingsRepository.getInvestmentFee();
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: { fee },
+        message: 'Frais d\'investissement récupérés avec succès',
+      };
+    } catch (error) {
+      throw new BadRequestException('Erreur interne du serveur');
+    }
   }
 }

@@ -119,8 +119,10 @@ const loadAccounts = async () => {
   try {
     loading.value = true;
     error.value = '';
-    const data = await apiFetch<Account[]>('/accounts');
-    accounts.value = data;
+    const response = await apiFetch<{ success: boolean; data: Account[] }>('/accounts');
+    if (response.success && response.data) {
+      accounts.value = response.data;
+    }
   } catch (err: any) {
     const errorMessage = err.data?.message || err.message || 'Erreur lors du chargement des comptes';
     error.value = errorMessage;

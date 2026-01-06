@@ -83,11 +83,13 @@ Avenir/
 
 Avant de commencer, assurez-vous d'avoir :
 
-| Logiciel | Version Minimale |
-|----------|------------------|
-| **Node.js** | 20.0.0+ |
-| **npm** | 9.0.0+ |
-| **MySQL** | 8.0+ |
+| Logiciel | Version Minimale | Notes |
+|----------|------------------|-------|
+| **Node.js** | 20.0.0+ | |
+| **npm** | 9.0.0+ | |
+| **Docker Desktop** | Dernière version | **Recommandé** pour MySQL + PostgreSQL |
+| **MySQL** | 8.0+ | Optionnel si vous utilisez Docker |
+| **PostgreSQL** | 15.0+ | Optionnel si vous utilisez Docker |
 
 ---
 
@@ -106,15 +108,52 @@ cd Avenir
 npm run install:all
 ```
 
-### 3. Configurer la base de données avec Laragon
+### 3. Configurer les bases de données
 
-1. **Démarrer Laragon** : Cliquer sur "Démarrer tout"
+**🐳 Option A : Docker (Recommandé)**
+
+Cette option démarre automatiquement MySQL, PostgreSQL, phpMyAdmin et pgAdmin :
+
+```bash
+# Démarrer tous les services (MySQL, PostgreSQL, phpMyAdmin, pgAdmin)
+docker-compose up -d
+
+# Vérifier que tout fonctionne
+docker-compose ps
+```
+
+**Interfaces web :**
+- phpMyAdmin (MySQL) : [http://localhost:8080](http://localhost:8080) - User: `root` / Pass: `root`
+- pgAdmin (PostgreSQL) : [http://localhost:8081](http://localhost:8081) - Email: `admin@avenir.com` / Pass: `admin`
+
+📖 **Guide complet** : Voir [DOCKER_SETUP.md](./DOCKER_SETUP.md)
+
+---
+
+**💻 Option B : Installation Locale (Laragon, XAMPP, etc.)**
+
+<details>
+<summary>Cliquer pour voir les instructions Laragon/XAMPP</summary>
+
+**MySQL avec Laragon/XAMPP :**
+
+1. **Démarrer Laragon/XAMPP** : Cliquer sur "Démarrer tout"
 2. **Créer la base de données** :
    - Ouvrir PHPMyAdmin : [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
    - Créer une nouvelle base : `avenir_bank` (interclassement: `utf8mb4_unicode_ci`)
 3. **Importer le schéma** :
    - Sélectionner `avenir_bank`
    - Onglet "Importer" → Fichier `db/schema.sql` → "Exécuter"
+
+**PostgreSQL avec pgAdmin :**
+
+1. **Ouvrir pgAdmin**
+2. **Créer la base de données** : `avenir_bank`
+3. **Importer le schéma** : Exécuter `db/schema-postgres.sql`
+
+</details>
+
+---
 
 La base contient maintenant les utilisateurs de test, actions boursières et configuration
 
@@ -126,7 +165,21 @@ Utilisez le fichier `.env` fourni 
 et ajustez si nécessaire (ex. paramètres email).
 ```
 
-### 5. Lancer l'application (Express + Next.js)
+### 5. Lancer l'application
+
+Le projet permet de lancer différentes combinaisons frontend / backend
+afin de démontrer l’indépendance des couches (Clean Architecture).
+
+### Combinaisons disponibles
+
+| Commande | Backend | Frontend |
+|--------|--------|---------|
+| npm run dev:1 | Express (MySQL) | Next.js |
+| npm run dev:2 | NestJS (PostgreSQL) | Next.js |
+| npm run dev:3 | Express (MySQL) | Nuxt | (Bonus)
+| npm run dev:4 | NestJS (PostgreSQL) | Nuxt | (Bonus)
+
+### Exemple
 
 ```bash
 npm run dev:1

@@ -378,9 +378,11 @@ const isDirty = computed(() => {
 const loadAccount = async () => {
   try {
     loading.value = true;
-    const data = await apiFetch<Account>(`/accounts/${accountId}`);
-    account.value = data;
-    editForm.value.accountName = data.name;
+    const response = await apiFetch<{ success: boolean; data: Account }>(`/accounts/${accountId}`);
+    if (response.success && response.data) {
+      account.value = response.data;
+      editForm.value.accountName = response.data.name;
+    }
   } catch (err: any) {
     notificationsStore.addNotification({
       type: 'error',
@@ -425,16 +427,18 @@ const handleUpdate = async () => {
 
   try {
     updating.value = true;
-    await apiFetch(`/accounts/${accountId}`, {
+    const response = await apiFetch<{ success: boolean; message?: string; data?: any }>(`/accounts/${accountId}`, {
       method: 'PATCH',
       body: { accountName: editForm.value.accountName },
     });
 
-    notificationsStore.addNotification({
-      type: 'success',
-      message: 'Compte modifié avec succès !',
-    });
-    await loadAccount();
+    if (response.success) {
+      notificationsStore.addNotification({
+        type: 'success',
+        message: response.message || 'Compte modifié avec succès !',
+      });
+      await loadAccount();
+    }
   } catch (err: any) {
     notificationsStore.addNotification({
       type: 'error',
@@ -448,16 +452,18 @@ const handleUpdate = async () => {
 const handleDelete = async () => {
   try {
     deleting.value = true;
-    await apiFetch(`/accounts/${accountId}`, { method: 'DELETE' });
+    const response = await apiFetch<{ success: boolean; message?: string }>(`/accounts/${accountId}`, { method: 'DELETE' });
 
-    notificationsStore.addNotification({
-      type: 'success',
-      message: 'Compte supprimé avec succès !',
-    });
+    if (response.success) {
+      notificationsStore.addNotification({
+        type: 'success',
+        message: response.message || 'Compte supprimé avec succès !',
+      });
 
-    setTimeout(() => {
-      router.push('/dashboard/accounts');
-    }, 1000);
+      setTimeout(() => {
+        router.push('/dashboard/accounts');
+      }, 1000);
+    }
   } catch (err: any) {
     notificationsStore.addNotification({
       type: 'error',

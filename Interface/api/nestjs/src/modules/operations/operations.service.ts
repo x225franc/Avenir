@@ -31,20 +31,26 @@ export class OperationsService {
 
       // Utiliser le Use Case
       const depositUseCase = new DepositMoney(this.accountRepository, this.transactionRepository);
-      await depositUseCase.execute({
+      const transaction = await depositUseCase.execute({
         accountId: depositDto.accountId,
         amount: depositDto.amount,
+        description: depositDto.description,
       });
 
-      // Récupérer le compte mis à jour
-      const updatedAccount = await this.accountRepository.findById(accountIdVO);
-
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Dépôt effectué avec succès',
-        account: {
-          id: updatedAccount!.id.value,
-          accountName: updatedAccount!.accountName,
-          balance: updatedAccount!.balance.amount,
+        data: {
+          transactionId: transaction.getId().getValue(),
+          fromAccountId: transaction.getFromAccountId()?.value || null,
+          toAccountId: transaction.getToAccountId()?.value || null,
+          amount: transaction.getAmount().amount,
+          currency: transaction.getAmount().currency,
+          type: transaction.getType(),
+          status: transaction.getStatus().toLowerCase(),
+          description: transaction.getDescription(),
+          createdAt: transaction.getCreatedAt(),
         },
       };
     } catch (error) {
@@ -71,20 +77,26 @@ export class OperationsService {
 
       // Utiliser le Use Case
       const withdrawUseCase = new WithdrawMoney(this.accountRepository, this.transactionRepository);
-      await withdrawUseCase.execute({
+      const transaction = await withdrawUseCase.execute({
         accountId: withdrawDto.accountId,
         amount: withdrawDto.amount,
+        description: withdrawDto.description,
       });
 
-      // Récupérer le compte mis à jour
-      const updatedAccount = await this.accountRepository.findById(accountIdVO);
-
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Retrait effectué avec succès',
-        account: {
-          id: updatedAccount!.id.value,
-          accountName: updatedAccount!.accountName,
-          balance: updatedAccount!.balance.amount,
+        data: {
+          transactionId: transaction.getId().getValue(),
+          fromAccountId: transaction.getFromAccountId()?.value || null,
+          toAccountId: transaction.getToAccountId()?.value || null,
+          amount: transaction.getAmount().amount,
+          currency: transaction.getAmount().currency,
+          type: transaction.getType(),
+          status: transaction.getStatus().toLowerCase(),
+          description: transaction.getDescription(),
+          createdAt: transaction.getCreatedAt(),
         },
       };
     } catch (error) {

@@ -36,18 +36,23 @@ export class AuthService {
         password: registerDto.password,
         firstName: registerDto.firstName,
         lastName: registerDto.lastName,
-        phoneNumber: registerDto.phone,
+        phoneNumber: registerDto.phoneNumber,
         address: registerDto.address,
-        role: 'client',
+        role: registerDto.role || 'client',
       });
 
       if (!result.success) {
         throw new BadRequestException(result.error || 'Erreur lors de l\'inscription');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        message: 'Inscription réussie. Veuillez vérifier votre email.',
-        userId: result.userId,
+        success: true,
+        message: 'Inscription réussie ! Vérifiez votre email.',
+        data: {
+          userId: result.userId,
+          verificationToken: result.verificationToken,
+        },
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -78,15 +83,15 @@ export class AuthService {
       const email = new Email(result.email!);
       const user = await this.userRepository.findByEmail(email);
 
+      // Format de réponse compatible avec Express pour respecter la Clean Architecture
       return {
-        access_token: token,
-        user: {
-          id: user!.id.value,
+        success: true,
+        message: 'Connexion réussie',
+        data: {
+          token: token,
+          userId: user!.id.value,
           email: user!.email.value,
-          firstName: user!.firstName,
-          lastName: user!.lastName,
           role: user!.role,
-          emailVerified: user!.emailVerified,
         },
       };
     } catch (error) {
@@ -108,7 +113,11 @@ export class AuthService {
         throw new BadRequestException(result.error || 'Token de vérification invalide ou expiré');
       }
 
-      return { message: result.message || 'Email vérifié avec succès' };
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: result.message || 'Email vérifié avec succès',
+      };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
@@ -128,13 +137,16 @@ export class AuthService {
       await requestPasswordResetUseCase.execute(forgotPasswordDto.email);
 
       // Ne pas révéler si l'email existe ou non (sécurité)
+      // Format standardisé compatible avec Express
       return {
-        message: 'Un email de réinitialisation a été envoyé si le compte existe',
+        success: true,
+        message: 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.',
       };
     } catch (error) {
       // Toujours retourner le même message pour la sécurité
       return {
-        message: 'Un email de réinitialisation a été envoyé si le compte existe',
+        success: true,
+        message: 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.',
       };
     }
   }
@@ -149,7 +161,11 @@ export class AuthService {
         resetPasswordDto.newPassword
       );
 
-      return { message: 'Mot de passe réinitialisé avec succès' };
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: 'Mot de passe réinitialisé avec succès',
+      };
     } catch (error) {
       throw new BadRequestException(
         (error as Error).message || 'Token de réinitialisation invalide ou expiré'
@@ -164,17 +180,21 @@ export class AuthService {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
+    // Format de réponse compatible avec Express pour respecter la Clean Architecture
     return {
-      id: user.id.value,
-      email: user.email.value,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      address: user.address,
-      role: user.role,
-      emailVerified: user.emailVerified,
-      isBanned: user.isBanned,
-      createdAt: user.createdAt,
+      success: true,
+      data: {
+        id: user.id.value,
+        email: user.email.value,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fullName: user.fullName,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+        emailVerified: user.emailVerified,
+        createdAt: user.createdAt,
+      },
     };
   }
 

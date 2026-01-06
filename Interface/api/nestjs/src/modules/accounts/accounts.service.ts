@@ -32,9 +32,14 @@ export class AccountsService {
         throw new BadRequestException(result.error || 'Erreur lors de la création du compte');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        accountId: result.accountId,
-        iban: result.iban,
+        success: true,
+        message: 'Compte créé avec succès',
+        data: {
+          accountId: result.accountId,
+          iban: result.iban,
+        },
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -62,16 +67,20 @@ export class AccountsService {
       throw new ForbiddenException('Accès interdit à ce compte');
     }
 
+    // Format standardisé compatible avec Express
     return {
-      id: account.id.value,
-      userId: account.userId.value,
-      iban: account.iban.value,
-      accountName: account.accountName,
-      accountType: account.accountType,
-      balance: account.balance.amount,
-      isActive: account.isActive,
-      createdAt: account.createdAt,
-      updatedAt: account.updatedAt,
+      success: true,
+      data: {
+        id: account.id.value,
+        userId: account.userId.value,
+        iban: account.iban.value,
+        accountName: account.accountName,
+        accountType: account.accountType,
+        balance: account.balance.amount,
+        isActive: account.isActive,
+        createdAt: account.createdAt,
+        updatedAt: account.updatedAt,
+      },
     };
   }
 
@@ -79,15 +88,19 @@ export class AccountsService {
     const userIdVO = UserId.fromString(userId);
     const accounts = await this.accountRepository.findByUserId(userIdVO);
 
-    return accounts.map(account => ({
-      id: account.id.value,
-      iban: account.iban.value,
-      accountName: account.accountName,
-      accountType: account.accountType,
-      balance: account.balance.amount,
-      isActive: account.isActive,
-      createdAt: account.createdAt,
-    }));
+    // Format standardisé compatible avec Express
+    return {
+      success: true,
+      data: accounts.map(account => ({
+        id: account.id.value,
+        iban: account.iban.value,
+        accountName: account.accountName,
+        accountType: account.accountType,
+        balance: account.balance.amount,
+        isActive: account.isActive,
+        createdAt: account.createdAt,
+      })),
+    };
   }
 
   async update(id: string, userId: string, updateAccountDto: UpdateAccountDto) {
@@ -109,10 +122,15 @@ export class AccountsService {
     // save() gère à la fois create et update
     await this.accountRepository.save(account);
 
+    // Format standardisé compatible avec Express
     return {
-      id: account.id.value,
-      accountName: account.accountName,
-      updatedAt: account.updatedAt,
+      success: true,
+      message: 'Compte mis à jour avec succès',
+      data: {
+        id: account.id.value,
+        accountName: account.accountName,
+        updatedAt: account.updatedAt,
+      },
     };
   }
 
@@ -134,6 +152,10 @@ export class AccountsService {
 
     await this.accountRepository.delete(account.id);
 
-    return { message: 'Compte supprimé avec succès' };
+    // Format standardisé compatible avec Express
+    return {
+      success: true,
+      message: 'Compte supprimé avec succès',
+    };
   }
 }

@@ -44,13 +44,8 @@ export class CreditsService {
         throw new BadRequestException(result.message);
       }
 
-      return {
-        creditId: result.creditId,
-        monthlyPayment: result.monthlyPayment,
-        totalCost: result.totalCost,
-        totalInterest: result.totalInterest,
-        message: result.message,
-      };
+      // Format standardisé compatible avec Express
+      return result;
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
@@ -72,7 +67,8 @@ export class CreditsService {
         throw new BadRequestException('Erreur lors de la récupération des crédits');
       }
 
-      return result.credits;
+      // Format standardisé compatible avec Express
+      return result;
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des crédits');
     }
@@ -106,34 +102,19 @@ export class CreditsService {
 
   calculateMonthlyPayment(calculateDto: CalculateCreditDto) {
     try {
-      // Use the same calculation formula as in grantCredit
-      const P = calculateDto.principalAmount;
-      const r = calculateDto.annualInterestRate / 12; // Monthly interest rate
-      const n = calculateDto.durationMonths;
+      const calculationService = new CreditCalculationService();
 
-      let monthlyPaymentBase: number;
-      if (r === 0) {
-        monthlyPaymentBase = P / n;
-      } else {
-        monthlyPaymentBase = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-      }
+      const totalCost = calculationService.calculateTotalCost(
+        calculateDto.principalAmount,
+        calculateDto.annualInterestRate,
+        calculateDto.insuranceRate,
+        calculateDto.durationMonths
+      );
 
-      // Add insurance to monthly payment
-      const insuranceCost = P * calculateDto.insuranceRate;
-      const monthlyPayment = monthlyPaymentBase + insuranceCost;
-
-      // Calculate total cost
-      const totalCost = monthlyPayment * n;
-      const totalInterest = totalCost - P;
-
+      // Format standardisé compatible avec Express
       return {
-        monthlyPayment: Math.round(monthlyPayment * 100) / 100,
-        totalCost: Math.round(totalCost * 100) / 100,
-        totalInterest: Math.round(totalInterest * 100) / 100,
-        principalAmount: P,
-        durationMonths: n,
-        annualInterestRate: calculateDto.annualInterestRate,
-        insuranceRate: calculateDto.insuranceRate,
+        success: true,
+        ...totalCost,
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors du calcul du crédit');

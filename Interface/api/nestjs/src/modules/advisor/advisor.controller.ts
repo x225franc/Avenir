@@ -49,8 +49,8 @@ export class AdvisorController {
   @Roles('advisor', 'director')
   async notifyClient(
     @CurrentUser() user: any,
-    @Body() body: { clientId: string; message: string },
+    @Body() body: { clientId: string; subject: string; message: string },
   ) {
-    return this.advisorService.notifyClient(user.userId, body.clientId, body.message);
+    return this.advisorService.notifyClient(user.userId, body.clientId, body.subject, body.message);
   }
 }

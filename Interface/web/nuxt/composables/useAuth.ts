@@ -4,13 +4,16 @@ export const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await apiFetch<{ access_token: string; user: any }>('/users/login', {
+      const response = await apiFetch<{ success: boolean; data: { token: string; userId: string; email: string; role: string } }>('/users/login', {
         method: 'POST',
         body: { email, password },
       });
 
-      authStore.setToken(response.access_token);
-      authStore.setUser(response.user);
+      if (response.success && response.data) {
+        authStore.setToken(response.data.token);
+        // Récupérer les infos complètes de l'utilisateur via /users/me
+        await fetchCurrentUser();
+      }
 
       return response;
     } catch (error) {
@@ -43,9 +46,12 @@ export const useAuth = () => {
 
   const fetchCurrentUser = async () => {
     try {
-      const user = await apiFetch('/users/me');
-      authStore.setUser(user);
-      return user;
+      const response = await apiFetch<{ success: boolean; data: any }>('/users/me');
+      if (response.success && response.data) {
+        authStore.setUser(response.data);
+        return response.data;
+      }
+      throw new Error('Failed to fetch user');
     } catch (error) {
       authStore.logout();
       throw error;

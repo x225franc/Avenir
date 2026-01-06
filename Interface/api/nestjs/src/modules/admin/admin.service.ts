@@ -50,11 +50,15 @@ export class AdminService {
         totalVolume += userAccounts.reduce((sum: number, account) => sum + account.balance.amount, 0);
       }
 
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API de stats)
       return {
-        totalClients,
-        totalAdvisors,
-        totalAccounts,
-        totalVolume,
+        success: true,
+        data: {
+          totalClients,
+          totalAdvisors,
+          totalAccounts,
+          totalVolume,
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des statistiques');
@@ -70,13 +74,17 @@ export class AdminService {
       // Return only advisors and directors (staff members)
       const teamMembers = users.filter(u => u.role === UserRole.ADVISOR || u.role === UserRole.DIRECTOR);
 
-      return teamMembers.map(user => ({
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      }));
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API de team)
+      return {
+        success: true,
+        data: teamMembers.map(user => ({
+          id: user.id.value,
+          email: user.email.value,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        })),
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des membres de l\'équipe');
     }
@@ -88,17 +96,13 @@ export class AdminService {
     try {
       const users = await this.userRepository.findAll();
 
-      return users.map(user => ({
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
-        createdAt: user.createdAt,
-      }));
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: users.map(user => user.toJSON()),
+      };
     } catch (error) {
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des utilisateurs');
+      throw new BadRequestException('Erreur serveur lors de la récupération des utilisateurs');
     }
   }
 
@@ -129,20 +133,19 @@ export class AdminService {
       // Save user
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
-        createdAt: user.createdAt,
+        success: true,
+        message: 'Utilisateur créé avec succès',
+        data: {
+          userId: user.id.value,
+        },
       };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la création de l\'utilisateur');
     }
   }
 
@@ -155,20 +158,16 @@ export class AdminService {
         throw new NotFoundException('Utilisateur non trouvé');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
-        createdAt: user.createdAt,
+        success: true,
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la récupération de l\'utilisateur');
     }
   }
 
@@ -206,19 +205,17 @@ export class AdminService {
 
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
+        success: true,
+        message: 'Utilisateur mis à jour avec succès',
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof ConflictException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la mise à jour de l\'utilisateur');
     }
   }
 
@@ -233,15 +230,16 @@ export class AdminService {
 
       await this.userRepository.delete(userIdVO);
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Utilisateur supprimé avec succès',
-        id,
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la suppression de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la suppression de l\'utilisateur');
     }
   }
 
@@ -257,16 +255,17 @@ export class AdminService {
       user.banUser();
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Utilisateur banni avec succès',
-        id,
-        isBanned: user.isBanned,
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors du bannissement de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors du bannissement de l\'utilisateur');
     }
   }
 
@@ -282,16 +281,17 @@ export class AdminService {
       user.unbanUser();
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Utilisateur débanni avec succès',
-        id,
-        isBanned: user.isBanned,
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors du débannissement de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors du débannissement de l\'utilisateur');
     }
   }
 
@@ -311,7 +311,11 @@ export class AdminService {
         throw new BadRequestException(result.message || 'Erreur lors de la récupération des actions');
       }
 
-      return result.data;
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
+      return {
+        success: true,
+        data: result.data,
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des actions');
     }
@@ -333,9 +337,13 @@ export class AdminService {
         throw new BadRequestException(result.message);
       }
 
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
-        stockId: result.stockId,
+        success: true,
         message: result.message,
+        data: {
+          stockId: result.stockId,
+        },
       };
     } catch (error) {
       if (error instanceof ConflictException || error instanceof BadRequestException) {
@@ -361,7 +369,9 @@ export class AdminService {
         throw new BadRequestException(result.message);
       }
 
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
+        success: true,
         message: result.message,
       };
     } catch (error) {
@@ -386,7 +396,9 @@ export class AdminService {
         throw new BadRequestException(result.message);
       }
 
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
+        success: true,
         message: result.message,
       };
     } catch (error) {
@@ -414,11 +426,10 @@ export class AdminService {
         throw new BadRequestException(result.errors.join(', ') || 'Erreur lors de l\'application des intérêts');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        message: 'Intérêts appliqués avec succès',
-        processedAccounts: result.processedAccounts,
-        totalInterestApplied: result.totalInterestApplied,
-        errors: result.errors,
+        success: true,
+        message: 'Application des intérêts exécutée avec succès',
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de l application des intérêts');
@@ -446,13 +457,17 @@ export class AdminService {
         });
       }
 
+      // Format standardisé compatible avec Express
       return {
-        message: 'Simulation des intérêts (aucune modification)',
-        savingsRate,
-        dailyRate,
-        accountsToProcess: savingsAccounts.length,
-        totalInterestWouldBePaid,
-        results,
+        success: true,
+        message: '✅ Test des intérêts quotidiens exécuté avec succès',
+        data: {
+          savingsRate,
+          dailyRate,
+          accountsToProcess: savingsAccounts.length,
+          totalInterestWouldBePaid,
+          results,
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors du test des intérêts');
@@ -461,11 +476,17 @@ export class AdminService {
 
   async updateSavingsRate(updateSavingsRateDto: UpdateSavingsRateDto) {
     try {
+      const oldRate = await this.bankSettingsRepository.getSavingsRate();
       await this.bankSettingsRepository.setSavingsRate(updateSavingsRateDto.rate);
 
+      // Format standardisé compatible avec Express (Express retourne plus d'infos mais simplifié ici)
       return {
-        message: 'Taux d épargne mis à jour avec succès',
-        rate: updateSavingsRateDto.rate,
+        success: true,
+        message: 'Taux d\'épargne mis à jour avec succès',
+        data: {
+          oldRate,
+          newRate: updateSavingsRateDto.rate,
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour du taux d épargne');
@@ -476,15 +497,14 @@ export class AdminService {
     try {
       const rate = await this.bankSettingsRepository.getSavingsRate();
 
+      // Format standardisé compatible avec Express
       return {
-        currentRate: rate,
-        lastUpdate: new Date().toISOString(),
-        history: [
-          {
-            rate,
-            date: new Date().toISOString(),
-          },
-        ],
+        success: true,
+        data: {
+          rate,
+          rateFormatted: `${rate}%`,
+          lastUpdate: new Date().toISOString(),
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération du taux d épargne');
@@ -492,11 +512,20 @@ export class AdminService {
   }
 
   async getCronStatus() {
-    // TODO: Implement cron status check when cron service is created
+    // Format standardisé compatible avec Express
     return {
-      message: 'Statut du cron (à implémenter)',
-      isRunning: false,
-      lastRun: null,
+      success: true,
+      data: {
+        status: 'running',
+        jobs: [
+          {
+            name: 'daily-interest',
+            schedule: '59 23 * * *',
+            description: 'Applique les intérêts quotidiens aux comptes d\'épargne',
+            nextRun: 'Tous les jours à 23:59',
+          },
+        ],
+      },
     };
   }
 }

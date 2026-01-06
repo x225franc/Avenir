@@ -1,0 +1,94 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: avenir_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: avenir_bank
+      MYSQL_USER: avenir
+      MYSQL_PASSWORD: avenir123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - avenir_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: avenir_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: avenir
+      POSTGRES_PASSWORD: avenir123
+      POSTGRES_DB: avenir_bank
+    ports:
+    - "5433:5432" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/schema-postgresql.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - avenir_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U avenir"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # phpMyAdmin for MySQL
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: avenir_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - avenir_network
+
+  # pgAdmin for PostgreSQL
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: avenir_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@avenir.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8081:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - avenir_network
+
+networks:
+  avenir_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local

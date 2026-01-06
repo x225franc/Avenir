@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, BadRequestException, ForbiddenException 
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { NewsRepository } from '@infrastructure/database/postgresql/NewsRepository';
+import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
+import { UserId } from '@domain/value-objects/UserId';
 import { CreateNews } from '@application/use-cases/news/CreateNews';
 import { GetNews } from '@application/use-cases/news/GetNews';
 import { UpdateNews } from '@application/use-cases/news/UpdateNews';
@@ -11,6 +13,7 @@ import { DeleteNews } from '@application/use-cases/news/DeleteNews';
 export class NewsService {
   constructor(
     private readonly newsRepository: NewsRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async createNews(authorId: string, createNewsDto: CreateNewsDto) {
@@ -29,14 +32,18 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la création de l actualité');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        id: result.news!.id,
-        title: result.news!.title,
-        content: result.news!.content,
-        authorId: result.news!.authorId.value,
-        published: result.news!.published,
-        createdAt: result.news!.createdAt,
-        updatedAt: result.news!.updatedAt,
+        success: true,
+        message: 'Actualité créée avec succès',
+        data: {
+          id: result.news!.id,
+          title: result.news!.title,
+          content: result.news!.content,
+          authorId: result.news!.authorId.value,
+          published: result.news!.published,
+          createdAt: result.news!.createdAt,
+        },
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -57,15 +64,36 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la récupération des actualités');
       }
 
-      return result.news!.map(news => ({
-        id: news.id,
-        title: news.title,
-        content: news.content,
-        authorId: news.authorId.value,
-        published: news.published,
-        createdAt: news.createdAt,
-        updatedAt: news.updatedAt,
-      }));
+      // Enrichir avec les informations de l'auteur (nom + rôle) comme dans Express
+      const uniqueAuthorIds = Array.from(
+        new Set((result.news || []).map((n) => n.authorId.value))
+      );
+      const authorMap = new Map<string, { fullName: string; role: string }>();
+      
+      for (const id of uniqueAuthorIds) {
+        try {
+          const user = await this.userRepository.findById(UserId.fromString(id));
+          if (user) {
+            authorMap.set(id, { fullName: user.fullName, role: user.role });
+          }
+        } catch {}
+      }
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: result.news!.map(news => ({
+          id: news.id,
+          title: news.title,
+          content: news.content,
+          authorId: news.authorId.value,
+          published: news.published,
+          createdAt: news.createdAt,
+          updatedAt: news.updatedAt,
+          authorName: authorMap.get(news.authorId.value)?.fullName,
+          authorRole: authorMap.get(news.authorId.value)?.role,
+        })),
+      };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
@@ -82,14 +110,31 @@ export class NewsService {
         throw new NotFoundException('Actualité non trouvée');
       }
 
+      // Enrichir avec l'auteur comme dans Express
+      let authorName: string | undefined;
+      let authorRole: string | undefined;
+      try {
+        const user = await this.userRepository.findById(news.authorId);
+        if (user) {
+          authorName = user.fullName;
+          authorRole = user.role;
+        }
+      } catch {}
+
+      // Format standardisé compatible avec Express
       return {
-        id: news.id,
-        title: news.title,
-        content: news.content,
-        authorId: news.authorId.value,
-        published: news.published,
-        createdAt: news.createdAt,
-        updatedAt: news.updatedAt,
+        success: true,
+        data: {
+          id: news.id,
+          title: news.title,
+          content: news.content,
+          authorId: news.authorId.value,
+          published: news.published,
+          createdAt: news.createdAt,
+          updatedAt: news.updatedAt,
+          authorName,
+          authorRole,
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -126,14 +171,19 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la mise à jour de l actualité');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        id: result.news!.id,
-        title: result.news!.title,
-        content: result.news!.content,
-        authorId: result.news!.authorId.value,
-        published: result.news!.published,
-        createdAt: result.news!.createdAt,
-        updatedAt: result.news!.updatedAt,
+        success: true,
+        message: 'Actualité mise à jour avec succès',
+        data: {
+          id: result.news!.id,
+          title: result.news!.title,
+          content: result.news!.content,
+          authorId: result.news!.authorId.value,
+          published: result.news!.published,
+          createdAt: result.news!.createdAt,
+          updatedAt: result.news!.updatedAt,
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof ForbiddenException || error instanceof BadRequestException) {
@@ -165,9 +215,10 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la suppression de l actualité');
       }
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Actualité supprimée avec succès',
-        id,
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof ForbiddenException || error instanceof BadRequestException) {

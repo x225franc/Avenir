@@ -210,7 +210,7 @@ const handleSubmit = async () => {
   error.value = '';
 
   try {
-    await apiFetch('/accounts', {
+    const response = await apiFetch<{ success: boolean; message?: string; data?: any }>('/accounts', {
       method: 'POST',
       body: {
         accountName: formData.value.accountName,
@@ -219,15 +219,17 @@ const handleSubmit = async () => {
       },
     });
 
-    success.value = true;
-    notificationsStore.addNotification({
-      type: 'success',
-      message: 'Compte créé avec succès !',
-    });
+    if (response.success) {
+      success.value = true;
+      notificationsStore.addNotification({
+        type: 'success',
+        message: response.message || 'Compte créé avec succès !',
+      });
 
-    setTimeout(() => {
-      router.push('/dashboard/accounts');
-    }, 1500);
+      setTimeout(() => {
+        router.push('/dashboard/accounts');
+      }, 1500);
+    }
   } catch (err: any) {
     const errorMessage =
       err.data?.message || err.message || 'Impossible de créer le compte';

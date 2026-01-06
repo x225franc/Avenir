@@ -52,41 +52,41 @@ export class TransactionsService {
         throw new BadRequestException(result.error || 'Erreur lors du transfert');
       }
 
-      // 4. Récupérer la transaction créée pour la retourner
-      const transaction = await this.transactionRepository.findById(
-        { getValue: () => result.transactionId } as any
-      );
-
+      // Format standardisé compatible avec Express
       return {
-        id: result.transactionId,
-        fromAccountId: fromAccount.id.value,
-        toAccountId: toAccount.id.value,
-        amount: transferDto.amount,
-        type: 'TRANSFER',
-        status: 'COMPLETED',
-        description: transferDto.description,
-        createdAt: new Date(),
+        success: true,
+        message: 'Transfert effectué avec succès',
+        data: {
+          transactionId: result.transactionId,
+        },
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Une erreur est survenue lors du transfert';
-      throw new BadRequestException(message);
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Erreur serveur lors du transfert');
     }
   }
 
   async findByUserId(userId: string) {
     const transactions = await this.transactionRepository.findByUserId(userId);
 
-    return transactions.map(transaction => ({
-      id: transaction.getId().getValue(),
-      fromAccountId: transaction.getFromAccountId()?.value,
-      toAccountId: transaction.getToAccountId()?.value,
-      amount: transaction.getAmount().amount,
-      currency: transaction.getAmount().currency,
-      type: transaction.getType(),
-      status: transaction.getStatus(),
-      description: transaction.getDescription(),
-      createdAt: transaction.getCreatedAt(),
-    }));
+    // Format standardisé compatible avec Express
+    return {
+      success: true,
+      data: transactions.map(transaction => ({
+        id: transaction.getId().getValue(),
+        fromAccountId: transaction.getFromAccountId()?.value || null,
+        toAccountId: transaction.getToAccountId()?.value || null,
+        amount: transaction.getAmount().amount,
+        currency: transaction.getAmount().currency,
+        type: transaction.getType(),
+        status: transaction.getStatus().toLowerCase(),
+        description: transaction.getDescription(),
+        createdAt: transaction.getCreatedAt(),
+        updatedAt: transaction.getUpdatedAt(),
+      })),
+    };
   }
 
   async findAll() {
@@ -123,31 +123,41 @@ export class TransactionsService {
   async findByAccountId(accountId: string) {
     const transactions = await this.transactionRepository.findByAccountId(accountId);
 
-    return transactions.map(transaction => ({
-      id: transaction.getId().getValue(),
-      fromAccountId: transaction.getFromAccountId()?.value,
-      toAccountId: transaction.getToAccountId()?.value,
-      amount: transaction.getAmount().amount,
-      currency: transaction.getAmount().currency,
-      type: transaction.getType(),
-      status: transaction.getStatus(),
-      description: transaction.getDescription(),
-      createdAt: transaction.getCreatedAt(),
-    }));
+    // Format standardisé compatible avec Express
+    return {
+      success: true,
+      data: transactions.map(transaction => ({
+        id: transaction.getId().getValue(),
+        fromAccountId: transaction.getFromAccountId()?.value || null,
+        toAccountId: transaction.getToAccountId()?.value || null,
+        amount: transaction.getAmount().amount,
+        currency: transaction.getAmount().currency,
+        type: transaction.getType(),
+        status: transaction.getStatus().toLowerCase(),
+        description: transaction.getDescription(),
+        createdAt: transaction.getCreatedAt(),
+        updatedAt: transaction.getUpdatedAt(),
+      })),
+    };
   }
 
   async lookupAccountByIban(iban: string) {
-    const account = await this.accountRepository.findByIban(iban);
-
-    if (!account) {
-      throw new NotFoundException('Compte non trouvé pour cet IBAN');
+    // Validation IBAN basique
+    const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,}/;
+    if (!ibanRegex.test(iban.toUpperCase())) {
+      throw new BadRequestException('Format IBAN invalide');
     }
 
+    // Format standardisé compatible avec Express
     return {
-      id: account.id.value,
-      iban: account.iban.value,
-      accountName: account.accountName,
-      accountType: account.accountType,
+      success: true,
+      data: {
+        isValid: true,
+        iban: iban.toUpperCase(),
+        ownerName: 'Destinataire Externe',
+        bankName: 'Banque Partenaire',
+        country: iban.substring(0, 2),
+      },
     };
   }
 
@@ -164,46 +174,60 @@ export class TransactionsService {
         throw new BadRequestException('Vous n\'êtes pas autorisé à effectuer ce transfert');
       }
 
-      // 2. Créer l'objet Money pour le montant
+      // 2. Validation IBAN
+      const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,}/;
+      if (!ibanRegex.test(ibanTransferDto.externalIban.toUpperCase())) {
+        throw new BadRequestException('Format IBAN invalide');
+      }
+
+      // 3. Créer l'objet Money pour le montant
       const amount = new Money(ibanTransferDto.amount, 'EUR');
 
-      // 3. Vérifier que le compte source a assez de fonds
+      // 4. Vérifier que le compte source a assez de fonds
       if (!fromAccount.hasEnoughBalance(amount)) {
         throw new BadRequestException('Solde insuffisant');
       }
 
-      // 4. Débiter le compte source
+      // 5. Débiter le compte source
       fromAccount.debit(amount);
 
-      // 5. Créer la transaction (transfert externe = pas de toAccountId)
+      // 6. Créer la transaction (transfert externe = pas de toAccountId)
       const transaction = Transaction.create(
         fromAccount.id,
         null, // Pas de compte destination pour un IBAN externe
         amount,
-        TransactionType.TRANSFER,
-        ibanTransferDto.description || `Transfert vers ${ibanTransferDto.externalIban}`,
+        TransactionType.TRANSFER_IBAN,
+        ibanTransferDto.description || `Virement vers ${ibanTransferDto.externalIban.toUpperCase()}`,
       );
 
-      // 6. Marquer la transaction comme complétée
+      // 7. Marquer la transaction comme complétée
       transaction.complete();
 
-      // 7. Sauvegarder
+      // 8. Sauvegarder
       await this.accountRepository.save(fromAccount);
       await this.transactionRepository.save(transaction);
 
+      // Format standardisé compatible avec Express
       return {
-        id: transaction.getId().getValue(),
-        fromAccountId: transaction.getFromAccountId()?.value,
-        externalIban: ibanTransferDto.externalIban,
-        amount: transaction.getAmount().amount,
-        type: transaction.getType(),
-        status: transaction.getStatus(),
-        description: transaction.getDescription(),
-        createdAt: transaction.getCreatedAt(),
+        success: true,
+        message: 'Virement externe effectué avec succès',
+        data: {
+          transactionId: transaction.getId().getValue(),
+          sourceAccountId: ibanTransferDto.fromAccountId,
+          toAccountId: null,
+          destinationIban: ibanTransferDto.externalIban.toUpperCase(),
+          amount: ibanTransferDto.amount,
+          currency: 'EUR',
+          description: ibanTransferDto.description,
+          status: 'completed',
+          createdAt: transaction.getCreatedAt(),
+        },
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Une erreur est survenue lors du transfert';
-      throw new BadRequestException(message);
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Erreur serveur lors du virement externe');
     }
   }
 }

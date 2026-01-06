@@ -22,12 +22,12 @@ export const config: AppConfig = {
 	port: parseInt(process.env.PORT || '3001', 10),
 	nodeEnv: process.env.NODE_ENV || 'development',
 	jwtSecret:
-		process.env.JWT_SECRET || 'null',
+		process.env.JWT_SECRET || 'secret_super_securise_pour_jwt_express',
 	database: {
 		host: process.env.DB_HOST || 'localhost',
 		port: parseInt(process.env.DB_PORT || '3306', 10),
-		username: process.env.DB_USERNAME || 'root',
-		password: process.env.DB_PASSWORD || '',
+		username: process.env.DB_USERNAME || 'avenir',
+		password: process.env.DB_PASSWORD || 'avenir123',
 		database: process.env.DB_NAME || 'avenir_bank',
 	},
 };

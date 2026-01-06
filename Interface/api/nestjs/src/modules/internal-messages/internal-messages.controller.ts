@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
 import { InternalMessagesService } from './internal-messages.service';
 import { SendInternalMessageDto } from './dto/send-internal-message.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -12,6 +12,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 export class InternalMessagesController {
   constructor(private readonly internalMessagesService: InternalMessagesService) {}
 
+  // POST /api/internal-messages - Envoyer un message interne
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async sendMessage(
@@ -21,15 +22,25 @@ export class InternalMessagesController {
     return this.internalMessagesService.sendMessage(user.userId, sendMessageDto);
   }
 
-  @Get(':userId')
+  // GET /api/internal-messages?userId=X&type=group|direct&otherUserId=Y - Récupérer les messages
+  @Get()
   async getMessages(
-    @CurrentUser() user: any,
-    @Param('userId') otherUserId: string,
+    @Query('userId') userId: string,
+    @Query('type') type: 'group' | 'direct',
+    @Query('otherUserId') otherUserId?: string,
   ) {
-    return this.internalMessagesService.getMessages(user.userId, otherUserId);
+    return this.internalMessagesService.getMessages(userId, type || 'group', otherUserId);
   }
+}
 
-  @Get('staff/members')
+// GET /api/staff-members - Récupérer les membres du staff
+@Controller('staff-members')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('advisor', 'director')
+export class StaffMembersController {
+  constructor(private readonly internalMessagesService: InternalMessagesService) {}
+
+  @Get()
   async getStaffMembers() {
     return this.internalMessagesService.getStaffMembers();
   }
