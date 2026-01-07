@@ -182,6 +182,39 @@ export default function AdvisorMessagesPage() {
         return () => { socket.emit("leave-conversation", selectedConversation.id); };
     }, [socket, selectedConversation, user]);
 
+    // Polling pour recharger les messages toutes les 3 secondes (fallback WebSocket)
+    useEffect(() => {
+        if (!selectedConversation || !user) return;
+
+        const pollInterval = setInterval(async () => {
+            try {
+                const result = await messageApi.getConversation(selectedConversation.id);
+                if (result.success && result.data) {
+                    const newData = result.data;
+                    setSelectedConversation((prev) => {
+                        if (!prev) return null;
+                        // Vérifier s'il y a de nouveaux messages
+                        const newMessages = newData.messages.filter(
+                            (msg) => !prev.messages.find((m) => m.id === msg.id)
+                        );
+                        if (newMessages.length > 0) {
+                            console.log(`📨 ${newMessages.length} nouveau(x) message(s) détecté(s)`);
+                            return {
+                                ...prev,
+                                messages: newData.messages,
+                                lastMessageAt: newData.lastMessageAt,
+                            };
+                        }
+                        return prev;
+                    });
+                }
+            } catch (error) {
+                console.error("Erreur polling messages:", error);
+            }
+        }, 3000); // Recharger tous les 3 secondes
+
+        return () => clearInterval(pollInterval);
+    }, [selectedConversation, user]);
 
     // Handlers
     const handleSendMessage = async (e: React.FormEvent) => {
@@ -219,7 +252,21 @@ export default function AdvisorMessagesPage() {
     const handleAssignToMe = async () => {
         if (!selectedConversation || !user) return;
         const result = await messageApi.assignConversation(selectedConversation.id, parseInt(user.id));
-        if (result.success) await loadConversations();
+        if (result.success) {
+            await loadConversations();
+            
+            // Recharger la conversation sélectionnée pour mettre à jour les infos
+            setTimeout(async () => {
+                try {
+                    const updatedConversation = await messageApi.getConversation(selectedConversation.id);
+                    if (updatedConversation.success && updatedConversation.data) {
+                        setSelectedConversation(updatedConversation.data);
+                    }
+                } catch (error) {
+                    console.error("Erreur lors du rechargement de la conversation:", error);
+                }
+            }, 300);
+        }
     };
 
     const handleTransfer = async () => {
@@ -228,7 +275,20 @@ export default function AdvisorMessagesPage() {
         if (result.success) {
             setShowTransferModal(false);
             setSelectedAdvisorForTransfer(null);
+            
+            // Recharger les conversations immédiatement
             await loadConversations();
+            
+            // Recharger après un court délai pour synchroniser avec le serveur
+            setTimeout(async () => {
+                try {
+                    await loadConversations();
+                } catch (error) {
+                    console.error("Erreur lors du rechargement des conversations:", error);
+                }
+            }, 500);
+            
+            // Déselectionner la conversation (elle a été transférée)
             setSelectedConversation(null);
         }
     };
@@ -237,11 +297,36 @@ export default function AdvisorMessagesPage() {
         if (!selectedConversation || !user) return;
         if (!confirm("Voulez-vous vraiment clôturer cette conversation ?")) return;
         const result = await messageApi.closeConversation(selectedConversation.id, parseInt(user.id));
-        if (result.success) await loadConversations();
+        if (result.success) {
+            // Recharger les conversations immédiatement
+            await loadConversations();
+            
+            // Recharger la conversation sélectionnée pour mettre à jour le statut
+            try {
+                const updatedConversation = await messageApi.getConversation(selectedConversation.id);
+                if (updatedConversation.success && updatedConversation.data) {
+                    setSelectedConversation(updatedConversation.data);
+                    
+                    // Recharger une deuxième fois après 500ms pour synchroniser complètement
+                    setTimeout(async () => {
+                        try {
+                            const finalConversation = await messageApi.getConversation(selectedConversation.id);
+                            if (finalConversation.success && finalConversation.data) {
+                                setSelectedConversation(finalConversation.data);
+                            }
+                        } catch (error) {
+                            console.error("Erreur lors du rechargement final:", error);
+                        }
+                    }, 500);
+                }
+            } catch (error) {
+                console.error("Erreur lors du rechargement de la conversation:", error);
+            }
+        }
     };
 
-    const handleTyping = () => { 
-        if (socket && selectedConversation && user) socket.emit("typing:start", { conversationId: selectedConversation.id, userId: parseInt(user.id) }); 
+    const handleTyping = () => {
+        if (socket && selectedConversation && user) socket.emit("typing:start", { conversationId: selectedConversation.id, userId: parseInt(user.id) });
     };
     
     const handleStopTyping = () => { 

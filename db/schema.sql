@@ -216,7 +216,7 @@ CREATE TABLE `news` (
 -- ========== UTILISATEURS ==========
 -- Mot de passe pour tous: "123"
 -- Hash bcrypt compatible Node.js (bcrypt rounds=10)
-SET @password_hash = '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG';
+SET @password_hash = '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC';
 
 -- Directeur
 INSERT INTO `users` (`id`, `email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 

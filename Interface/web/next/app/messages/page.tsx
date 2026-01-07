@@ -267,6 +267,18 @@ export default function MessagesPage() {
                     }
                 });
                 setNewMessage("");
+
+                // Recharger les messages après 500ms pour synchroniser avec le serveur
+                setTimeout(async () => {
+                    try {
+                        const updatedConversation = await messageApi.getConversation(selectedConversation.id);
+                        if (updatedConversation.success && updatedConversation.data) {
+                            setSelectedConversation(updatedConversation.data);
+                        }
+                    } catch (error) {
+                        console.error("Erreur lors du rechargement des messages:", error);
+                    }
+                }, 500);
             }
         } catch (error) {
             console.error('Erreur lors de l\'envoi du message:', error);

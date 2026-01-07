@@ -30,17 +30,24 @@ class DatabaseConnection {
 		return DatabaseConnection.instance;
 	}
 
-	public static async testConnection(): Promise<boolean> {
-		try {
-			const pool = DatabaseConnection.getInstance();
-			const connection = await pool.getConnection();
-			console.log("✅ MySQL connection réussie");
-			connection.release();
-			return true;
-		} catch (error) {
-			console.error("❌ MySQL connection echouée:", error);
-			return false;
+	public static async testConnection(maxRetries: number = 5, retryDelay: number = 2000): Promise<boolean> {
+		for (let attempt = 1; attempt <= maxRetries; attempt++) {
+			try {
+				const pool = DatabaseConnection.getInstance();
+				const connection = await pool.getConnection();
+				console.log("✅ MySQL connection réussie");
+				connection.release();
+				return true;
+			} catch (error) {
+				if (attempt === maxRetries) {
+					console.error("❌ MySQL connection echouée après", maxRetries, "tentatives:", error);
+					return false;
+				}
+				console.log(`⏳ Tentative ${attempt}/${maxRetries} échouée. Nouvelle tentative dans ${retryDelay}ms...`);
+				await new Promise(resolve => setTimeout(resolve, retryDelay));
+			}
 		}
+		return false;
 	}
 
 	public static async close(): Promise<void> {

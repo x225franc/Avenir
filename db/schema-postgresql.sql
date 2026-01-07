@@ -291,22 +291,22 @@ CREATE TRIGGER update_bank_settings_updated_at BEFORE UPDATE ON bank_settings
 
 -- Directeur
 INSERT INTO users (id, email, password_hash, first_name, last_name, phone, address, role, email_verified) 
-VALUES (1, 'director@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Jean', 'Dupont', '0140506070', '1 Avenue de la Banque, Paris 75008', 'director', TRUE);
+VALUES (1, 'director@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Jean', 'Dupont', '0140506070', '1 Avenue de la Banque, Paris 75008', 'director', TRUE);
 
 -- Conseillers
 INSERT INTO users (id, email, password_hash, first_name, last_name, phone, address, role, email_verified) 
 VALUES 
-(2, 'advisor@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Marie', 'Martin', '0141516171', '12 Rue du Commerce, Paris 75015', 'advisor', TRUE),
-(3, 'advisor2@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Thomas', 'Bernard', '0142526272', '8 Boulevard Haussmann, Paris 75009', 'advisor', TRUE);
+(2, 'advisor@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Marie', 'Martin', '0141516171', '12 Rue du Commerce, Paris 75015', 'advisor', TRUE),
+(3, 'advisor2@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Thomas', 'Bernard', '0142526272', '8 Boulevard Haussmann, Paris 75009', 'advisor', TRUE);
 
 -- Clients
 INSERT INTO users (id, email, password_hash, first_name, last_name, phone, address, role, email_verified) 
 VALUES 
-(4, 'client@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Pierre', 'Durand', '0601020304', '123 Rue de la Paix, Paris 75002', 'client', TRUE),
-(5, 'client2@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Sophie', 'Lefebvre', '0605060708', '45 Avenue des Champs, Lyon 69001', 'client', TRUE),
-(6, 'client3@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Lucas', 'Moreau', '0609101112', '78 Rue Victor Hugo, Marseille 13001', 'client', TRUE),
-(7, 'client4@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Emma', 'Simon', '0613141516', '32 Place Bellecour, Lyon 69002', 'client', TRUE),
-(8, 'client5@avenir-bank.fr', '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG', 'Hugo', 'Laurent', '0617181920', '91 Cours Lafayette, Toulouse 31000', 'client', TRUE);
+(4, 'client@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Pierre', 'Durand', '0601020304', '123 Rue de la Paix, Paris 75002', 'client', TRUE),
+(5, 'client2@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Sophie', 'Lefebvre', '0605060708', '45 Avenue des Champs, Lyon 69001', 'client', TRUE),
+(6, 'client3@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Lucas', 'Moreau', '0609101112', '78 Rue Victor Hugo, Marseille 13001', 'client', TRUE),
+(7, 'client4@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Emma', 'Simon', '0613141516', '32 Place Bellecour, Lyon 69002', 'client', TRUE),
+(8, 'client5@avenir-bank.fr', '$2a$12$S88KKQU2h5rsWY6JjMHd9eULODFkXeQfklDrSvnUV.doMOACP5VpC', 'Hugo', 'Laurent', '0617181920', '91 Cours Lafayette, Toulouse 31000', 'client', TRUE);
 
 -- Réinitialiser la séquence d'auto-incrémentation
 SELECT setval('users_id_seq', 8, true);

@@ -17,7 +17,11 @@
 		"dev:nuxt": "npm run dev --workspace=Interface/web/nuxt",
 		"dev:1": "concurrently \"npm run dev:express\" \"npm run dev:next\"",
 		"dev:2": "concurrently \"npm run dev:nestjs\" \"npm run dev:nuxt\"",
-		"install:all": "npm install && npm install --workspaces"
+		"install:all": "npm install && npm install --workspaces",
+		"docker:up": "docker compose up -d --wait",
+		"docker:down": "docker compose down",
+		"start": "npm run docker:up && npm run dev:1",
+		"start:nestjs": "npm run docker:up && npm run dev:2"
 	},
 	"keywords": [
 		"banking",

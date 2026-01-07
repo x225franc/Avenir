@@ -1,8 +1,5 @@
-# Banque AVENIR
-
-## Clean Code & Clean Architecture - Projet Pédagogique
-
-**Alliance de Valeurs Économiques et Nationales Investies Responsablement**
+# Banque AVENIR - Clean Architecture - Projet Pédagogique
+***Alliance de Valeurs Économiques et Nationales Investies Responsablement***
 
 ---
 
@@ -105,12 +102,17 @@ cd Avenir
 ### 2. Installer les dépendances Node.js
 
 ```bash
+npm install
+```
+ou 
+
+```bash
 npm run install:all
 ```
 
 ### 3. Configurer les bases de données
 
-**🐳 Option A : Docker (Recommandé)**
+** Option A : Docker (Recommandé)**
 
 Cette option démarre automatiquement MySQL, PostgreSQL, phpMyAdmin et pgAdmin :
 
@@ -121,6 +123,8 @@ docker-compose up -d
 # Vérifier que tout fonctionne
 docker-compose ps
 ```
+
+ps : les fixtures sont automatiquement importées au démarrage via les scripts SQL dans le dossier `db/`.
 
 Cette commande démarre :
 - **MySQL** sur le port `3306` (avec fixtures)
@@ -133,7 +137,7 @@ Cette commande démarre :
 **phpMyAdmin (MySQL)**
 - **URL** : [http://localhost:8080](http://localhost:8080)
 - **Utilisateur** : `root`
-- **Mot de passe** : `root_password`
+- **Mot de passe** : ``
 - **Base de données** : `avenir_bank`
 
 **pgAdmin (PostgreSQL)**
@@ -146,28 +150,17 @@ Cette commande démarre :
 2. **General tab** :
    - Name : `Avenir PostgreSQL`
 3. **Connection tab** :
-   - Host : `avenir_postgres` (nom du service Docker)
+   - Host : `postgres` (nom du service Docker)
    - Port : `5432`
-   - Database : `avenir_bank_postgres`
+   - Database : `avenir_bank`
    - Username : `avenir`
-   - Password : `avenir_password`
+   - Password : `avenir123`
    - Save password : ✅
 4. Cliquer sur "Save"
 
-#### Identifiants des bases de données
-
-**MySQL**
-- **Root** : `root` / `root_password`
-- **User** : `avenir` / `avenir_password`
-- **Database** : `avenir_bank`
-
-**PostgreSQL**
-- **User** : `avenir` / `avenir_password`
-- **Database** : `avenir_bank_postgres`
-
 ---
 
-**💻 Option B : Installation Locale (Laragon, XAMPP, etc.)**
+**Option B : Installation Locale (Laragon, XAMPP, etc.)**
 
 <details>
 <summary>Cliquer pour voir les instructions Laragon/XAMPP</summary>
@@ -234,13 +227,21 @@ FRONTEND_URL=http://localhost:3000
 - Les variables `DB_*` sont pour **Express + MySQL**
 - Les variables `DB_POSTGRES_*` sont pour **NestJS + PostgreSQL**
 - Si vous utilisez Docker, les valeurs par défaut fonctionnent directement
-- Pour l'email, utilisez un **mot de passe d'application Gmail** (pas votre mot de passe normal)
+- Pour les emails vous pouvez tester en utilisant vos propres identifiants
 - Les comptes de test sont déjà vérifiés, l'email est optionnel pour tester
 
 ### 5. Lancer l'application
 
 Le projet permet de lancer différentes combinaisons frontend / backend
 afin de démontrer l’indépendance des couches (Clean Architecture).
+
+**Démarrage complet (Docker + Express + Next.js) à la racine du projet**
+
+```bash
+npm run start
+```
+
+Cette commande lance automatiquement Docker (MySQL/PostgreSQL + outils) puis démarre l’API Express et le frontend Next.js.
 
 ### Combinaisons disponibles
 
@@ -251,24 +252,15 @@ afin de démontrer l’indépendance des couches (Clean Architecture).
 | npm run dev:3 | Express (MySQL) | Nuxt | (Bonus)
 | npm run dev:4 | NestJS (PostgreSQL) | Nuxt | (Bonus)
 
-### Exemple
 
-```bash
-npm run dev:1
-```
 
 **Accès :**
-- 🌐 Frontend : [http://localhost:3000](http://localhost:3000)
-- 🔧 API : [http://localhost:3001](http://localhost:3001)
+-  Frontend : [http://localhost:3000](http://localhost:3000)
+-  API : [http://localhost:3001](http://localhost:3001)
 
 **Pour arrêter :**
 - `Ctrl+C` dans le terminal
 
-### 6. Premier test
-
-1. Ouvrir [http://localhost:3000](http://localhost:3000)
-2. Se connecter avec : `client@avenir-bank.fr` / `123`
-3. Explorer le dashboard, comptes, investissements, etc.
 
 ---
 
@@ -287,7 +279,6 @@ npm run dev:1
 ### Status des Comptes
 
 - Tous les comptes ci dessus sont vérifiés
-- Chaque compte **client** possède un **compte courant** pré-chargé
 - Mots de passe de test simplifiés (hashés avec bcrypt en production)
 
 ---
@@ -299,6 +290,8 @@ npm run dev:1
 npm run install:all           # Installer toutes les dépendances (root + workspaces)
 
 # Développement
+npm start                     # Docker + Express + Next.js (dev:1)
+npm run start:nestjs          # Docker + NestJS + Nuxt (dev:2)
 npm run dev:1                 # Express + Next.js (workspace 1)
 npm run dev:2                 # NestJS + Next.js (workspace 2)
 npm run dev:3                 # Express + Nuxt (workspace 3)
@@ -307,6 +300,8 @@ npm run dev:express           # Express API uniquement
 npm run dev:nestjs            # NestJS API uniquement
 npm run dev:next              # Next.js frontend uniquement
 npm run dev:nuxt              # Nuxt frontend uniquement
+npm run docker:up             # Démarrer les services Docker (attend les healthchecks)
+npm run docker:down           # Arrêter les services Docker
 
 ```
 
@@ -392,7 +387,6 @@ DELETE /api/news/:id                 # Supprimer une actualité
 - **React Hook Form** pour les formulaires
 ---
 
-## Notes Importantes
 
 ### Sécurité
 - Tokens JWT avec expiration
@@ -401,7 +395,6 @@ DELETE /api/news/:id                 # Supprimer une actualité
 - Middleware d'authentification sur routes protégées
 
 ### Base de Données
-- Les **fixtures** sont importées via PHPMyAdmin (voir section installation)
 - Le schéma utilise **utf8mb4** pour les emojis et caractères spéciaux
 - Les **IBANs** sont générés automatiquement (format FR76 XXXX XXXX XXXX XXXX XXXX XXX)
 - Les **transactions** sont trackées avec status (PENDING, COMPLETED, FAILED)
