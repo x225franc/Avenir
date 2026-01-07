@@ -122,11 +122,48 @@ docker-compose up -d
 docker-compose ps
 ```
 
-**Interfaces web :**
-- phpMyAdmin (MySQL) : [http://localhost:8080](http://localhost:8080) - User: `root` / Pass: `root`
-- pgAdmin (PostgreSQL) : [http://localhost:8081](http://localhost:8081) - Email: `admin@avenir.com` / Pass: `admin`
+Cette commande démarre :
+- **MySQL** sur le port `3306` (avec fixtures)
+- **PostgreSQL** sur le port `5432` (avec fixtures)
+- **phpMyAdmin** sur [http://localhost:8080](http://localhost:8080)
+- **pgAdmin** sur [http://localhost:8081](http://localhost:8081)
 
-📖 **Guide complet** : Voir [DOCKER_SETUP.md](./DOCKER_SETUP.md)
+#### Accéder aux interfaces web
+
+**phpMyAdmin (MySQL)**
+- **URL** : [http://localhost:8080](http://localhost:8080)
+- **Utilisateur** : `root`
+- **Mot de passe** : `root_password`
+- **Base de données** : `avenir_bank`
+
+**pgAdmin (PostgreSQL)**
+- **URL** : [http://localhost:8081](http://localhost:8081)
+- **Email** : `admin@avenir.com`
+- **Mot de passe** : `admin`
+
+**Configuration du serveur PostgreSQL dans pgAdmin :**
+1. Clic droit sur "Servers" → "Register" → "Server"
+2. **General tab** :
+   - Name : `Avenir PostgreSQL`
+3. **Connection tab** :
+   - Host : `avenir_postgres` (nom du service Docker)
+   - Port : `5432`
+   - Database : `avenir_bank_postgres`
+   - Username : `avenir`
+   - Password : `avenir_password`
+   - Save password : ✅
+4. Cliquer sur "Save"
+
+#### Identifiants des bases de données
+
+**MySQL**
+- **Root** : `root` / `root_password`
+- **User** : `avenir` / `avenir_password`
+- **Database** : `avenir_bank`
+
+**PostgreSQL**
+- **User** : `avenir` / `avenir_password`
+- **Database** : `avenir_bank_postgres`
 
 ---
 
@@ -148,22 +185,57 @@ docker-compose ps
 **PostgreSQL avec pgAdmin :**
 
 1. **Ouvrir pgAdmin**
-2. **Créer la base de données** : `avenir_bank`
-3. **Importer le schéma** : Exécuter `db/schema-postgres.sql`
+2. **Créer la base de données** : `avenir_bank_postgres`
+3. **Importer le schéma** : Exécuter `db/schema-postgresql.sql`
 
 </details>
 
 ---
 
-La base contient maintenant les utilisateurs de test, actions boursières et configuration
+La base contient maintenant les utilisateurs de test, actions boursières et configuration bancaire
 
 ### 4. Configurer les variables d'environnement
 
+Le projet utilise un fichier `.env` à la racine pour configurer les deux backends (Express/NestJS) et les deux bases de données (MySQL/PostgreSQL).
 
-```bash
-Utilisez le fichier `.env` fourni 
-et ajustez si nécessaire (ex. paramètres email).
+**Exemple de configuration `.env` :**
+
+```env
+# ========== MYSQL (Express) ==========
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=avenir
+DB_PASSWORD=avenir_password
+DB_NAME=avenir_bank
+
+# ========== POSTGRESQL (NestJS) ==========
+DB_POSTGRES_HOST=localhost
+DB_POSTGRES_PORT=5432
+DB_POSTGRES_USER=avenir
+DB_POSTGRES_PASSWORD=avenir_password
+DB_POSTGRES_NAME=avenir_bank_postgres
+
+# ========== JWT & APP ==========
+PORT=3001
+JWT_SECRET=secret_super_securise_pour_jwt
+NODE_ENV=development
+
+# ========== EMAIL (Optionnel) ==========
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=votre-email@gmail.com
+EMAIL_PASS=votre-mot-de-passe-application-gmail
+
+# ========== FRONTEND ==========
+FRONTEND_URL=http://localhost:3000
 ```
+
+**Notes importantes :**
+- Les variables `DB_*` sont pour **Express + MySQL**
+- Les variables `DB_POSTGRES_*` sont pour **NestJS + PostgreSQL**
+- Si vous utilisez Docker, les valeurs par défaut fonctionnent directement
+- Pour l'email, utilisez un **mot de passe d'application Gmail** (pas votre mot de passe normal)
+- Les comptes de test sont déjà vérifiés, l'email est optionnel pour tester
 
 ### 5. Lancer l'application
 

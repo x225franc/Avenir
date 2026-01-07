@@ -13,10 +13,10 @@ if (result.error) {
 	console.error('envPath:', envPath);
 } else {
 	console.log('.env chargé depuis:', envPath);
-	console.log('DB_HOST:', process.env.DB_HOST);
-	console.log('DB_USER:', process.env.DB_USER);
-	console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '***' : 'undefined');
-	console.log('DB_NAME:', process.env.DB_NAME);
+	console.log('DB_POSTGRES_HOST:', process.env.DB_POSTGRES_HOST);
+	console.log('DB_POSTGRES_USER:', process.env.DB_POSTGRES_USER);
+	console.log('DB_POSTGRES_PASSWORD:', process.env.DB_POSTGRES_PASSWORD ? '***' : 'undefined');
+	console.log('DB_POSTGRES_NAME:', process.env.DB_POSTGRES_NAME);
 }
 
 export interface DatabaseConfig {
@@ -39,10 +39,10 @@ export const config: AppConfig = {
 	nodeEnv: process.env.NODE_ENV || 'development',
 	jwtSecret: process.env.JWT_SECRET || 'secret_super_securise_pour_jwt',
 	database: {
-		host: process.env.DB_HOST || 'localhost',
-		port: parseInt(process.env.DB_PORT || '5433', 10),
-		username: process.env.DB_USER || 'avenir',
-		password: process.env.DB_PASSWORD || 'avenir123',
-		database: process.env.DB_NAME || 'avenir_bank',
+		host: process.env.DB_POSTGRES_HOST || 'localhost',
+		port: parseInt(process.env.DB_POSTGRES_PORT || '5432', 10),
+		username: process.env.DB_POSTGRES_USER || 'avenir',
+		password: process.env.DB_POSTGRES_PASSWORD || 'avenir_password',
+		database: process.env.DB_POSTGRES_NAME || 'avenir_bank_postgres',
 	},
 };
