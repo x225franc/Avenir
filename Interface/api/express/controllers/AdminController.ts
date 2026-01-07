@@ -76,14 +76,14 @@ export class AdminController {
 
 			res.status(200).json({
 				success: true,
-				message: "✅ Test des intérêts quotidiens exécuté avec succès",
+				message: "Test des intérêts quotidiens exécuté avec succès",
 				data: result,
 			});
 		} catch (error) {
 			console.error("Error in testInterest:", error);
 			res.status(500).json({
 				success: false,
-				message: "❌ Erreur lors du test des intérêts",
+				message: "Erreur lors du test des intérêts",
 				error: error instanceof Error ? error.message : "Unknown error",
 			});
 		}

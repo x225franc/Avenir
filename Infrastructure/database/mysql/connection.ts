@@ -25,7 +25,6 @@ class DatabaseConnection {
 				keepAliveInitialDelay: 0,
 			});
 
-			// console.log(`✅ MySQL connection pool created`);
 		}
 
 		return DatabaseConnection.instance;
@@ -48,7 +47,6 @@ class DatabaseConnection {
 		if (DatabaseConnection.instance) {
 			await DatabaseConnection.instance.end();
 			DatabaseConnection.instance = null;
-			// console.log("✅ MySQL connection pool closed");
 		}
 	}
 }

@@ -116,7 +116,7 @@ export default function MessagesPage() {
         const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
-            console.log("✅ Connection au WebSocket établie");
+            console.log("Connection au WebSocket établie");
             newSocket.emit("join", { userId: user.id, role: "client" });
         });
 

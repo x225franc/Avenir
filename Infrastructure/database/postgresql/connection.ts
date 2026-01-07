@@ -23,7 +23,6 @@ class DatabaseConnection {
                 connectionTimeoutMillis: 2000,
             });
 
-            // console.log(`✅ PostgreSQL connection pool created`);
         }
 
         return DatabaseConnection.instance;
@@ -46,7 +45,6 @@ class DatabaseConnection {
         if (DatabaseConnection.instance) {
             await DatabaseConnection.instance.end();
             DatabaseConnection.instance = null;
-            // console.log("✅ PostgreSQL connection pool closed");
         }
     }
 }

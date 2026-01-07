@@ -172,7 +172,7 @@ let messageSocketService: MessageSocketService | null = null;
 
 export function initMessageSocketService(io: SocketIOServer): void {
 	messageSocketService = new MessageSocketService(io);
-	console.log("✅ MessageSocketService initialized");
+	console.log("MessageSocketService initialized");
 }
 
 export function getMessageSocketService(): MessageSocketService {
