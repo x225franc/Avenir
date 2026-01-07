@@ -83,11 +83,13 @@ Avenir/
 
 Avant de commencer, assurez-vous d'avoir :
 
-| Logiciel | Version Minimale |
-|----------|------------------|
-| **Node.js** | 20.0.0+ |
-| **npm** | 9.0.0+ |
-| **MySQL** | 8.0+ |
+| Logiciel | Version Minimale | Notes |
+|----------|------------------|-------|
+| **Node.js** | 20.0.0+ | |
+| **npm** | 9.0.0+ | |
+| **Docker Desktop** | Dernière version | **Recommandé** pour MySQL + PostgreSQL |
+| **MySQL** | 8.0+ | Optionnel si vous utilisez Docker |
+| **PostgreSQL** | 15.0+ | Optionnel si vous utilisez Docker |
 
 ---
 
@@ -106,9 +108,73 @@ cd Avenir
 npm run install:all
 ```
 
-### 3. Configurer la base de données avec Laragon
+### 3. Configurer les bases de données
 
-1. **Démarrer Laragon** : Cliquer sur "Démarrer tout"
+**🐳 Option A : Docker (Recommandé)**
+
+Cette option démarre automatiquement MySQL, PostgreSQL, phpMyAdmin et pgAdmin :
+
+```bash
+# Démarrer tous les services (MySQL, PostgreSQL, phpMyAdmin, pgAdmin)
+docker-compose up -d
+
+# Vérifier que tout fonctionne
+docker-compose ps
+```
+
+Cette commande démarre :
+- **MySQL** sur le port `3306` (avec fixtures)
+- **PostgreSQL** sur le port `5432` (avec fixtures)
+- **phpMyAdmin** sur [http://localhost:8080](http://localhost:8080)
+- **pgAdmin** sur [http://localhost:8081](http://localhost:8081)
+
+#### Accéder aux interfaces web
+
+**phpMyAdmin (MySQL)**
+- **URL** : [http://localhost:8080](http://localhost:8080)
+- **Utilisateur** : `root`
+- **Mot de passe** : `root_password`
+- **Base de données** : `avenir_bank`
+
+**pgAdmin (PostgreSQL)**
+- **URL** : [http://localhost:8081](http://localhost:8081)
+- **Email** : `admin@avenir.com`
+- **Mot de passe** : `admin`
+
+**Configuration du serveur PostgreSQL dans pgAdmin :**
+1. Clic droit sur "Servers" → "Register" → "Server"
+2. **General tab** :
+   - Name : `Avenir PostgreSQL`
+3. **Connection tab** :
+   - Host : `avenir_postgres` (nom du service Docker)
+   - Port : `5432`
+   - Database : `avenir_bank_postgres`
+   - Username : `avenir`
+   - Password : `avenir_password`
+   - Save password : ✅
+4. Cliquer sur "Save"
+
+#### Identifiants des bases de données
+
+**MySQL**
+- **Root** : `root` / `root_password`
+- **User** : `avenir` / `avenir_password`
+- **Database** : `avenir_bank`
+
+**PostgreSQL**
+- **User** : `avenir` / `avenir_password`
+- **Database** : `avenir_bank_postgres`
+
+---
+
+**💻 Option B : Installation Locale (Laragon, XAMPP, etc.)**
+
+<details>
+<summary>Cliquer pour voir les instructions Laragon/XAMPP</summary>
+
+**MySQL avec Laragon/XAMPP :**
+
+1. **Démarrer Laragon/XAMPP** : Cliquer sur "Démarrer tout"
 2. **Créer la base de données** :
    - Ouvrir PHPMyAdmin : [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
    - Créer une nouvelle base : `avenir_bank` (interclassement: `utf8mb4_unicode_ci`)
@@ -116,17 +182,76 @@ npm run install:all
    - Sélectionner `avenir_bank`
    - Onglet "Importer" → Fichier `db/schema.sql` → "Exécuter"
 
-La base contient maintenant les utilisateurs de test, actions boursières et configuration
+**PostgreSQL avec pgAdmin :**
+
+1. **Ouvrir pgAdmin**
+2. **Créer la base de données** : `avenir_bank_postgres`
+3. **Importer le schéma** : Exécuter `db/schema-postgresql.sql`
+
+</details>
+
+---
+
+La base contient maintenant les utilisateurs de test, actions boursières et configuration bancaire
 
 ### 4. Configurer les variables d'environnement
 
+Le projet utilise un fichier `.env` à la racine pour configurer les deux backends (Express/NestJS) et les deux bases de données (MySQL/PostgreSQL).
 
-```bash
-Utilisez le fichier `.env` fourni 
-et ajustez si nécessaire (ex. paramètres email).
+**Exemple de configuration `.env` :**
+
+```env
+# ========== MYSQL (Express) ==========
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=avenir
+DB_PASSWORD=avenir_password
+DB_NAME=avenir_bank
+
+# ========== POSTGRESQL (NestJS) ==========
+DB_POSTGRES_HOST=localhost
+DB_POSTGRES_PORT=5432
+DB_POSTGRES_USER=avenir
+DB_POSTGRES_PASSWORD=avenir_password
+DB_POSTGRES_NAME=avenir_bank_postgres
+
+# ========== JWT & APP ==========
+PORT=3001
+JWT_SECRET=secret_super_securise_pour_jwt
+NODE_ENV=development
+
+# ========== EMAIL (Optionnel) ==========
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=votre-email@gmail.com
+EMAIL_PASS=votre-mot-de-passe-application-gmail
+
+# ========== FRONTEND ==========
+FRONTEND_URL=http://localhost:3000
 ```
 
-### 5. Lancer l'application (Express + Next.js)
+**Notes importantes :**
+- Les variables `DB_*` sont pour **Express + MySQL**
+- Les variables `DB_POSTGRES_*` sont pour **NestJS + PostgreSQL**
+- Si vous utilisez Docker, les valeurs par défaut fonctionnent directement
+- Pour l'email, utilisez un **mot de passe d'application Gmail** (pas votre mot de passe normal)
+- Les comptes de test sont déjà vérifiés, l'email est optionnel pour tester
+
+### 5. Lancer l'application
+
+Le projet permet de lancer différentes combinaisons frontend / backend
+afin de démontrer l’indépendance des couches (Clean Architecture).
+
+### Combinaisons disponibles
+
+| Commande | Backend | Frontend |
+|--------|--------|---------|
+| npm run dev:1 | Express (MySQL) | Next.js |
+| npm run dev:2 | NestJS (PostgreSQL) | Next.js |
+| npm run dev:3 | Express (MySQL) | Nuxt | (Bonus)
+| npm run dev:4 | NestJS (PostgreSQL) | Nuxt | (Bonus)
+
+### Exemple
 
 ```bash
 npm run dev:1
@@ -175,7 +300,9 @@ npm run install:all           # Installer toutes les dépendances (root + worksp
 
 # Développement
 npm run dev:1                 # Express + Next.js (workspace 1)
-npm run dev:2                 # NestJS + Nuxt (workspace 2)
+npm run dev:2                 # NestJS + Next.js (workspace 2)
+npm run dev:3                 # Express + Nuxt (workspace 3)
+npm run dev:4                 # NestJS + Nuxt (workspace 4)
 npm run dev:express           # Express API uniquement
 npm run dev:nestjs            # NestJS API uniquement
 npm run dev:next              # Next.js frontend uniquement
@@ -218,11 +345,11 @@ PUT    /api/admin/savings-rate       # Modifier le taux d'épargne
 
 ### Investissements
 ```
-GET    /api/investments/stocks       # Actions disponibles
-GET    /api/investments/portfolio    # Portfolio de l'utilisateur
-POST   /api/investments/orders       # Passer un ordre d'achat/vente
-GET    /api/investments/orders       # Historique des ordres
-DELETE /api/investments/orders/:id   # Annuler un ordre
+GET    /api/investment/stocks        # Actions disponibles
+GET    /api/investment/portfolio     # Portfolio de l'utilisateur
+POST   /api/investment/orders        # Passer un ordre d'achat/vente
+GET    /api/investment/orders        # Historique des ordres
+DELETE /api/investment/orders/:id    # Annuler un ordre
 ```
 
 ### Crédits

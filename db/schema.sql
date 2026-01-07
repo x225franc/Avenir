@@ -210,27 +210,82 @@ CREATE TABLE `news` (
 
 
 -- =============================================
--- DONNÉES D'EXEMPLE
+-- DONNÉES D'EXEMPLE COMPLÈTES
 -- =============================================
 
--- Insertion d'un directeur de banque
-INSERT INTO `users` (`email`, `password_hash`, `first_name`, `last_name`, `role`, `email_verified`) 
-VALUES ('director@avenir-bank.fr', '$2a$12$04rk1P4hovuMECe2uV7fXeMMK7PXGltAcFX4Gu2p1jUIuv5MXBZ.C', 'Jean', 'Dupont', 'director', TRUE);
+-- ========== UTILISATEURS ==========
+-- Mot de passe pour tous: "123"
+-- Hash bcrypt compatible Node.js (bcrypt rounds=10)
+SET @password_hash = '$2b$10$yUrFIwScEW.OSNao7jgVbeCxdKqhbF01FQoT53dUdo2jZfo8BBfVG';
 
--- Insertion d'un conseiller bancaire
-INSERT INTO `users` (`email`, `password_hash`, `first_name`, `last_name`, `role`, `email_verified`) 
-VALUES ('advisor@avenir-bank.fr', '$2a$12$04rk1P4hovuMECe2uV7fXeMMK7PXGltAcFX4Gu2p1jUIuv5MXBZ.C', 'Marie', 'Martin', 'advisor', TRUE);
+-- Directeur
+INSERT INTO `users` (`id`, `email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 
+VALUES (1, 'director@avenir-bank.fr', @password_hash, 'Jean', 'Dupont', '0140506070', '1 Avenue de la Banque, Paris 75008', 'director', TRUE);
 
--- Insertion d'un client exemple
-INSERT INTO `users` (`email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 
-VALUES ('client@avenir-bank.fr', '$2a$12$04rk1P4hovuMECe2uV7fXeMMK7PXGltAcFX4Gu2p1jUIuv5MXBZ.C', 'Pierre', 'Durand', '0123456789', '123 Rue de la Paix, Paris', 'client', TRUE);
--- Insertion de quelques actions disponibles
-INSERT INTO `stocks` (`symbol`, `company_name`, `current_price`, `is_available`) VALUES
-('AAPL', 'Apple Inc.', 150.25, TRUE),
-('GOOGL', 'Alphabet Inc.', 2500.75, TRUE),
-('MSFT', 'Microsoft Corporation', 300.50, TRUE),
-('TSLA', 'Tesla Inc.', 800.00, TRUE),
-('AMZN', 'Amazon.com Inc.', 3200.00, TRUE);
+-- Conseillers
+INSERT INTO `users` (`id`, `email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 
+VALUES 
+(2, 'advisor@avenir-bank.fr', @password_hash, 'Marie', 'Martin', '0141516171', '12 Rue du Commerce, Paris 75015', 'advisor', TRUE),
+(3, 'advisor2@avenir-bank.fr', @password_hash, 'Thomas', 'Bernard', '0142526272', '8 Boulevard Haussmann, Paris 75009', 'advisor', TRUE);
+
+-- Clients
+INSERT INTO `users` (`id`, `email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 
+VALUES 
+(4, 'client@avenir-bank.fr', @password_hash, 'Pierre', 'Durand', '0601020304', '123 Rue de la Paix, Paris 75002', 'client', TRUE),
+(5, 'client2@avenir-bank.fr', @password_hash, 'Sophie', 'Lefebvre', '0605060708', '45 Avenue des Champs, Lyon 69001', 'client', TRUE),
+(6, 'client3@avenir-bank.fr', @password_hash, 'Lucas', 'Moreau', '0609101112', '78 Rue Victor Hugo, Marseille 13001', 'client', TRUE),
+(7, 'client4@avenir-bank.fr', @password_hash, 'Emma', 'Simon', '0613141516', '32 Place Bellecour, Lyon 69002', 'client', TRUE),
+(8, 'client5@avenir-bank.fr', @password_hash, 'Hugo', 'Laurent', '0617181920', '91 Cours Lafayette, Toulouse 31000', 'client', TRUE);
+
+-- ========== COMPTES BANCAIRES ==========
+-- Les comptes seront crees dynamiquement par l'application
+-- Pas de fixtures pour permettre aux utilisateurs de creer leurs propres comptes
+
+-- ========== ACTIONS DISPONIBLES ==========
+INSERT INTO `stocks` (`id`, `symbol`, `company_name`, `current_price`, `is_available`) VALUES
+(1, 'AAPL', 'Apple Inc.', 150.25, TRUE),
+(2, 'GOOGL', 'Alphabet Inc.', 2500.75, TRUE),
+(3, 'MSFT', 'Microsoft Corporation', 300.50, TRUE),
+(4, 'TSLA', 'Tesla Inc.', 800.00, TRUE),
+(5, 'AMZN', 'Amazon.com Inc.', 3200.00, TRUE),
+(6, 'META', 'Meta Platforms Inc.', 350.80, TRUE),
+(7, 'NVDA', 'NVIDIA Corporation', 450.20, TRUE),
+(8, 'NFLX', 'Netflix Inc.', 420.15, TRUE);
+
+-- ========== TRANSACTIONS ==========
+-- Les transactions seront creees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec les comptes
+
+-- ========== ORDRES D'INVESTISSEMENT ==========
+-- Les ordres seront crees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec les comptes
+
+-- ========== CREDITS ==========
+-- Les credits seront crees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec les comptes
+
+-- ========== NEWS / ACTUALITES ==========
+INSERT INTO `news` (`title`, `content`, `author_id`, `published`, `created_at`) VALUES
+('Bienvenue chez Banque AVENIR', 'Nous sommes ravis de vous accueillir dans notre nouvelle plateforme bancaire en ligne. Decouvrez tous nos services : comptes courants, epargne, investissements et credits.', 1, TRUE, DATE_SUB(NOW(), INTERVAL 60 DAY)),
+('Nouveaux taux d''epargne attractifs', 'A partir du 1er janvier, profitez d''un taux d''epargne de 2.5% sur tous nos comptes epargne. C''est le moment d''optimiser votre patrimoine !', 1, TRUE, DATE_SUB(NOW(), INTERVAL 45 DAY)),
+('Investissez dans les nouvelles technologies', 'Notre gamme d''actions s''enrichit avec l''ajout de NVIDIA et META. Diversifiez votre portefeuille des maintenant.', 2, TRUE, DATE_SUB(NOW(), INTERVAL 30 DAY)),
+('Conseils pour optimiser votre budget', 'Marie Martin, conseillere bancaire, partage ses meilleurs conseils pour gerer votre budget familial et preparer vos projets.', 2, TRUE, DATE_SUB(NOW(), INTERVAL 20 DAY)),
+('Nouveau service de credit immobilier', 'Banque AVENIR lance son offre de credit immobilier avec des taux exceptionnels a partir de 3.2%. Contactez nos conseillers pour une simulation gratuite.', 3, TRUE, DATE_SUB(NOW(), INTERVAL 10 DAY)),
+('Securite renforcee sur votre espace client', 'Nous avons mis en place une authentification a deux facteurs pour proteger encore mieux vos donnees. Activez-la des aujourd''hui dans vos parametres.', 1, TRUE, DATE_SUB(NOW(), INTERVAL 5 DAY)),
+('Prochainement : Application mobile', 'Notre application mobile sera disponible courant mars. Restez connectes pour ne rien manquer de son lancement !', 1, FALSE, DATE_SUB(NOW(), INTERVAL 1 DAY));
+
+-- ========== MESSAGES CLIENT-CONSEILLER ==========
+-- Les messages seront crees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec la logique metier
+
+
+-- ========== MESSAGES INTERNES STAFF ==========
+INSERT INTO `internal_messages` (`from_user_id`, `to_user_id`, `content`, `is_group_message`, `is_read`, `created_at`) VALUES
+(1, NULL, 'Reunion d''equipe vendredi a 14h. Presence obligatoire pour tous les conseillers.', TRUE, TRUE, DATE_SUB(NOW(), INTERVAL 7 DAY)),
+(2, 3, 'Thomas, peux-tu prendre en charge le dossier de Mme Lefebvre pendant mon absence ?', FALSE, TRUE, DATE_SUB(NOW(), INTERVAL 5 DAY)),
+(3, 2, 'Pas de souci Marie, je m''en occupe.', FALSE, TRUE, DATE_SUB(NOW(), INTERVAL 5 DAY)),
+(1, NULL, 'Nouveaux objectifs trimestriels disponibles sur l''intranet.', TRUE, FALSE, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+(3, 1, 'Jean, j''ai besoin de valider un credit de 30k euros pour Emma Simon. Peux-tu me rappeler ?', FALSE, FALSE, DATE_SUB(NOW(), INTERVAL 1 DAY));
 
 -- Configuration du taux d'épargne global (peut être stocké dans une table de configuration)
 CREATE TABLE `bank_settings` (

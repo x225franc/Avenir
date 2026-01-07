@@ -19,14 +19,14 @@ export interface AppConfig {
 }
 
 export const config: AppConfig = {
-	port: parseInt(process.env.PORT || '3002', 10),
+	port: parseInt(process.env.PORT || '3001', 10),
 	nodeEnv: process.env.NODE_ENV || 'development',
-	jwtSecret: process.env.JWT_SECRET || 'null',
+	jwtSecret: process.env.JWT_SECRET || 'secret_super_securise_pour_jwt',
 	database: {
-		host: process.env.DB_HOST || 'localhost',
-		port: parseInt(process.env.DB_PORT || '5432', 10),
-		username: process.env.DB_USER || 'postgres',
-		password: process.env.DB_PASSWORD || '',
-		database: process.env.DB_NAME || 'avenir_bank_postgres',
+		host: process.env.DB_POSTGRES_HOST || 'localhost',
+		port: parseInt(process.env.DB_POSTGRES_PORT || '5432', 10),
+		username: process.env.DB_POSTGRES_USER || 'avenir',
+		password: process.env.DB_POSTGRES_PASSWORD || 'avenir_password',
+		database: process.env.DB_POSTGRES_NAME || 'avenir_bank_postgres',
 	},
 };
