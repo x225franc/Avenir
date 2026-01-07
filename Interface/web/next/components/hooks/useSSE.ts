@@ -33,7 +33,7 @@ export function useSSE(options: SSEHookOptions = {}) {
 		const eventSource = new EventSource(url);
 
 		eventSource.onopen = () => {
-			console.log("✅ SSE Connecté");
+			console.log("SSE Connecté");
 			setIsConnected(true);
 			options.onConnected?.();
 		};

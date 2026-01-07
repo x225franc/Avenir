@@ -94,7 +94,7 @@ export class RegisterUser {
 			// Sauvegarder à nouveau pour mettre à jour le token en BDD
 			await this.userRepository.save(user);
 
-			console.log(`✅ Utilisateur créé avec ID: ${user.id.value}, Rôle: ${userRole}, Token: ${verificationToken}`);
+			console.log(`Utilisateur créé avec ID: ${user.id.value}, Rôle: ${userRole}, Token: ${verificationToken}`);
 
 			// Créer automatiquement un compte courant pour les nouveaux clients seulement
 			if (userRole === UserRole.CLIENT) {
@@ -108,9 +108,9 @@ export class RegisterUser {
 
 					await this.accountRepository.save(defaultAccount);
 					
-					console.log(`✅ Compte courant créé automatiquement avec IBAN: ${defaultAccount.iban.value}, Account ID: ${defaultAccount.id.value}`);
+					console.log(`Compte courant créé automatiquement avec IBAN: ${defaultAccount.iban.value}, Account ID: ${defaultAccount.id.value}`);
 				} catch (accountError) {
-					console.error(`❌ Erreur création compte courant:`, accountError);
+					console.error(`Erreur création compte courant:`, accountError);
 					// On continue même si la création du compte échoue
 				}
 			}
@@ -122,10 +122,10 @@ export class RegisterUser {
 					dto.firstName,
 					verificationToken
 				);
-				console.log(`✅ Email de vérification envoyé à ${dto.email}`);
+				console.log(`Email de vérification envoyé à ${dto.email}`);
 			} catch (emailError) {
 				console.error(
-					`❌ Erreur d'envoi d'email (utilisateur créé quand même):`,
+					`Erreur d'envoi d'email (utilisateur créé quand même):`,
 					emailError
 				);
 				// On continue même si l'email échoue, l'utilisateur est créé

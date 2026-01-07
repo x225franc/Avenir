@@ -58,7 +58,7 @@ export class AssignConversation {
 				`${advisor.firstName} ${advisor.lastName}`,
 				`Votre demande a été prise en charge par ${advisor.firstName} ${advisor.lastName}`
 			).catch((error) => {
-				console.error('❌ Erreur lors de l\'envoi de l\'email (non bloquant):', error);
+				console.error('Erreur lors de l\'envoi de l\'email (non bloquant):', error);
 			});
 		}
 	}

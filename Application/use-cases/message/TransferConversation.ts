@@ -64,7 +64,7 @@ export class TransferConversation {
 			`Client`, // On pourrait récupérer le nom du client
 			`${currentAdvisor.firstName} ${currentAdvisor.lastName}`
 		).catch((error) => {
-			console.error('❌ Erreur lors de l\'envoi de l\'email au nouveau conseiller (non bloquant):', error);
+			console.error('Erreur lors de l\'envoi de l\'email au nouveau conseiller (non bloquant):', error);
 		});
 
 		// Email au client
@@ -77,7 +77,7 @@ export class TransferConversation {
 				client.firstName,
 				`${newAdvisor.firstName} ${newAdvisor.lastName}`
 			).catch((error) => {
-				console.error('❌ Erreur lors de l\'envoi de l\'email au client (non bloquant):', error);
+				console.error('Erreur lors de l\'envoi de l\'email au client (non bloquant):', error);
 			});
 		}
 	}

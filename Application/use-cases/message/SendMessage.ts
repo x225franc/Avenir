@@ -43,7 +43,7 @@ export class SendMessage {
 		// Envoyer les notifications email de manière asynchrone sans bloquer
 		if (!dto.isSystem) {
 			this.sendEmailNotifications(savedMessage, conversation).catch((error) => {
-				console.error('❌ Erreur lors de l\'envoi de l\'email (non bloquant):', error);
+				console.error('Erreur lors de l\'envoi de l\'email (non bloquant):', error);
 			});
 		}
 

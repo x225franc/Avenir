@@ -59,7 +59,7 @@ export class EmailService {
 					<body>
 						<div class="container">
 							<div class="header">
-								<h1>🏦 Banque AVENIR</h1>
+								<h1>Banque AVENIR</h1>
 								<p>Bienvenue dans votre nouvelle banque moderne</p>
 							</div>
 							<div class="content">
@@ -100,10 +100,10 @@ export class EmailService {
 			};
 
 			const info = await transporter.sendMail(mailOptions);
-			console.log("✅ Email de vérification envoyé:", info.messageId);
+			console.log("Email de vérification envoyé:", info.messageId);
 			return true;
 		} catch (error) {
-			console.error("❌ Erreur lors de l'envoi de l'email:", error);
+			console.error("Erreur lors de l'envoi de l'email:", error);
 			return false;
 		}
 	}
@@ -134,7 +134,7 @@ export class EmailService {
 					<body>
 						<div class="container">
 							<div class="header">
-								<h1>🎉 Bienvenue chez Banque AVENIR !</h1>
+								<h1>Bienvenue chez Banque AVENIR !</h1>
 							</div>
 							<div class="content">
 								<h2>Bonjour ${firstName},</h2>
@@ -142,17 +142,17 @@ export class EmailService {
 								<p>Vous pouvez désormais profiter de tous nos services :</p>
 								
 								<div class="feature">
-									<strong>💰 Comptes multiples</strong>
+									<strong>Comptes multiples</strong>
 									<p>Créez autant de comptes que vous le souhaitez : compte courant, épargne, investissement.</p>
 								</div>
 								
 								<div class="feature">
-									<strong>🔄 Transferts instantanés</strong>
+									<strong>Transferts instantanés</strong>
 									<p>Effectuez des virements entre vos comptes en quelques clics.</p>
 								</div>
 								
 								<div class="feature">
-									<strong>📈 Suivi en temps réel</strong>
+									<strong>Suivi en temps réel</strong>
 									<p>Consultez vos soldes et transactions à tout moment.</p>
 								</div>
 								
@@ -174,10 +174,10 @@ export class EmailService {
 			};
 
 			const info = await transporter.sendMail(mailOptions);
-			console.log("✅ Email de bienvenue envoyé:", info.messageId);
+			console.log("Email de bienvenue envoyé:", info.messageId);
 			return true;
 		} catch (error) {
-			console.error("❌ Erreur lors de l'envoi de l'email:", error);
+			console.error("Erreur lors de l'envoi de l'email:", error);
 			return false;
 		}
 	}
@@ -195,7 +195,7 @@ export class EmailService {
 			const mailOptions = {
 				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
 				to,
-				subject: "📊 Changement du taux d'épargne - Banque AVENIR",
+				subject: "Changement du taux d'épargne - Banque AVENIR",
 				html: `
 					<!DOCTYPE html>
 					<html>
@@ -215,7 +215,7 @@ export class EmailService {
 					<body>
 						<div class="container">
 							<div class="header">
-								<h1>📊 Mise à jour du taux d'épargne</h1>
+								<h1>Mise à jour du taux d'épargne</h1>
 							</div>
 							<div class="content">
 								<h2>Bonjour ${firstName},</h2>
@@ -240,10 +240,10 @@ export class EmailService {
 			};
 
 			const info = await transporter.sendMail(mailOptions);
-			console.log("✅ Email de notification envoyé:", info.messageId);
+			console.log("Email de notification envoyé:", info.messageId);
 			return true;
 		} catch (error) {
-			console.error("❌ Erreur lors de l'envoi de l'email:", error);
+			console.error("Erreur lors de l'envoi de l'email:", error);
 			return false;
 		}
 	}
@@ -287,7 +287,7 @@ export class EmailService {
 					<body>
 						<div class="container">
 							<div class="header">
-								<h1>🔒 Réinitialisation de mot de passe</h1>
+								<h1>Réinitialisation de mot de passe</h1>
 							</div>
 							<div class="content">
 								<h2>Bonjour ${firstName},</h2>
@@ -300,7 +300,7 @@ export class EmailService {
 								</div>
 								
 								<div class="warning">
-									<strong>⚠️ Attention :</strong> Ce lien est valable pendant <strong>1 heure</strong> uniquement. 
+									<strong>Attention :</strong> Ce lien est valable pendant <strong>1 heure</strong> uniquement. 
 									Si vous ne réinitialisez pas votre mot de passe dans ce délai, vous devrez faire une nouvelle demande.
 								</div>
 								
@@ -317,10 +317,10 @@ export class EmailService {
 			};
 
 			const info = await transporter.sendMail(mailOptions);
-			console.log("✅ Email de réinitialisation envoyé:", info.messageId);
+			console.log("Email de réinitialisation envoyé:", info.messageId);
 			return true;
 		} catch (error) {
-			console.error("❌ Erreur lors de l'envoi de l'email:", error);
+			console.error("Erreur lors de l'envoi de l'email:", error);
 			return false;
 		}
 	}
@@ -342,7 +342,7 @@ export class EmailService {
 			const mailOptions = {
 				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
 				to,
-				subject: "💬 Nouvelle conversation client - Banque AVENIR",
+				subject: "Nouvelle conversation client - Banque AVENIR",
 				html: `
 					<!DOCTYPE html>
 					<html>
@@ -360,7 +360,7 @@ export class EmailService {
 					<body>
 						<div class="container">
 							<div class="header">
-								<h1>💬 Nouvelle conversation</h1>
+								<h1>Nouvelle conversation</h1>
 							</div>
 							<div class="content">
 								<h2>Bonjour ${firstName},</h2>
@@ -383,7 +383,7 @@ export class EmailService {
 			await transporter.sendMail(mailOptions);
 			return true;
 		} catch (error) {
-			console.error("❌ Erreur lors de l'envoi de l'email:", error);
+			console.error("Erreur lors de l'envoi de l'email:", error);
 			return false;
 		}
 	}
@@ -406,7 +406,7 @@ export class EmailService {
 			const mailOptions = {
 				from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
 				to,
-				subject: "💬 Nouveau message - Banque AVENIR",
+				subject: "Nouveau message - Banque AVENIR",
 				html: `
 					<!DOCTYPE html>
 					<html>
@@ -425,7 +425,7 @@ export class EmailService {
 					<body>
 						<div class="container">
 							<div class="header">
-								<h1>💬 Nouveau message</h1>
+								<h1>Nouveau message</h1>
 							</div>
 							<div class="content">
 								<h2>Bonjour ${firstName},</h2>
@@ -449,7 +449,7 @@ export class EmailService {
 		await transporter.sendMail(mailOptions);
 		return true;
 	} catch (error) {
-		console.error("❌ Erreur lors de l'envoi de l'email:", error);
+		console.error("Erreur lors de l'envoi de l'email:", error);
 		return false;
 	}
 }
@@ -472,7 +472,7 @@ async sendConversationTransferredToAdvisorEmail(
 		const mailOptions = {
 			from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
 			to,
-			subject: "🔄 Conversation transférée - Banque AVENIR",
+			subject: "Conversation transférée - Banque AVENIR",
 			html: `
 				<!DOCTYPE html>
 				<html>
@@ -491,7 +491,7 @@ async sendConversationTransferredToAdvisorEmail(
 				<body>
 					<div class="container">
 						<div class="header">
-							<h1>🔄 Conversation transférée</h1>
+							<h1>Conversation transférée</h1>
 						</div>
 						<div class="content">
 							<h2>Bonjour ${advisorFirstName},</h2>
@@ -517,7 +517,7 @@ async sendConversationTransferredToAdvisorEmail(
 		await transporter.sendMail(mailOptions);
 		return true;
 	} catch (error) {
-		console.error("❌ Erreur lors de l'envoi de l'email:", error);
+		console.error("Erreur lors de l'envoi de l'email:", error);
 		return false;
 	}
 }
@@ -539,7 +539,7 @@ async sendConversationTransferredToClientEmail(
 		const mailOptions = {
 			from: `"Banque AVENIR" <${process.env.EMAIL_USER}>`,
 			to,
-			subject: "👤 Votre nouveau conseiller - Banque AVENIR",
+			subject: "Votre nouveau conseiller - Banque AVENIR",
 			html: `
 				<!DOCTYPE html>
 				<html>
@@ -558,13 +558,13 @@ async sendConversationTransferredToClientEmail(
 				<body>
 					<div class="container">
 						<div class="header">
-							<h1>👤 Votre nouveau conseiller</h1>
+							<h1>Votre nouveau conseiller</h1>
 						</div>
 						<div class="content">
 							<h2>Bonjour ${clientFirstName},</h2>
 							<p>Nous vous informons que votre dossier a été transféré à un nouveau conseiller.</p>
 							<div class="advisor-box">
-								<h3>👨‍💼 ${newAdvisorName}</h3>
+								<h3>${newAdvisorName}</h3>
 								<p>Votre nouveau conseiller bancaire</p>
 							</div>
 							<p>${newAdvisorName} prendra en charge votre suivi et répondra à toutes vos questions.</p>
@@ -585,7 +585,7 @@ async sendConversationTransferredToClientEmail(
 		await transporter.sendMail(mailOptions);
 		return true;
 	} catch (error) {
-		console.error("❌ Erreur lors de l'envoi de l'email:", error);
+		console.error("Erreur lors de l'envoi de l'email:", error);
 		return false;
 	}
 }
@@ -603,7 +603,7 @@ async sendConversationTransferredToClientEmail(
 			const mailOptions = {
 				from: `"Banque AVENIR - Votre Conseiller" <${process.env.EMAIL_USER}>`,
 				to,
-				subject: `🔔 ${subject}`,
+				subject: `${subject}`,
 				html: `
 				<!DOCTYPE html>
 				<html>
@@ -622,7 +622,7 @@ async sendConversationTransferredToClientEmail(
 				<body>
 					<div class="container">
 						<div class="header">
-							<h1>🔔 Notification de votre conseiller</h1>
+							<h1>Notification de votre conseiller</h1>
 						</div>
 						<div class="content">
 							<h2>Bonjour ${clientFirstName},</h2>
@@ -648,7 +648,7 @@ async sendConversationTransferredToClientEmail(
 			await transporter.sendMail(mailOptions);
 			return true;
 		} catch (error) {
-			console.error("❌ Erreur lors de l'envoi de la notification conseiller:", error);
+			console.error("Erreur lors de l'envoi de la notification conseiller:", error);
 			return false;
 		}
 	}

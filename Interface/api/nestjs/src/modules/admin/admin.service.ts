@@ -460,7 +460,7 @@ export class AdminService {
       // Format standardisé compatible avec Express
       return {
         success: true,
-        message: '✅ Test des intérêts quotidiens exécuté avec succès',
+        message: 'Test des intérêts quotidiens exécuté avec succès',
         data: {
           savingsRate,
           dailyRate,

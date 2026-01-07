@@ -8,15 +8,15 @@ import * as path from 'path';
 const envPath = path.resolve(__dirname, '../.env');
 const result = dotenv.config({ path: envPath });
 if (result.error) {
-	console.error('❌ Erreur chargement .env:', result.error.message);
-	console.error('🔎 __dirname:', __dirname);
-	console.error('🔎 envPath:', envPath);
+	console.error('Erreur chargement .env:', result.error.message);
+	console.error('__dirname:', __dirname);
+	console.error('envPath:', envPath);
 } else {
-	console.log('✅ .env chargé depuis:', envPath);
-	console.log('🔍 DB_HOST:', process.env.DB_HOST);
-	console.log('🔍 DB_USER:', process.env.DB_USER);
-	console.log('🔍 DB_PASSWORD:', process.env.DB_PASSWORD ? '***' : 'undefined');
-	console.log('🔍 DB_NAME:', process.env.DB_NAME);
+	console.log('.env chargé depuis:', envPath);
+	console.log('DB_HOST:', process.env.DB_HOST);
+	console.log('DB_USER:', process.env.DB_USER);
+	console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '***' : 'undefined');
+	console.log('DB_NAME:', process.env.DB_NAME);
 }
 
 export interface DatabaseConfig {

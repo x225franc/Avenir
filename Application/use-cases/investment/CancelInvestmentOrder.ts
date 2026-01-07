@@ -92,7 +92,7 @@ export class CancelInvestmentOrder {
 
 			return {
 				success: true,
-				message: `✅ Ordre ${
+				message: `Ordre ${
 					order.isBuyOrder() ? "d'achat" : "de vente"
 				} annulé avec succès`,
 				errors: [],

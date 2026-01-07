@@ -53,10 +53,10 @@ export class VerifyEmail {
 					user.email.value,
 					user.firstName
 				);
-				console.log(`✅ Email de bienvenue envoyé à ${user.email.value}`);
+				console.log(`Email de bienvenue envoyé à ${user.email.value}`);
 			} catch (emailError) {
 				console.error(
-					`❌ Erreur d'envoi d'email de bienvenue:`,
+					`Erreur d'envoi d'email de bienvenue:`,
 					emailError
 				);
 				// On continue même si l'email échoue

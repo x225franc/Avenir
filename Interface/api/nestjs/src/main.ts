@@ -14,10 +14,10 @@ import { testConnection } from '@infrastructure/database/postgresql/connection';
 
 async function bootstrap() {
   // Tester la connexion PostgreSQL avant de démarrer l'application
-  console.log('🔍 Test de connexion PostgreSQL...');
+  console.log('Test de connexion PostgreSQL...');
   const connected = await testConnection();
   if (!connected) {
-    console.error('❌ Impossible de démarrer: PostgreSQL non accessible');
+    console.error('Impossible de démarrer: PostgreSQL non accessible');
     process.exit(1);
   }
 
@@ -47,8 +47,8 @@ async function bootstrap() {
   const port = process.env.PORT || 3001;
   await app.listen(port);
 
-  console.log(`✅ NestJS API running on http://localhost:${port}`);
-  console.log(`📊 Health check: http://localhost:${port}/api/health`);
+  // console.log(`NestJS API running on http://localhost:${port}`);
+  // console.log(`Health check: http://localhost:${port}/api/health`);
 }
 
 bootstrap();

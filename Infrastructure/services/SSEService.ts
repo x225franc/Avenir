@@ -26,7 +26,7 @@ export class SSEService {
 		// Envoyer un message de connexion
 		this.sendToClient(clientId, "connected", { message: "SSE connection established" });
 
-		console.log(`✅ SSE client connected: ${clientId} (userId: ${userId}, role: ${role})`);
+		console.log(`SSE client connected: ${clientId} (userId: ${userId}, role: ${role})`);
 
 		// Nettoyer quand le client se déconnecte
 		res.on("close", () => {
@@ -125,7 +125,7 @@ export function initSSEService(): void {
 		}
 	}, 30000);
 	
-	console.log("✅ SSEService initialized");
+	console.log("SSEService initialized");
 }
 
 export function getSSEService(): SSEService {

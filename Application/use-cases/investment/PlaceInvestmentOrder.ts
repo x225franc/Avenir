@@ -243,7 +243,7 @@ export class PlaceInvestmentOrder {
 			return {
 				success: true,
 				orderId: order.id.value,
-				message: `✅ Ordre ${
+				message: `Ordre ${
 					dto.orderType === "buy" ? "d'achat" : "de vente"
 				} de ${dto.quantity} actions ${stock.symbol} exécuté avec succès`,
 				errors: [],

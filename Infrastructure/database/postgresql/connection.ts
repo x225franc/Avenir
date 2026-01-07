@@ -23,7 +23,7 @@ class DatabaseConnection {
                 connectionTimeoutMillis: 2000,
             });
 
-            // console.log(`✅ PostgreSQL connection pool created`);
+            // console.log(`PostgreSQL connection pool created`);
             console.log('DB_PASSWORD =', process.env.DB_PASSWORD);
 
         }
@@ -35,11 +35,11 @@ class DatabaseConnection {
         try {
             const pool = DatabaseConnection.getInstance();
             const client = await pool.connect();
-            console.log("✅ PostgreSQL connection réussie");
+            console.log("PostgreSQL connection réussie");
             client.release();
             return true;
         } catch (error) {
-            console.error("❌ PostgreSQL connection echouée:", error);
+            console.error("PostgreSQL connection echouée:", error);
             return false;
         }
     }
@@ -48,7 +48,7 @@ class DatabaseConnection {
         if (DatabaseConnection.instance) {
             await DatabaseConnection.instance.end();
             DatabaseConnection.instance = null;
-            // console.log("✅ PostgreSQL connection pool closed");
+            // console.log("PostgreSQL connection pool closed");
         }
     }
 }

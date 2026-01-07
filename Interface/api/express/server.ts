@@ -94,7 +94,7 @@ if (require.main === module) {
 
 		httpServer.listen(PORT, () => {
 			console.log(`🚀 Serveur express tourne sur http://localhost:${PORT}`);
-			console.log(`📊 Health check: http://localhost:${PORT}/health`);
+			// console.log(`Health check: http://localhost:${PORT}/health`);
 			console.log(`💾 Base de données connectée`);
 
 			// Démarrer les tâches planifiées

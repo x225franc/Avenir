@@ -33,7 +33,7 @@ export class DeleteStock {
 			if (holdingsCount > 0) {
 				return {
 					success: false,
-					message: `⚠️ Impossible de supprimer cette action : ${holdingsCount} action(s) sont actuellement détenues par des clients. Pour retirer cette action du marché, désactivez-la plutôt (bouton "Désactiver").`,
+					message: `Impossible de supprimer cette action : ${holdingsCount} action(s) sont actuellement détenues par des clients. Pour retirer cette action du marché, désactivez-la plutôt (bouton "Désactiver").`,
 					holdingsCount,
 				};
 			}
@@ -43,7 +43,7 @@ export class DeleteStock {
 
 			return {
 				success: true,
-				message: `✅ Action ${stock.symbol} supprimée avec succès`,
+				message: `Action ${stock.symbol} supprimée avec succès`,
 			};
 		} catch (error: any) {
 			// Si l'erreur est due à une contrainte de clé étrangère (ON DELETE RESTRICT)
@@ -54,7 +54,7 @@ export class DeleteStock {
 				return {
 					success: false,
 					message:
-						"⚠️ Impossible de supprimer cette action : des clients possèdent des ordres d'investissement liés à cette action. Pour la retirer du marché, désactivez-la plutôt (bouton 'Désactiver'). Les clients conserveront leurs actions dans leur portefeuille.",
+						"Impossible de supprimer cette action : des clients possèdent des ordres d'investissement liés à cette action. Pour la retirer du marché, désactivez-la plutôt (bouton 'Désactiver'). Les clients conserveront leurs actions dans leur portefeuille.",
 				};
 			}
 

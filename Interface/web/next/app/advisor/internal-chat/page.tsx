@@ -109,7 +109,7 @@ export default function InternalChatPage() {
         const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
-            console.log("✅ WebSocket connecté");
+            console.log("WebSocket connecté");
             newSocket.emit("join", { userId: user.id, role: user.role });
         });
 

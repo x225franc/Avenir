@@ -214,8 +214,8 @@ CREATE TABLE `news` (
 -- =============================================
 
 -- ========== UTILISATEURS ==========
--- Mot de passe pour tous: "password"
-SET @password_hash = '$2b$10$NsaXYXQPr.DppHzYMsj8muoOhdNc5WwotCspg/jj72MT71u3QbqRO';
+-- Mot de passe pour tous: "123"
+SET @password_hash = '$2y$10$pwbJUFJ.r83e1E6nIrO6wuZ0gPXCQVq9IuVjG16Tb1GxmjkNV5yue';
 
 -- Directeur
 INSERT INTO `users` (`id`, `email`, `password_hash`, `first_name`, `last_name`, `phone`, `address`, `role`, `email_verified`) 

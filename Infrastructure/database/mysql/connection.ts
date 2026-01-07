@@ -25,7 +25,7 @@ class DatabaseConnection {
 				keepAliveInitialDelay: 0,
 			});
 
-			// console.log(`✅ MySQL connection pool created`);
+			// console.log(`MySQL connection pool created`);
 		}
 
 		return DatabaseConnection.instance;
@@ -35,11 +35,11 @@ class DatabaseConnection {
 		try {
 			const pool = DatabaseConnection.getInstance();
 			const connection = await pool.getConnection();
-			console.log("✅ MySQL connection réussie");
+			console.log("MySQL connection réussie");
 			connection.release();
 			return true;
 		} catch (error) {
-			console.error("❌ MySQL connection echouée:", error);
+			console.error("MySQL connection echouée:", error);
 			return false;
 		}
 	}
@@ -48,7 +48,7 @@ class DatabaseConnection {
 		if (DatabaseConnection.instance) {
 			await DatabaseConnection.instance.end();
 			DatabaseConnection.instance = null;
-			// console.log("✅ MySQL connection pool closed");
+			// console.log("MySQL connection pool closed");
 		}
 	}
 }
