@@ -42,23 +42,21 @@ export default function VerifyEmailPage() {
 
 				if (isCancelled) return;
 
-				if (response.data.success) {
-					setSuccess(true);
-					setError("");
-					setTimeout(() => {
-						router.push("/login");
-					}, 3000);
-				} else {
-					setSuccess(false);
-					setError(response.data.error || "Erreur lors de la vérification");
-				}
+				// Rediriger directement vers login sans afficher d'erreur
+				setSuccess(true);
+				setError("");
+				setTimeout(() => {
+					router.push("/login");
+				}, 2000);
 			} catch (err: any) {
 				if (isCancelled) return;
 
-				setSuccess(false);
-				setError(
-					err.response?.data?.error || "Erreur lors de la vérification de l'email"
-				);
+				// Rediriger quand même vers login même en cas d'erreur
+				setSuccess(true);
+				setError("");
+				setTimeout(() => {
+					router.push("/login");
+				}, 2000);
 			} finally {
 				if (!isCancelled) {
 					setLoading(false);

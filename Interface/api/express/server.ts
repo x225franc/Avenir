@@ -93,7 +93,7 @@ if (require.main === module) {
 
 		httpServer.listen(PORT, () => {
 			console.log(`🚀 Serveur express tourne sur http://localhost:${PORT}`);
-			console.log(`📊 Health check: http://localhost:${PORT}/health`);
+			// console.log(`📊 Health check: http://localhost:${PORT}/health`);
 			console.log(`💾 Base de données connectée`);
 
 			// Démarrer les tâches planifiées
@@ -118,11 +118,11 @@ if (require.main === module) {
 				});
 
 				io.on("connection", (socket) => {
-					console.log(`🟢 WebSocket connecté: ${socket.id}`);
+					console.log(`WebSocket connecté: ${socket.id}`);
 
 					// Join user-specific room
 					socket.on("join", (data) => {
-						console.log("📥 Join request received:", data);
+						// console.log('Join request received:", data);
 						const userId = typeof data === "object" ? data.userId : data;
 						const role = typeof data === "object" ? data.role : null;
 
@@ -136,20 +136,20 @@ if (require.main === module) {
 						if (normalizedRole === "advisor" || normalizedRole === "director") {
 							socket.join("advisors");
 							socket.join("staff"); // Room pour les messages internes
-							console.log(`👔 User ${userId} (${role}) joined advisors and staff rooms`);
+							// console.log(`User ${userId} (${role}) joined advisors and staff rooms`);
 						}
 					});
 
 					// Join conversation-specific room
 					socket.on("join-conversation", (conversationId) => {
 						socket.join(`conversation:${conversationId}`);
-						console.log(`💬 Joined conversation: ${conversationId}`);
+						// console.log(`Joined conversation: ${conversationId}`);
 					});
 
 					// Leave conversation room
 					socket.on("leave-conversation", (conversationId) => {
 						socket.leave(`conversation:${conversationId}`);
-						console.log(`👋 Left conversation: ${conversationId}`);
+						// console.log(`Left conversation: ${conversationId}`);
 					});
 
 					// Typing indicators
@@ -187,7 +187,7 @@ if (require.main === module) {
 					});
 
 					socket.on("disconnect", () => {
-						console.log(`🔴 WebSocket déconnecté: ${socket.id}`);
+						console.log(`WebSocket déconnecté: ${socket.id}`);
 					});
 				});
 				console.log("🔌 Socket.IO server started");

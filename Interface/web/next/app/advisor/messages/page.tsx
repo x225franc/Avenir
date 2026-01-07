@@ -118,7 +118,7 @@ export default function AdvisorMessagesPage() {
         const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
-            console.log("✅ Conseiller connecté au WebSocket");
+            console.log("Conseiller connecté au WebSocket");
             newSocket.emit("join", { userId: parseInt(user.id), role: "advisor" });
         });
 

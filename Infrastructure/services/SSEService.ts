@@ -24,9 +24,9 @@ export class SSEService {
 		this.clients.set(clientId, { id: clientId, userId, role, res });
 
 		// Envoyer un message de connexion
-		this.sendToClient(clientId, "connected", { message: "SSE connection established" });
+		this.sendToClient(clientId, "connected", { message: "Connexion SSE établie" });
 
-		console.log(`✅ SSE client connected: ${clientId} (userId: ${userId}, role: ${role})`);
+		console.log(`SSE client connecté: ${clientId} (userId: ${userId}, role: ${role})`);
 
 		// Nettoyer quand le client se déconnecte
 		res.on("close", () => {
@@ -42,7 +42,7 @@ export class SSEService {
 		if (client) {
 			client.res.end();
 			this.clients.delete(clientId);
-			console.log(`🔴 SSE client disconnected: ${clientId}`);
+			console.log(`SSE client déconnecté: ${clientId}`);
 		}
 	}
 
@@ -61,7 +61,7 @@ export class SSEService {
 	 * Envoyer un événement à tous les clients
 	 */
 	broadcast(event: string, data: any): void {
-		console.log(`📡 Broadcasting SSE event "${event}" to ${this.clients.size} clients`);
+		console.log(`Événement SSE "${event}" diffusé à ${this.clients.size} clients`);
 		this.clients.forEach((client) => {
 			client.res.write(`event: ${event}\n`);
 			client.res.write(`data: ${JSON.stringify(data)}\n\n`);
@@ -80,7 +80,7 @@ export class SSEService {
 				count++;
 			}
 		});
-		console.log(`📡 Broadcasted SSE event "${event}" to ${count} ${role}s`);
+		console.log(`Événement SSE "${event}" diffusé à ${count} ${role}s`);
 	}
 
 	/**
@@ -125,12 +125,12 @@ export function initSSEService(): void {
 		}
 	}, 30000);
 	
-	console.log("✅ SSEService initialized");
+	console.log("SSEService initialisé");
 }
 
 export function getSSEService(): SSEService {
 	if (!sseService) {
-		throw new Error("SSEService not initialized. Call initSSEService first.");
+		throw new Error("SSEService non initialisé.");
 	}
 	return sseService;
 }

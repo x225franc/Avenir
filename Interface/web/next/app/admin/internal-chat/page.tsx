@@ -114,7 +114,7 @@ export default function AdminInternalChatPage() {
         const newSocket = io(SOCKET_URL, { withCredentials: true, transports: ["websocket"], reconnection: true });
 
         newSocket.on("connect", () => {
-            console.log("✅ Admin WebSocket connecté");
+            console.log("Admin WebSocket connecté");
             newSocket.emit("join", { userId: user.id, role: user.role });
         });
 
