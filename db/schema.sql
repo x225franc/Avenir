@@ -237,34 +237,8 @@ VALUES
 (8, 'client5@avenir-bank.fr', @password_hash, 'Hugo', 'Laurent', '0617181920', '91 Cours Lafayette, Toulouse 31000', 'client', TRUE);
 
 -- ========== COMPTES BANCAIRES ==========
--- IBANs valides avec checksums corrects (calcules selon la norme ISO 13616)
-INSERT INTO `accounts` (`id`, `user_id`, `iban`, `account_name`, `account_type`, `balance`) VALUES
--- Comptes du directeur
-(1, 1, 'FR9730001007941234567890001', 'Compte Courant Direction', 'checking', 50000.00),
-(2, 1, 'FR7030001007941234567890002', 'Compte Epargne Direction', 'savings', 100000.00),
-
--- Comptes des conseillers
-(3, 2, 'FR4330001007941234567890003', 'Compte Courant Marie', 'checking', 5000.00),
-(4, 2, 'FR1630001007941234567890004', 'Compte Epargne Marie', 'savings', 15000.00),
-(5, 3, 'FR8630001007941234567890005', 'Compte Courant Thomas', 'checking', 4500.00),
-(6, 3, 'FR5930001007941234567890006', 'Compte Epargne Thomas', 'savings', 12000.00),
-
--- Comptes des clients
-(7, 4, 'FR3230001007941234567890007', 'Compte Courant Pierre', 'checking', 2500.00),
-(8, 4, 'FR0530001007941234567890008', 'Compte Epargne Pierre', 'savings', 8000.00),
-(9, 4, 'FR7530001007941234567890009', 'Compte Investissement Pierre', 'investment', 15000.00),
-
-(10, 5, 'FR4830001007941234567890010', 'Compte Courant Sophie', 'checking', 3200.00),
-(11, 5, 'FR2130001007941234567890011', 'Compte Epargne Sophie', 'savings', 12000.00),
-
-(12, 6, 'FR9130001007941234567890012', 'Compte Courant Lucas', 'checking', 1800.00),
-(13, 6, 'FR6430001007941234567890013', 'Compte Investissement Lucas', 'investment', 5000.00),
-
-(14, 7, 'FR3730001007941234567890014', 'Compte Courant Emma', 'checking', 2100.00),
-(15, 7, 'FR1030001007941234567890015', 'Compte Epargne Emma', 'savings', 6000.00),
-
-(16, 8, 'FR8030001007941234567890016', 'Compte Courant Hugo', 'checking', 2800.00),
-(17, 8, 'FR5330001007941234567890017', 'Compte Investissement Hugo', 'investment', 10000.00);
+-- Les comptes seront crees dynamiquement par l'application
+-- Pas de fixtures pour permettre aux utilisateurs de creer leurs propres comptes
 
 -- ========== ACTIONS DISPONIBLES ==========
 INSERT INTO `stocks` (`id`, `symbol`, `company_name`, `current_price`, `is_available`) VALUES
@@ -278,31 +252,16 @@ INSERT INTO `stocks` (`id`, `symbol`, `company_name`, `current_price`, `is_avail
 (8, 'NFLX', 'Netflix Inc.', 420.15, TRUE);
 
 -- ========== TRANSACTIONS ==========
-INSERT INTO `transactions` (`id`, `from_account_id`, `to_account_id`, `amount`, `currency`, `type`, `description`, `status`, `created_at`) VALUES
-(UUID(), 7, 8, 500.00, 'EUR', 'transfer', 'Economies du mois', 'completed', DATE_SUB(NOW(), INTERVAL 15 DAY)),
-(UUID(), 10, 11, 800.00, 'EUR', 'transfer', 'Virement epargne', 'completed', DATE_SUB(NOW(), INTERVAL 10 DAY)),
-(UUID(), 12, 13, 200.00, 'EUR', 'transfer', 'Investissement mensuel', 'completed', DATE_SUB(NOW(), INTERVAL 7 DAY)),
-(UUID(), NULL, 7, 1500.00, 'EUR', 'deposit', 'Depot salaire', 'completed', DATE_SUB(NOW(), INTERVAL 5 DAY)),
-(UUID(), NULL, 10, 2000.00, 'EUR', 'deposit', 'Virement salaire', 'completed', DATE_SUB(NOW(), INTERVAL 5 DAY)),
-(UUID(), 14, NULL, 300.00, 'EUR', 'withdrawal', 'Retrait DAB', 'completed', DATE_SUB(NOW(), INTERVAL 3 DAY)),
-(UUID(), 7, 10, 150.00, 'EUR', 'transfer', 'Remboursement repas', 'completed', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-(UUID(), 16, 14, 200.00, 'EUR', 'transfer', 'Cadeau anniversaire', 'pending', DATE_SUB(NOW(), INTERVAL 1 DAY));
+-- Les transactions seront creees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec les comptes
 
 -- ========== ORDRES D'INVESTISSEMENT ==========
--- Formule: total_amount = (quantity * price_per_share) + fees pour BUY
-INSERT INTO `investment_orders` (`user_id`, `account_id`, `stock_id`, `order_type`, `quantity`, `price_per_share`, `total_amount`, `fees`, `status`, `executed_at`, `created_at`) VALUES
-(4, 9, 1, 'buy', 10, 150.25, 1503.50, 1.00, 'executed', DATE_SUB(NOW(), INTERVAL 20 DAY), DATE_SUB(NOW(), INTERVAL 20 DAY)),
-(4, 9, 3, 'buy', 5, 300.50, 1503.50, 1.00, 'executed', DATE_SUB(NOW(), INTERVAL 15 DAY), DATE_SUB(NOW(), INTERVAL 15 DAY)),
-(6, 13, 4, 'buy', 2, 800.00, 1601.00, 1.00, 'executed', DATE_SUB(NOW(), INTERVAL 10 DAY), DATE_SUB(NOW(), INTERVAL 10 DAY)),
-(8, 17, 2, 'buy', 3, 2500.75, 7503.25, 1.00, 'executed', DATE_SUB(NOW(), INTERVAL 8 DAY), DATE_SUB(NOW(), INTERVAL 8 DAY)),
-(8, 17, 7, 'buy', 5, 450.20, 2252.00, 1.00, 'pending', NULL, DATE_SUB(NOW(), INTERVAL 1 DAY));
+-- Les ordres seront crees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec les comptes
 
 -- ========== CREDITS ==========
-INSERT INTO `credits` (`user_id`, `account_id`, `advisor_id`, `principal_amount`, `annual_interest_rate`, `insurance_rate`, `duration_months`, `monthly_payment`, `remaining_balance`, `status`, `created_at`) VALUES
-(5, 10, 2, 20000.00, 0.0350, 0.0025, 60, 364.85, 18500.00, 'active', DATE_SUB(NOW(), INTERVAL 180 DAY)),
-(6, 12, 2, 15000.00, 0.0380, 0.0030, 48, 340.15, 14200.00, 'active', DATE_SUB(NOW(), INTERVAL 90 DAY)),
-(7, 14, 3, 30000.00, 0.0320, 0.0020, 72, 456.20, 28500.00, 'active', DATE_SUB(NOW(), INTERVAL 60 DAY)),
-(8, 16, 3, 10000.00, 0.0400, 0.0035, 36, 295.55, 9500.00, 'active', DATE_SUB(NOW(), INTERVAL 30 DAY));
+-- Les credits seront crees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec les comptes
 
 -- ========== NEWS / ACTUALITES ==========
 INSERT INTO `news` (`title`, `content`, `author_id`, `published`, `created_at`) VALUES
