@@ -315,20 +315,9 @@ INSERT INTO `news` (`title`, `content`, `author_id`, `published`, `created_at`) 
 ('Prochainement : Application mobile', 'Notre application mobile sera disponible courant mars. Restez connectes pour ne rien manquer de son lancement !', 1, FALSE, DATE_SUB(NOW(), INTERVAL 1 DAY));
 
 -- ========== MESSAGES CLIENT-CONSEILLER ==========
--- Conversation Pierre (client) avec Marie (conseiller)
-INSERT INTO `messages` (`conversation_id`, `from_user_id`, `to_user_id`, `content`, `is_read`, `is_closed`, `is_system`, `created_at`) VALUES
-('conv-pierre-001', 4, 2, 'Bonjour, je souhaiterais obtenir des informations sur les credits immobiliers.', TRUE, FALSE, FALSE, DATE_SUB(NOW(), INTERVAL 5 DAY)),
-('conv-pierre-001', 2, 4, 'Bonjour Pierre, je serais ravie de vous aider. Quel est le montant de votre projet ?', TRUE, FALSE, FALSE, DATE_SUB(NOW(), INTERVAL 5 DAY)),
-('conv-pierre-001', 4, 2, 'Nous cherchons un bien aux alentours de 250 000 euros.', TRUE, FALSE, FALSE, DATE_SUB(NOW(), INTERVAL 4 DAY)),
-('conv-pierre-001', 2, 4, 'Parfait ! Je vous propose un rendez-vous cette semaine pour etudier votre dossier. Etes-vous disponible jeudi ?', FALSE, FALSE, FALSE, DATE_SUB(NOW(), INTERVAL 4 DAY));
+-- Les messages seront crees dynamiquement par l'application
+-- Pas de fixtures pour eviter les conflits avec la logique metier
 
--- Conversation Sophie avec Marie
-INSERT INTO `messages` (`conversation_id`, `from_user_id`, `to_user_id`, `content`, `is_read`, `is_closed`, `is_system`, `created_at`) VALUES
-('conv-sophie-001', 5, 2, 'Bonjour, j''ai une question sur mes frais bancaires du mois dernier.', TRUE, TRUE, FALSE, DATE_SUB(NOW(), INTERVAL 15 DAY)),
-('conv-sophie-001', 2, 5, 'Bonjour Sophie, je consulte votre dossier. De quels frais parlez-vous ?', TRUE, TRUE, FALSE, DATE_SUB(NOW(), INTERVAL 15 DAY)),
-('conv-sophie-001', 5, 2, 'J''ai ete prelevee de 5 euros de frais de decouvert, mais je ne pense pas avoir ete a decouvert.', TRUE, TRUE, FALSE, DATE_SUB(NOW(), INTERVAL 14 DAY)),
-('conv-sophie-001', 2, 5, 'Je vois le probleme. Il s''agit d''une erreur de notre part. Je procede au remboursement immediat. Toutes mes excuses.', TRUE, TRUE, FALSE, DATE_SUB(NOW(), INTERVAL 14 DAY)),
-('conv-sophie-001', NULL, 5, 'Cette conversation a ete cloturee. Votre remboursement de 5 euros a ete effectue.', TRUE, TRUE, TRUE, DATE_SUB(NOW(), INTERVAL 14 DAY));
 
 -- ========== MESSAGES INTERNES STAFF ==========
 INSERT INTO `internal_messages` (`from_user_id`, `to_user_id`, `content`, `is_group_message`, `is_read`, `created_at`) VALUES
