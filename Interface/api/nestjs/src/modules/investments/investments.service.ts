@@ -4,207 +4,168 @@ import { CancelOrderDto } from './dto/cancel-order.dto';
 import { InvestmentOrderRepository } from '@infrastructure/database/postgresql/InvestmentOrderRepository';
 import { StockRepository } from '@infrastructure/database/postgresql/StockRepository';
 import { AccountRepository } from '@infrastructure/database/postgresql/AccountRepository';
+import { TransactionRepository } from '@infrastructure/database/postgresql/TransactionRepository';
+import { BankSettingsRepository } from '@infrastructure/database/postgresql/BankSettingsRepository';
 import { UserId } from '@domain/value-objects/UserId';
-import { AccountId } from '@domain/value-objects/AccountId';
-import { StockId } from '@domain/value-objects/StockId';
-import { InvestmentOrderId } from '@domain/value-objects/InvestmentOrderId';
-import { InvestmentOrder, OrderType } from '@domain/entities/InvestmentOrder';
-import { Money } from '@domain/value-objects/Money';
+import { PlaceInvestmentOrder } from '@application/use-cases/investment/PlaceInvestmentOrder';
+import { CancelInvestmentOrder } from '@application/use-cases/investment/CancelInvestmentOrder';
+import { GetUserPortfolio } from '@application/use-cases/investment/GetUserPortfolio';
+import { GetAvailableStocks } from '@application/use-cases/investment/GetAvailableStocks';
 
 @Injectable()
 export class InvestmentsService {
-  private readonly TRANSACTION_FEE = 1.00;
-
   constructor(
     private readonly investmentOrderRepository: InvestmentOrderRepository,
     private readonly stockRepository: StockRepository,
     private readonly accountRepository: AccountRepository,
+    private readonly transactionRepository: TransactionRepository,
+    private readonly bankSettingsRepository: BankSettingsRepository,
   ) {}
 
   async placeOrder(userId: string, placeOrderDto: PlaceOrderDto) {
     try {
-      const userIdVO = UserId.fromString(userId);
-      const accountIdVO = new AccountId(placeOrderDto.accountId);
-      const stockIdVO = StockId.fromNumber(placeOrderDto.stockId);
+      // Utiliser le Use Case PlaceInvestmentOrder
+      const placeOrderUseCase = new PlaceInvestmentOrder(
+        this.accountRepository,
+        this.stockRepository,
+        this.investmentOrderRepository,
+        this.transactionRepository,
+        this.bankSettingsRepository
+      );
 
-      const account = await this.accountRepository.findById(accountIdVO);
-      if (!account) {
-        throw new NotFoundException('Compte non trouvé');
-      }
-      if (account.userId.value !== userId) {
-        throw new ForbiddenException('Accès interdit à ce compte');
-      }
+      const orderType = placeOrderDto.orderType === OrderTypeDto.BUY ? 'buy' : 'sell';
 
-      const stock = await this.stockRepository.findById(stockIdVO);
-      if (!stock) {
-        throw new NotFoundException('Action non trouvée');
-      }
-      if (!stock.canBeTraded()) {
-        throw new BadRequestException('Cette action n est pas disponible à la négociation');
-      }
+      const result = await placeOrderUseCase.execute({
+        userId,
+        accountId: placeOrderDto.accountId.toString(),
+        stockId: placeOrderDto.stockId.toString(),
+        orderType,
+        quantity: placeOrderDto.quantity,
+      });
 
-      let order: InvestmentOrder;
-      if (placeOrderDto.orderType === OrderTypeDto.BUY) {
-        order = InvestmentOrder.createBuyOrder({
-          userId: userIdVO,
-          accountId: accountIdVO,
-          stockId: stockIdVO,
-          quantity: placeOrderDto.quantity,
-          pricePerShare: stock.currentPrice,
-          transactionFee: this.TRANSACTION_FEE,
-        });
-
-        if (!account.hasEnoughBalance(order.totalAmount)) {
-          throw new BadRequestException('Solde insuffisant pour cet achat');
-        }
-
-        account.debit(order.totalAmount);
-      } else {
-        order = InvestmentOrder.createSellOrder({
-          userId: userIdVO,
-          accountId: accountIdVO,
-          stockId: stockIdVO,
-          quantity: placeOrderDto.quantity,
-          pricePerShare: stock.currentPrice,
-          transactionFee: this.TRANSACTION_FEE,
-        });
-
-        const userStockHistory = await this.investmentOrderRepository.findStockOrderHistory(stockIdVO);
-
-        // Calculate net holdings from order history
-        let netHoldings = 0;
-        for (const order of userStockHistory) {
-          if (order.userId.value === userId) {
-            if (order.orderType === OrderType.BUY) {
-              netHoldings += order.quantity;
-            } else {
-              netHoldings -= order.quantity;
-            }
-          }
-        }
-
-        if (netHoldings < placeOrderDto.quantity) {
-          throw new BadRequestException(`Vous ne possédez que ${netHoldings} actions de ${stock.symbol}`);
-        }
-
-        account.credit(order.totalAmount);
+      if (!result.success) {
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      await this.accountRepository.save(account);
-      await this.investmentOrderRepository.save(order);
-
-      order.execute();
-      await this.investmentOrderRepository.save(order);
-
+      // Format standardisé compatible avec Express
       return {
-        id: order.id.value,
-        userId: order.userId.value,
-        accountId: order.accountId.value,
-        stockId: order.stockId.value,
-        orderType: order.orderType,
-        quantity: order.quantity,
-        pricePerShare: order.pricePerShare.amount,
-        totalAmount: order.totalAmount.amount,
-        fees: order.fees.amount,
-        status: order.status,
-        executedAt: order.executedAt,
-        createdAt: order.createdAt,
+        success: true,
+        data: { orderId: result.orderId },
+        message: result.message,
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException || error instanceof ForbiddenException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l ordre');
+      throw new BadRequestException('Erreur interne du serveur');
     }
   }
 
   async cancelOrder(userId: string, cancelOrderDto: CancelOrderDto) {
-    const orderId = InvestmentOrderId.fromNumber(cancelOrderDto.orderId);
-    const order = await this.investmentOrderRepository.findById(orderId);
+    try {
+      // Utiliser le Use Case CancelInvestmentOrder
+      const cancelOrderUseCase = new CancelInvestmentOrder(
+        this.investmentOrderRepository,
+        this.accountRepository
+      );
 
-    if (!order) {
-      throw new NotFoundException('Ordre non trouvé');
+      const result = await cancelOrderUseCase.execute({
+        userId,
+        orderId: cancelOrderDto.orderId.toString(),
+      });
+
+      if (!result.success) {
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
+      }
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: result.message,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof BadRequestException || error instanceof ForbiddenException) {
+        throw error;
+      }
+      throw new BadRequestException('Erreur interne du serveur');
     }
-
-    if (order.userId.value !== userId) {
-      throw new ForbiddenException('Accès interdit à cet ordre');
-    }
-
-    if (!order.canBeCancelled()) {
-      throw new BadRequestException('Cet ordre ne peut pas être annulé');
-    }
-
-    order.cancel();
-    await this.investmentOrderRepository.save(order);
-
-    return {
-      message: 'Ordre annulé avec succès',
-      orderId: order.id.value,
-      status: order.status,
-    };
   }
 
   async getStocks(availableOnly: boolean = true) {
-    const stocks = await this.stockRepository.findAll(availableOnly);
+    try {
+      // Utiliser le Use Case GetAvailableStocks
+      const getStocksUseCase = new GetAvailableStocks(
+        this.stockRepository,
+        this.bankSettingsRepository
+      );
 
-    return stocks.map(stock => ({
-      id: stock.id.value,
-      symbol: stock.symbol,
-      companyName: stock.companyName,
-      currentPrice: stock.currentPrice.amount,
-      currency: stock.currentPrice.currency,
-      isAvailable: stock.isAvailable,
-      createdAt: stock.createdAt,
-      updatedAt: stock.updatedAt,
-    }));
+      const result = await getStocksUseCase.execute(!availableOnly);
+
+      if (!result.success) {
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
+      }
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: result.stocks,
+        message: result.message,
+      };
+    } catch (error) {
+      throw new BadRequestException('Erreur interne du serveur');
+    }
   }
 
   async getPortfolio(userId: string) {
+    try {
+      // Utiliser le Use Case GetUserPortfolio
+      const getPortfolioUseCase = new GetUserPortfolio(
+        this.investmentOrderRepository,
+        this.stockRepository
+      );
+
+      const result = await getPortfolioUseCase.execute({ userId });
+
+      if (!result.success) {
+        throw new BadRequestException(result.errors?.join(', ') || result.message);
+      }
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: result.portfolio,
+        message: result.message,
+      };
+    } catch (error) {
+      throw new BadRequestException('Erreur interne du serveur');
+    }
+  }
+
+  async getUserOrders(userId: string) {
     const userIdVO = UserId.fromString(userId);
-    const orders = await this.investmentOrderRepository.findExecutedOrdersByUserId(userIdVO);
+    const orders = await this.investmentOrderRepository.findByUserId(userIdVO);
 
-    const portfolioMap = new Map<number, any>();
+    // Format standardisé compatible avec Express
+    // toJSON() retourne toutes les propriétés de l'ordre (id, stockId, orderType, quantity, etc.)
+    return {
+      success: true,
+      data: orders.map(order => order.toJSON()),
+      message: `${orders.length} ordre(s) trouvé(s)`,
+    };
+  }
 
-    for (const order of orders) {
-      const stockIdValue = parseInt(order.stockId.value);
+  async getInvestmentFee() {
+    try {
+      const fee = await this.bankSettingsRepository.getInvestmentFee();
 
-      if (!portfolioMap.has(stockIdValue)) {
-        const stock = await this.stockRepository.findById(order.stockId);
-
-        portfolioMap.set(stockIdValue, {
-          stockId: stockIdValue,
-          symbol: stock?.symbol || 'UNKNOWN',
-          companyName: stock?.companyName || 'Unknown Company',
-          currentPrice: stock?.currentPrice.amount || 0,
-          quantity: 0,
-          averagePurchasePrice: 0,
-          totalCost: 0,
-          currentValue: 0,
-          profitLoss: 0,
-          profitLossPercentage: 0,
-        });
-      }
-
-      const position = portfolioMap.get(stockIdValue)!;
-
-      if (order.orderType === OrderType.BUY) {
-        position.quantity += order.quantity;
-        position.totalCost += order.totalAmount.amount;
-      } else {
-        position.quantity -= order.quantity;
-        position.totalCost -= order.totalAmount.amount;
-      }
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: { fee },
+        message: 'Frais d\'investissement récupérés avec succès',
+      };
+    } catch (error) {
+      throw new BadRequestException('Erreur interne du serveur');
     }
-
-    const portfolio = Array.from(portfolioMap.values()).filter(pos => pos.quantity > 0);
-
-    for (const position of portfolio) {
-      position.averagePurchasePrice = position.totalCost / position.quantity;
-      position.currentValue = position.currentPrice * position.quantity;
-      position.profitLoss = position.currentValue - position.totalCost;
-      position.profitLossPercentage = (position.profitLoss / position.totalCost) * 100;
-    }
-
-    return portfolio;
   }
 }

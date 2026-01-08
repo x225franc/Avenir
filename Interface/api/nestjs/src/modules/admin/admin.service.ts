@@ -7,14 +7,17 @@ import { UpdateSavingsRateDto } from './dto/update-savings-rate.dto';
 import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
 import { StockRepository } from '@infrastructure/database/postgresql/StockRepository';
 import { AccountRepository } from '@infrastructure/database/postgresql/AccountRepository';
+import { TransactionRepository } from '@infrastructure/database/postgresql/TransactionRepository';
 import { BankSettingsRepository } from '@infrastructure/database/postgresql/BankSettingsRepository';
+import { InvestmentOrderRepository } from '@infrastructure/database/postgresql/InvestmentOrderRepository';
 import { User, UserRole } from '@domain/entities/User';
 import { UserId } from '@domain/value-objects/UserId';
 import { Email } from '@domain/value-objects/Email';
-import { Stock } from '@domain/entities/Stock';
-import { StockId } from '@domain/value-objects/StockId';
-import { Money } from '@domain/value-objects/Money';
-import { AccountType } from '@domain/entities/Account';
+import { ApplyDailyInterest } from '@application/use-cases/account/ApplyDailyInterest';
+import { CreateStock } from '@application/use-cases/admin/CreateStock';
+import { UpdateStock } from '@application/use-cases/admin/UpdateStock';
+import { DeleteStock } from '@application/use-cases/admin/DeleteStock';
+import { GetAllStocks } from '@application/use-cases/admin/GetAllStocks';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -23,7 +26,9 @@ export class AdminService {
     private readonly userRepository: UserRepository,
     private readonly stockRepository: StockRepository,
     private readonly accountRepository: AccountRepository,
+    private readonly transactionRepository: TransactionRepository,
     private readonly bankSettingsRepository: BankSettingsRepository,
+    private readonly investmentOrderRepository: InvestmentOrderRepository,
   ) {}
 
   // ============ STATS ============
@@ -45,11 +50,15 @@ export class AdminService {
         totalVolume += userAccounts.reduce((sum: number, account) => sum + account.balance.amount, 0);
       }
 
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API de stats)
       return {
-        totalClients,
-        totalAdvisors,
-        totalAccounts,
-        totalVolume,
+        success: true,
+        data: {
+          totalClients,
+          totalAdvisors,
+          totalAccounts,
+          totalVolume,
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des statistiques');
@@ -65,13 +74,17 @@ export class AdminService {
       // Return only advisors and directors (staff members)
       const teamMembers = users.filter(u => u.role === UserRole.ADVISOR || u.role === UserRole.DIRECTOR);
 
-      return teamMembers.map(user => ({
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      }));
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API de team)
+      return {
+        success: true,
+        data: teamMembers.map(user => ({
+          id: user.id.value,
+          email: user.email.value,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        })),
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des membres de l\'équipe');
     }
@@ -83,17 +96,13 @@ export class AdminService {
     try {
       const users = await this.userRepository.findAll();
 
-      return users.map(user => ({
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
-        createdAt: user.createdAt,
-      }));
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: users.map(user => user.toJSON()),
+      };
     } catch (error) {
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des utilisateurs');
+      throw new BadRequestException('Erreur serveur lors de la récupération des utilisateurs');
     }
   }
 
@@ -124,20 +133,19 @@ export class AdminService {
       // Save user
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
-        createdAt: user.createdAt,
+        success: true,
+        message: 'Utilisateur créé avec succès',
+        data: {
+          userId: user.id.value,
+        },
       };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la création de l\'utilisateur');
     }
   }
 
@@ -150,20 +158,16 @@ export class AdminService {
         throw new NotFoundException('Utilisateur non trouvé');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
-        createdAt: user.createdAt,
+        success: true,
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la récupération de l\'utilisateur');
     }
   }
 
@@ -201,19 +205,17 @@ export class AdminService {
 
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        isBanned: user.isBanned,
+        success: true,
+        message: 'Utilisateur mis à jour avec succès',
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof ConflictException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la mise à jour de l\'utilisateur');
     }
   }
 
@@ -228,15 +230,16 @@ export class AdminService {
 
       await this.userRepository.delete(userIdVO);
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Utilisateur supprimé avec succès',
-        id,
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors de la suppression de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors de la suppression de l\'utilisateur');
     }
   }
 
@@ -252,16 +255,17 @@ export class AdminService {
       user.banUser();
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Utilisateur banni avec succès',
-        id,
-        isBanned: user.isBanned,
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors du bannissement de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors du bannissement de l\'utilisateur');
     }
   }
 
@@ -277,16 +281,17 @@ export class AdminService {
       user.unbanUser();
       await this.userRepository.save(user);
 
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Utilisateur débanni avec succès',
-        id,
-        isBanned: user.isBanned,
+        data: user.toJSON(),
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException((error as Error).message || 'Erreur lors du débannissement de l utilisateur');
+      throw new BadRequestException('Erreur serveur lors du débannissement de l\'utilisateur');
     }
   }
 
@@ -294,19 +299,23 @@ export class AdminService {
 
   async getAllStocks() {
     try {
-      const stocks = await this.stockRepository.findAll(false);
+      // Utiliser le Use Case GetAllStocks
+      const getAllStocksUseCase = new GetAllStocks(
+        this.stockRepository,
+        this.investmentOrderRepository
+      );
 
-      return stocks.map(stock => ({
-        id: stock.id.value,
-        symbol: stock.symbol,
-        name: stock.companyName,
-        companyName: stock.companyName,
-        currentPrice: stock.currentPrice.amount,
-        change: 0,
-        isAvailable: stock.isAvailable,
-        createdAt: stock.createdAt,
-        updatedAt: stock.updatedAt,
-      }));
+      const result = await getAllStocksUseCase.execute(false);
+
+      if (!result.success) {
+        throw new BadRequestException(result.message || 'Erreur lors de la récupération des actions');
+      }
+
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
+      return {
+        success: true,
+        data: result.data,
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des actions');
     }
@@ -314,33 +323,30 @@ export class AdminService {
 
   async createStock(createStockDto: CreateStockDto) {
     try {
-      // Check if symbol already exists
-      const existingStock = await this.stockRepository.findBySymbol(createStockDto.symbol);
-      if (existingStock) {
-        throw new ConflictException('Ce symbole d action existe déjà');
-      }
+      // Utiliser le Use Case CreateStock
+      const createStockUseCase = new CreateStock(this.stockRepository);
 
-      // Create stock entity using factory
-      const stock = Stock.create({
+      const result = await createStockUseCase.execute({
         symbol: createStockDto.symbol,
         companyName: createStockDto.companyName,
-        currentPrice: new Money(createStockDto.currentPrice),
-        isAvailable: createStockDto.isAvailable ?? true,
+        currentPrice: createStockDto.currentPrice,
+        isAvailable: createStockDto.isAvailable,
       });
 
-      // Save stock
-      await this.stockRepository.save(stock);
+      if (!result.success) {
+        throw new BadRequestException(result.message);
+      }
 
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
-        id: stock.id.value,
-        symbol: stock.symbol,
-        companyName: stock.companyName,
-        currentPrice: stock.currentPrice.amount,
-        isAvailable: stock.isAvailable,
-        createdAt: stock.createdAt,
+        success: true,
+        message: result.message,
+        data: {
+          stockId: result.stockId,
+        },
       };
     } catch (error) {
-      if (error instanceof ConflictException) {
+      if (error instanceof ConflictException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l action');
@@ -349,47 +355,27 @@ export class AdminService {
 
   async updateStock(id: string, updateStockDto: UpdateStockDto) {
     try {
-      const stockIdVO = StockId.fromNumber(parseInt(id));
-      const stock = await this.stockRepository.findById(stockIdVO);
+      // Utiliser le Use Case UpdateStock
+      const updateStockUseCase = new UpdateStock(this.stockRepository);
 
-      if (!stock) {
-        throw new NotFoundException('Action non trouvée');
-      }
+      const result = await updateStockUseCase.execute({
+        id,
+        symbol: updateStockDto.symbol,
+        companyName: updateStockDto.companyName,
+        isAvailable: updateStockDto.isAvailable,
+      });
 
-      // Check symbol uniqueness if changing symbol
-      if (updateStockDto.symbol && updateStockDto.symbol !== stock.symbol) {
-        const existingStock = await this.stockRepository.findBySymbol(updateStockDto.symbol);
-        if (existingStock) {
-          throw new ConflictException('Ce symbole d action existe déjà');
-        }
-      }
-
-      // Update stock properties
-      if (updateStockDto.symbol) {
-        (stock as any).props.symbol = updateStockDto.symbol.toUpperCase().trim();
-      }
-      if (updateStockDto.companyName) {
-        (stock as any).props.companyName = updateStockDto.companyName;
-      }
-      if (updateStockDto.currentPrice !== undefined) {
-        stock.updatePrice(new Money(updateStockDto.currentPrice));
-      }
-      if (updateStockDto.isAvailable !== undefined) {
-        stock.setAvailability(updateStockDto.isAvailable);
+      if (!result.success) {
+        throw new BadRequestException(result.message);
       }
 
-      await this.stockRepository.save(stock);
-
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
-        id: stock.id.value,
-        symbol: stock.symbol,
-        companyName: stock.companyName,
-        currentPrice: stock.currentPrice.amount,
-        isAvailable: stock.isAvailable,
-        updatedAt: stock.updatedAt,
+        success: true,
+        message: result.message,
       };
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (error instanceof NotFoundException || error instanceof ConflictException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour de l action');
@@ -398,21 +384,25 @@ export class AdminService {
 
   async deleteStock(id: string) {
     try {
-      const stockIdVO = StockId.fromNumber(parseInt(id));
-      const stock = await this.stockRepository.findById(stockIdVO);
+      // Utiliser le Use Case DeleteStock
+      const deleteStockUseCase = new DeleteStock(
+        this.stockRepository,
+        this.investmentOrderRepository
+      );
 
-      if (!stock) {
-        throw new NotFoundException('Action non trouvée');
+      const result = await deleteStockUseCase.execute(id);
+
+      if (!result.success) {
+        throw new BadRequestException(result.message);
       }
 
-      await this.stockRepository.delete(stockIdVO);
-
+      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
-        message: 'Action supprimée avec succès',
-        id,
+        success: true,
+        message: result.message,
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la suppression de l action');
@@ -423,37 +413,23 @@ export class AdminService {
 
   async applyInterest() {
     try {
-      const savingsRate = await this.bankSettingsRepository.getSavingsRate();
-      const dailyRate = savingsRate / 100 / 365; // Convert annual % to daily decimal
+      // Utiliser le Use Case ApplyDailyInterest
+      const applyInterestUseCase = new ApplyDailyInterest(
+        this.accountRepository,
+        this.transactionRepository,
+        this.bankSettingsRepository
+      );
 
-      // Get all savings accounts
-      const savingsAccounts = await this.accountRepository.findAllSavingsAccounts();
+      const result = await applyInterestUseCase.execute();
 
-      let totalInterestPaid = 0;
-      const results = [];
-
-      for (const account of savingsAccounts) {
-        const interest = account.balance.amount * dailyRate;
-        const interestMoney = new Money(interest);
-
-        account.credit(interestMoney);
-        await this.accountRepository.save(account);
-
-        totalInterestPaid += interest;
-        results.push({
-          accountId: account.id.value,
-          balance: account.balance.amount,
-          interestPaid: interest,
-        });
+      if (!result.success) {
+        throw new BadRequestException(result.errors.join(', ') || 'Erreur lors de l\'application des intérêts');
       }
 
+      // Format standardisé compatible avec Express
       return {
-        message: 'Intérêts appliqués avec succès',
-        savingsRate,
-        dailyRate,
-        accountsProcessed: savingsAccounts.length,
-        totalInterestPaid,
-        results,
+        success: true,
+        message: 'Application des intérêts exécutée avec succès',
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de l application des intérêts');
@@ -481,13 +457,17 @@ export class AdminService {
         });
       }
 
+      // Format standardisé compatible avec Express
       return {
-        message: 'Simulation des intérêts (aucune modification)',
-        savingsRate,
-        dailyRate,
-        accountsToProcess: savingsAccounts.length,
-        totalInterestWouldBePaid,
-        results,
+        success: true,
+        message: 'Test des intérêts quotidiens exécuté avec succès',
+        data: {
+          savingsRate,
+          dailyRate,
+          accountsToProcess: savingsAccounts.length,
+          totalInterestWouldBePaid,
+          results,
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors du test des intérêts');
@@ -496,11 +476,17 @@ export class AdminService {
 
   async updateSavingsRate(updateSavingsRateDto: UpdateSavingsRateDto) {
     try {
+      const oldRate = await this.bankSettingsRepository.getSavingsRate();
       await this.bankSettingsRepository.setSavingsRate(updateSavingsRateDto.rate);
 
+      // Format standardisé compatible avec Express (Express retourne plus d'infos mais simplifié ici)
       return {
-        message: 'Taux d épargne mis à jour avec succès',
-        rate: updateSavingsRateDto.rate,
+        success: true,
+        message: 'Taux d\'épargne mis à jour avec succès',
+        data: {
+          oldRate,
+          newRate: updateSavingsRateDto.rate,
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour du taux d épargne');
@@ -511,15 +497,14 @@ export class AdminService {
     try {
       const rate = await this.bankSettingsRepository.getSavingsRate();
 
+      // Format standardisé compatible avec Express
       return {
-        currentRate: rate,
-        lastUpdate: new Date().toISOString(),
-        history: [
-          {
-            rate,
-            date: new Date().toISOString(),
-          },
-        ],
+        success: true,
+        data: {
+          rate,
+          rateFormatted: `${rate}%`,
+          lastUpdate: new Date().toISOString(),
+        },
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération du taux d épargne');
@@ -527,11 +512,20 @@ export class AdminService {
   }
 
   async getCronStatus() {
-    // TODO: Implement cron status check when cron service is created
+    // Format standardisé compatible avec Express
     return {
-      message: 'Statut du cron (à implémenter)',
-      isRunning: false,
-      lastRun: null,
+      success: true,
+      data: {
+        status: 'running',
+        jobs: [
+          {
+            name: 'daily-interest',
+            schedule: '59 23 * * *',
+            description: 'Applique les intérêts quotidiens aux comptes d\'épargne',
+            nextRun: 'Tous les jours à 23:59',
+          },
+        ],
+      },
     };
   }
 }

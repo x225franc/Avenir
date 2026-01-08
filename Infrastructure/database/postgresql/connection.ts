@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { config } from "../../config/database-postgres";
 
+
 /**
  * Pool de connexions PostgreSQL
  * Utilise un pool pour réutiliser les connexions et optimiser les performances
@@ -23,6 +24,13 @@ class DatabaseConnection {
                 connectionTimeoutMillis: 2000,
             });
 
+            // console.log(`PostgreSQL connection pool created`);
+            console.log('DB_POSTGRES_PASSWORD =', process.env.DB_POSTGRES_PASSWORD);
+            console.log('DB_POSTGRES_NAME =', process.env.DB_POSTGRES_NAME);
+            console.log('DB_POSTGRES_USER =', process.env.DB_POSTGRES_USER);
+            console.log('DB_POSTGRES_HOST =', process.env.DB_POSTGRES_HOST);
+            console.log('DB_POSTGRES_PORT =', process.env.DB_POSTGRES_PORT);
+
         }
 
         return DatabaseConnection.instance;
@@ -32,11 +40,11 @@ class DatabaseConnection {
         try {
             const pool = DatabaseConnection.getInstance();
             const client = await pool.connect();
-            console.log("✅ PostgreSQL connection réussie");
+            console.log("PostgreSQL connection réussie");
             client.release();
             return true;
         } catch (error) {
-            console.error("❌ PostgreSQL connection echouée:", error);
+            console.error("PostgreSQL connection echouée:", error);
             return false;
         }
     }
@@ -45,6 +53,7 @@ class DatabaseConnection {
         if (DatabaseConnection.instance) {
             await DatabaseConnection.instance.end();
             DatabaseConnection.instance = null;
+            // console.log("PostgreSQL connection pool closed");
         }
     }
 }

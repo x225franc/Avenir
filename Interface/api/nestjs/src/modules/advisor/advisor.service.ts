@@ -157,7 +157,7 @@ export class AdvisorService {
     }
   }
 
-  async notifyClient(advisorId: string, clientId: string, message: string) {
+  async notifyClient(advisorId: string, clientId: string, subject: string, message: string) {
     try {
       const clientIdVO = UserId.fromString(clientId);
       const client = await this.userRepository.findById(clientIdVO);
@@ -172,6 +172,7 @@ export class AdvisorService {
       return {
         message: 'Notification envoyée avec succès',
         clientId,
+        subject,
         notificationMessage: message,
       };
     } catch (error) {

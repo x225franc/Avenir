@@ -1,6 +1,6 @@
 import { IUserRepository } from "@domain/repositories/IUserRepository";
 import { UserId } from "@domain/value-objects/UserId";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 export class ResetPassword {
 	constructor(private userRepository: IUserRepository) {}

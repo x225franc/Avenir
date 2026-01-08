@@ -2,7 +2,7 @@ import { IUserRepository } from "@domain/repositories/IUserRepository";
 import { config } from "@infrastructure/config/database";
 import { Email } from "@domain/value-objects/Email";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export interface LoginUserDTO {
 	email: string;

@@ -8,4 +8,8 @@ export class TransferConversationDto {
   @IsInt()
   @IsNotEmpty()
   newAdvisorId: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  currentAdvisorId: number;
 }

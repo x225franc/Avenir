@@ -12,6 +12,8 @@ import { CreditsModule } from './modules/credits/credits.module';
 import { NewsModule } from './modules/news/news.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AdvisorModule } from './modules/advisor/advisor.module';
+import { OperationsModule } from './modules/operations/operations.module';
+import { InternalMessagesModule } from './modules/internal-messages/internal-messages.module';
 import { GatewaysModule } from './gateways/gateways.module';
 import { SseController } from './controllers/sse.controller';
 
@@ -19,7 +21,7 @@ import { SseController } from './controllers/sse.controller';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../../../.env',
+      envFilePath: '.env', // Utilise le .env local du dossier nestjs
     }),
     AuthModule,
     UsersModule,
@@ -31,6 +33,8 @@ import { SseController } from './controllers/sse.controller';
     NewsModule,
     AdminModule,
     AdvisorModule,
+    OperationsModule,
+    InternalMessagesModule,
     GatewaysModule,
   ],
   controllers: [AppController, SseController],

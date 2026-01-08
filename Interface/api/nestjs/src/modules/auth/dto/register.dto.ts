@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsIn } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail({}, { message: 'Email invalide' })
@@ -20,9 +20,14 @@ export class RegisterDto {
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phoneNumber?: string;
 
   @IsString()
   @IsOptional()
   address?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsIn(['client', 'advisor', 'director'], { message: 'Le rôle doit être client, advisor ou director' })
+  role?: 'client' | 'advisor' | 'director';
 }

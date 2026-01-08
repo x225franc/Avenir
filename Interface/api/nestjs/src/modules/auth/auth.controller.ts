@@ -16,7 +16,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
-@Controller('auth')
+@Controller('users')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

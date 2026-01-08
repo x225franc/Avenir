@@ -1,59 +1,58 @@
 import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
-import { emailService } from '@infrastructure/services/email.service';
-import { User, UserRole } from '@domain/entities/User';
-import { Email } from '@domain/value-objects/Email';
+import { AccountRepository } from '@infrastructure/database/postgresql/AccountRepository';
 import { UserId } from '@domain/value-objects/UserId';
+import { Email } from '@domain/value-objects/Email';
+import { RegisterUser } from '@application/use-cases/user/RegisterUser';
+import { LoginUser } from '@application/use-cases/user/LoginUser';
+import { VerifyEmail } from '@application/use-cases/user/VerifyEmail';
+import { RequestPasswordReset } from '@application/use-cases/user/RequestPasswordReset';
+import { ResetPassword } from '@application/use-cases/user/ResetPassword';
+import { emailService } from '@infrastructure/services/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userRepository: UserRepository,
+    private accountRepository: AccountRepository,
   ) {}
 
   async register(registerDto: RegisterDto) {
     try {
-      const email = new Email(registerDto.email);
-      const exists = await this.userRepository.emailExists(email);
+      // Utiliser le Use Case RegisterUser
+      const registerUserUseCase = new RegisterUser(
+        this.userRepository,
+        this.accountRepository
+      );
 
-      if (exists) {
-        throw new BadRequestException('Cet email est déjà utilisé');
-      }
-
-      const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-      const verificationToken = uuidv4();
-
-      const user = User.create({
-        email,
-        passwordHash: hashedPassword,
+      const result = await registerUserUseCase.execute({
+        email: registerDto.email,
+        password: registerDto.password,
         firstName: registerDto.firstName,
         lastName: registerDto.lastName,
-        phone: registerDto.phone,
+        phoneNumber: registerDto.phoneNumber,
         address: registerDto.address,
-        role: UserRole.CLIENT,
-        emailVerified: false,
-        isBanned: false,
-        verificationToken,
+        role: registerDto.role || 'client',
       });
 
-      await this.userRepository.save(user);
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Erreur lors de l\'inscription');
+      }
 
-      // Envoyer email de vérification (async, ne pas attendre)
-      emailService.sendVerificationEmail(email.value, registerDto.firstName, verificationToken).catch((err: Error) => {
-        console.error('Erreur envoi email:', err);
-      });
-
+      // Format standardisé compatible avec Express
       return {
-        message: 'Inscription réussie. Veuillez vérifier votre email.',
-        userId: user.id.value,
+        success: true,
+        message: 'Inscription réussie ! Vérifiez votre email.',
+        data: {
+          userId: result.userId,
+          verificationToken: result.verificationToken,
+        },
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -64,91 +63,114 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const email = new Email(loginDto.email);
-    const user = await this.userRepository.findByEmail(email);
+    try {
+      // Utiliser le Use Case LoginUser
+      const loginUserUseCase = new LoginUser(this.userRepository);
 
-    if (!user) {
-      throw new UnauthorizedException('Email ou mot de passe incorrect');
+      const result = await loginUserUseCase.execute({
+        email: loginDto.email,
+        password: loginDto.password,
+      });
+
+      if (!result.success) {
+        throw new UnauthorizedException(result.error || 'Email ou mot de passe incorrect');
+      }
+
+      // Générer le token avec NestJS JwtService au lieu d'utiliser celui du Use Case
+      const token = this.generateToken(result.userId!, result.email!, result.role!);
+
+      // Récupérer les informations complètes de l'utilisateur
+      const email = new Email(result.email!);
+      const user = await this.userRepository.findByEmail(email);
+
+      // Format de réponse compatible avec Express pour respecter la Clean Architecture
+      return {
+        success: true,
+        message: 'Connexion réussie',
+        data: {
+          token: token,
+          userId: user!.id.value,
+          email: user!.email.value,
+          role: user!.role,
+        },
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException((error as Error).message || 'Erreur lors de la connexion');
     }
-
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Email ou mot de passe incorrect');
-    }
-
-    if (user.isBanned) {
-      throw new UnauthorizedException('Votre compte a été banni');
-    }
-
-    const token = this.generateToken(user.id.value, user.email.value, user.role);
-
-    return {
-      access_token: token,
-      user: {
-        id: user.id.value,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        emailVerified: user.emailVerified,
-      },
-    };
   }
 
   async verifyEmail(token: string) {
-    const user = await this.userRepository.findByVerificationToken(token);
+    try {
+      // Utiliser le Use Case VerifyEmail
+      const verifyEmailUseCase = new VerifyEmail(this.userRepository);
 
-    if (!user) {
-      throw new BadRequestException('Token de vérification invalide ou expiré');
+      const result = await verifyEmailUseCase.execute(token);
+
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Token de vérification invalide ou expiré');
+      }
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: result.message || 'Email vérifié avec succès',
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException((error as Error).message || 'Erreur lors de la vérification de l\'email');
     }
-
-    user.verifyEmail();
-    await this.userRepository.save(user);
-
-    return { message: 'Email vérifié avec succès' };
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     try {
-      const email = new Email(forgotPasswordDto.email);
-      const user = await this.userRepository.findByEmail(email);
+      // Utiliser le Use Case RequestPasswordReset
+      const requestPasswordResetUseCase = new RequestPasswordReset(
+        this.userRepository,
+        emailService
+      );
 
-      if (user) {
-        const resetToken = uuidv4();
-        user.setPasswordResetToken(resetToken);
-        await this.userRepository.save(user);
-
-        // Envoyer email (async)
-        emailService.sendPasswordResetEmail(email.value, user.firstName, resetToken).catch((err: Error) => {
-          console.error('Erreur envoi email:', err);
-        });
-      }
+      await requestPasswordResetUseCase.execute(forgotPasswordDto.email);
 
       // Ne pas révéler si l'email existe ou non (sécurité)
+      // Format standardisé compatible avec Express
       return {
-        message: 'Un email de réinitialisation a été envoyé si le compte existe',
+        success: true,
+        message: 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.',
       };
     } catch (error) {
+      // Toujours retourner le même message pour la sécurité
       return {
-        message: 'Un email de réinitialisation a été envoyé si le compte existe',
+        success: true,
+        message: 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.',
       };
     }
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const users = await this.userRepository.findAll();
-    const user = users.find(u => u.passwordResetToken === resetPasswordDto.token);
+    try {
+      // Utiliser le Use Case ResetPassword
+      const resetPasswordUseCase = new ResetPassword(this.userRepository);
 
-    if (!user) {
-      throw new BadRequestException('Token de réinitialisation invalide ou expiré');
+      await resetPasswordUseCase.execute(
+        resetPasswordDto.token,
+        resetPasswordDto.newPassword
+      );
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        message: 'Mot de passe réinitialisé avec succès',
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        (error as Error).message || 'Token de réinitialisation invalide ou expiré'
+      );
     }
-
-    const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10);
-    user.resetPassword(hashedPassword);
-    await this.userRepository.save(user);
-
-    return { message: 'Mot de passe réinitialisé avec succès' };
   }
 
   async getMe(userId: string) {
@@ -158,17 +180,21 @@ export class AuthService {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
+    // Format de réponse compatible avec Express pour respecter la Clean Architecture
     return {
-      id: user.id.value,
-      email: user.email.value,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      address: user.address,
-      role: user.role,
-      emailVerified: user.emailVerified,
-      isBanned: user.isBanned,
-      createdAt: user.createdAt,
+      success: true,
+      data: {
+        id: user.id.value,
+        email: user.email.value,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fullName: user.fullName,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+        emailVerified: user.emailVerified,
+        createdAt: user.createdAt,
+      },
     };
   }
 

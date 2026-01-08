@@ -2,60 +2,102 @@ import { Injectable, NotFoundException, BadRequestException, ForbiddenException 
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { NewsRepository } from '@infrastructure/database/postgresql/NewsRepository';
+import { UserRepository } from '@infrastructure/database/postgresql/UserRepository';
 import { UserId } from '@domain/value-objects/UserId';
-import { News } from '@domain/entities/News';
+import { CreateNews } from '@application/use-cases/news/CreateNews';
+import { GetNews } from '@application/use-cases/news/GetNews';
+import { UpdateNews } from '@application/use-cases/news/UpdateNews';
+import { DeleteNews } from '@application/use-cases/news/DeleteNews';
 
 @Injectable()
 export class NewsService {
   constructor(
     private readonly newsRepository: NewsRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async createNews(authorId: string, createNewsDto: CreateNewsDto) {
     try {
-      const authorIdVO = UserId.fromString(authorId);
+      // Utiliser le Use Case CreateNews
+      const createNewsUseCase = new CreateNews(this.newsRepository);
 
-      // Create news entity using static factory
-      const news = News.create(
-        createNewsDto.title,
-        createNewsDto.content,
-        authorIdVO,
-        createNewsDto.published ?? false
-      );
+      const result = await createNewsUseCase.execute({
+        title: createNewsDto.title,
+        content: createNewsDto.content,
+        authorId,
+        published: createNewsDto.published,
+      });
 
-      // Save to database
-      const savedNews = await this.newsRepository.create(news);
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Erreur lors de la création de l actualité');
+      }
 
+      // Format standardisé compatible avec Express
       return {
-        id: savedNews.id,
-        title: savedNews.title,
-        content: savedNews.content,
-        authorId: savedNews.authorId.value,
-        published: savedNews.published,
-        createdAt: savedNews.createdAt,
-        updatedAt: savedNews.updatedAt,
+        success: true,
+        message: 'Actualité créée avec succès',
+        data: {
+          id: result.news!.id,
+          title: result.news!.title,
+          content: result.news!.content,
+          authorId: result.news!.authorId.value,
+          published: result.news!.published,
+          createdAt: result.news!.createdAt,
+        },
       };
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la création de l actualité');
     }
   }
 
   async getAllNews(publishedOnly: boolean = false) {
     try {
-      const newsList = publishedOnly
-        ? await this.newsRepository.findPublished()
-        : await this.newsRepository.findAll();
+      // Utiliser le Use Case GetNews
+      const getNewsUseCase = new GetNews(this.newsRepository);
 
-      return newsList.map(news => ({
-        id: news.id,
-        title: news.title,
-        content: news.content,
-        authorId: news.authorId.value,
-        published: news.published,
-        createdAt: news.createdAt,
-        updatedAt: news.updatedAt,
-      }));
+      const result = await getNewsUseCase.execute(publishedOnly);
+
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Erreur lors de la récupération des actualités');
+      }
+
+      // Enrichir avec les informations de l'auteur (nom + rôle) comme dans Express
+      const uniqueAuthorIds = Array.from(
+        new Set((result.news || []).map((n) => n.authorId.value))
+      );
+      const authorMap = new Map<string, { fullName: string; role: string }>();
+      
+      for (const id of uniqueAuthorIds) {
+        try {
+          const user = await this.userRepository.findById(UserId.fromString(id));
+          if (user) {
+            authorMap.set(id, { fullName: user.fullName, role: user.role });
+          }
+        } catch {}
+      }
+
+      // Format standardisé compatible avec Express
+      return {
+        success: true,
+        data: result.news!.map(news => ({
+          id: news.id,
+          title: news.title,
+          content: news.content,
+          authorId: news.authorId.value,
+          published: news.published,
+          createdAt: news.createdAt,
+          updatedAt: news.updatedAt,
+          authorName: authorMap.get(news.authorId.value)?.fullName,
+          authorRole: authorMap.get(news.authorId.value)?.role,
+        })),
+      };
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des actualités');
     }
   }
@@ -68,14 +110,31 @@ export class NewsService {
         throw new NotFoundException('Actualité non trouvée');
       }
 
+      // Enrichir avec l'auteur comme dans Express
+      let authorName: string | undefined;
+      let authorRole: string | undefined;
+      try {
+        const user = await this.userRepository.findById(news.authorId);
+        if (user) {
+          authorName = user.fullName;
+          authorRole = user.role;
+        }
+      } catch {}
+
+      // Format standardisé compatible avec Express
       return {
-        id: news.id,
-        title: news.title,
-        content: news.content,
-        authorId: news.authorId.value,
-        published: news.published,
-        createdAt: news.createdAt,
-        updatedAt: news.updatedAt,
+        success: true,
+        data: {
+          id: news.id,
+          title: news.title,
+          content: news.content,
+          authorId: news.authorId.value,
+          published: news.published,
+          createdAt: news.createdAt,
+          updatedAt: news.updatedAt,
+          authorName,
+          authorRole,
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -87,51 +146,47 @@ export class NewsService {
 
   async updateNews(id: string, userId: string, userRole: string, updateNewsDto: UpdateNewsDto) {
     try {
+      // Vérifier les permissions d'abord
       const news = await this.newsRepository.findById(id);
 
       if (!news) {
         throw new NotFoundException('Actualité non trouvée');
       }
 
-      // Only author or director can update
       if (news.authorId.value !== userId && userRole !== 'director') {
         throw new ForbiddenException('Vous n êtes pas autorisé à modifier cette actualité');
       }
 
-      // Use immutable update pattern from News entity
-      let updatedNews = news;
+      // Utiliser le Use Case UpdateNews
+      const updateNewsUseCase = new UpdateNews(this.newsRepository);
 
-      // Update title and content if provided
-      if (updateNewsDto.title || updateNewsDto.content) {
-        updatedNews = updatedNews.update(
-          updateNewsDto.title ?? updatedNews.title,
-          updateNewsDto.content ?? updatedNews.content
-        );
+      const result = await updateNewsUseCase.execute({
+        id,
+        title: updateNewsDto.title ?? news.title,
+        content: updateNewsDto.content ?? news.content,
+        published: updateNewsDto.published,
+      });
+
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Erreur lors de la mise à jour de l actualité');
       }
 
-      // Update published status if provided
-      if (updateNewsDto.published !== undefined) {
-        if (updateNewsDto.published && !updatedNews.published) {
-          updatedNews = updatedNews.publish();
-        } else if (!updateNewsDto.published && updatedNews.published) {
-          updatedNews = updatedNews.unpublish();
-        }
-      }
-
-      // Save to database
-      const savedNews = await this.newsRepository.update(updatedNews);
-
+      // Format standardisé compatible avec Express
       return {
-        id: savedNews.id,
-        title: savedNews.title,
-        content: savedNews.content,
-        authorId: savedNews.authorId.value,
-        published: savedNews.published,
-        createdAt: savedNews.createdAt,
-        updatedAt: savedNews.updatedAt,
+        success: true,
+        message: 'Actualité mise à jour avec succès',
+        data: {
+          id: result.news!.id,
+          title: result.news!.title,
+          content: result.news!.content,
+          authorId: result.news!.authorId.value,
+          published: result.news!.published,
+          createdAt: result.news!.createdAt,
+          updatedAt: result.news!.updatedAt,
+        },
       };
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+      if (error instanceof NotFoundException || error instanceof ForbiddenException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la mise à jour de l actualité');
@@ -140,25 +195,33 @@ export class NewsService {
 
   async deleteNews(id: string, userId: string, userRole: string) {
     try {
+      // Vérifier les permissions d'abord
       const news = await this.newsRepository.findById(id);
 
       if (!news) {
         throw new NotFoundException('Actualité non trouvée');
       }
 
-      // Only author or director can delete
       if (news.authorId.value !== userId && userRole !== 'director') {
         throw new ForbiddenException('Vous n êtes pas autorisé à supprimer cette actualité');
       }
 
-      await this.newsRepository.delete(id);
+      // Utiliser le Use Case DeleteNews
+      const deleteNewsUseCase = new DeleteNews(this.newsRepository);
 
+      const result = await deleteNewsUseCase.execute(id);
+
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Erreur lors de la suppression de l actualité');
+      }
+
+      // Format standardisé compatible avec Express
       return {
+        success: true,
         message: 'Actualité supprimée avec succès',
-        id,
       };
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+      if (error instanceof NotFoundException || error instanceof ForbiddenException || error instanceof BadRequestException) {
         throw error;
       }
       throw new BadRequestException((error as Error).message || 'Erreur lors de la suppression de l actualité');

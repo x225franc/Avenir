@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, UseGuards } from '@nestjs/common';
 import { CreditsService } from './credits.service';
 import { GrantCreditDto } from './dto/grant-credit.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -23,6 +23,21 @@ export class CreditsController {
   @Get('user/:userId')
   async getUserCredits(@Param('userId') userId: string) {
     return this.creditsService.getUserCredits(userId);
+  }
+
+  @Get('calculate')
+  async calculateCredit(
+    @Query('principalAmount') principalAmount: string,
+    @Query('annualInterestRate') annualInterestRate: string,
+    @Query('insuranceRate') insuranceRate: string,
+    @Query('durationMonths') durationMonths: string,
+  ) {
+    return this.creditsService.calculateMonthlyPayment({
+      principalAmount: parseFloat(principalAmount),
+      annualInterestRate: parseFloat(annualInterestRate),
+      insuranceRate: parseFloat(insuranceRate),
+      durationMonths: parseInt(durationMonths),
+    });
   }
 
   @Post('process-monthly-payments')

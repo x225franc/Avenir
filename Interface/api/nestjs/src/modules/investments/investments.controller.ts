@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Query, Param, UseGuards } from '@nestjs/common';
 import { InvestmentsService } from './investments.service';
 import { PlaceOrderDto } from './dto/place-order.dto';
-import { CancelOrderDto } from './dto/cancel-order.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
@@ -10,7 +9,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 export class InvestmentsController {
   constructor(private readonly investmentsService: InvestmentsService) {}
 
-  @Post('place-order')
+  @Post('orders')
   async placeOrder(
     @CurrentUser() user: any,
     @Body() placeOrderDto: PlaceOrderDto,
@@ -18,12 +17,12 @@ export class InvestmentsController {
     return this.investmentsService.placeOrder(user.userId, placeOrderDto);
   }
 
-  @Post('cancel-order')
+  @Delete('orders/:orderId')
   async cancelOrder(
     @CurrentUser() user: any,
-    @Body() cancelOrderDto: CancelOrderDto,
+    @Param('orderId') orderId: string,
   ) {
-    return this.investmentsService.cancelOrder(user.userId, cancelOrderDto);
+    return this.investmentsService.cancelOrder(user.userId, { orderId: parseInt(orderId) });
   }
 
   @Get('stocks')
@@ -35,5 +34,19 @@ export class InvestmentsController {
   @Get('portfolio')
   async getPortfolio(@CurrentUser() user: any) {
     return this.investmentsService.getPortfolio(user.userId);
+  }
+
+  @Get('fee')
+  async getFee() {
+    // Retourner les frais de transaction fixes
+    return {
+      transactionFee: 1.00,
+      currency: 'EUR',
+    };
+  }
+
+  @Get('orders')
+  async getUserOrders(@CurrentUser() user: any) {
+    return this.investmentsService.getUserOrders(user.userId);
   }
 }
