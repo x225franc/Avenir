@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { TransfersModule } from './modules/transfers/transfers.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { InvestmentsModule } from './modules/investments/investments.module';
 import { CreditsModule } from './modules/credits/credits.module';
@@ -27,6 +28,7 @@ import { SseController } from './controllers/sse.controller';
     UsersModule,
     AccountsModule,
     TransactionsModule,
+    TransfersModule,
     MessagesModule,
     InvestmentsModule,
     CreditsModule,

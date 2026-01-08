@@ -46,9 +46,12 @@ export class MessagesService {
         throw new BadRequestException('conversationId ou toUserId requis');
       }
 
+      // Utiliser fromUserId du DTO s'il est fourni, sinon userId du token JWT
+      const fromUserId = sendMessageDto.fromUserId || parseInt(userId);
+
       const message = await sendMessageUseCase.execute({
         conversationId,
-        fromUserId: parseInt(userId),
+        fromUserId: fromUserId,
         toUserId: sendMessageDto.toUserId,
         content: sendMessageDto.content,
         isSystem: false,
@@ -87,28 +90,68 @@ export class MessagesService {
         role: userRole,
       });
 
+      // Enrichir avec les données utilisateur
+      const enrichedConversations = await Promise.all(
+        conversations.map(async (conv) => {
+          const clientId = conv.getClientId().value;
+          const advisorId = conv.getAdvisorId()?.value || null;
+
+          // Charger les infos du client
+          let clientUser = null;
+          if (clientId) {
+            const client = await this.userRepository.findById(UserId.fromString(clientId.toString()));
+            if (client) {
+              clientUser = {
+                id: client.id.value,
+                firstName: client.firstName,
+                lastName: client.lastName,
+                email: client.email.value,
+              };
+            }
+          }
+
+          // Charger les infos de l'advisor si assigné
+          let advisorUser = null;
+          if (advisorId) {
+            const advisor = await this.userRepository.findById(UserId.fromString(advisorId.toString()));
+            if (advisor) {
+              advisorUser = {
+                id: advisor.id.value,
+                firstName: advisor.firstName,
+                lastName: advisor.lastName,
+                email: advisor.email.value,
+              };
+            }
+          }
+
+          return {
+            id: conv.getId(),
+            clientId: conv.getClientId().value,
+            advisorId: advisorId,
+            clientUser,
+            advisorUser,
+            isClosed: conv.getIsClosed(),
+            isAssigned: conv.isAssigned(),
+            unreadCount: conv.getUnreadCount(),
+            lastMessageAt: conv.getLastMessageAt(),
+            createdAt: conv.getCreatedAt(),
+            messages: conv.getMessages().map(msg => ({
+              id: msg.getId()?.getValue(),
+              fromUserId: msg.getFromUserId()?.value || null,
+              toUserId: msg.getToUserId()?.value || null,
+              content: msg.getContent(),
+              isRead: msg.getIsRead(),
+              isSystem: msg.getIsSystem(),
+              createdAt: msg.getCreatedAt(),
+            })),
+          };
+        })
+      );
+
       // Format standardisé compatible avec Express
       return {
         success: true,
-        data: conversations.map(conv => ({
-          id: conv.getId(),
-          clientId: conv.getClientId().value,
-          advisorId: conv.getAdvisorId()?.value || null,
-          isClosed: conv.getIsClosed(),
-          isAssigned: conv.isAssigned(),
-          unreadCount: conv.getUnreadCount(),
-          lastMessageAt: conv.getLastMessageAt(),
-          createdAt: conv.getCreatedAt(),
-          messages: conv.getMessages().map(msg => ({
-            id: msg.getId()?.getValue(),
-            fromUserId: msg.getFromUserId()?.value || null,
-            toUserId: msg.getToUserId()?.value || null,
-            content: msg.getContent(),
-            isRead: msg.getIsRead(),
-            isSystem: msg.getIsSystem(),
-            createdAt: msg.getCreatedAt(),
-          })),
-        })),
+        data: enrichedConversations,
       };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des conversations');
@@ -117,7 +160,7 @@ export class MessagesService {
 
   async getConversationMessages(conversationId: string, userId: string) {
     try {
-      // Utiliser le Use Case GetConversation pour vérifier les permissions
+      // Utiliser le Use Case GetConversation
       const getConversationUseCase = new GetConversation(this.messageRepository);
       const conversation = await getConversationUseCase.execute({ conversationId });
 
@@ -125,13 +168,34 @@ export class MessagesService {
         throw new NotFoundException('Conversation non trouvée');
       }
 
-      // Vérifier les permissions
-      const clientId = conversation.getClientId()?.value;
-      const advisorId = conversation.getAdvisorId()?.value;
-      const isParticipant = clientId === userId || advisorId === userId;
+      // Enrichir avec les données utilisateur
+      const clientId = conversation.getClientId().value;
+      const advisorId = conversation.getAdvisorId()?.value || null;
 
-      if (!isParticipant) {
-        throw new ForbiddenException('Accès interdit à cette conversation');
+      let clientUser = null;
+      if (clientId) {
+        const client = await this.userRepository.findById(UserId.fromString(clientId.toString()));
+        if (client) {
+          clientUser = {
+            id: client.id.value,
+            firstName: client.firstName,
+            lastName: client.lastName,
+            email: client.email.value,
+          };
+        }
+      }
+
+      let advisorUser = null;
+      if (advisorId) {
+        const advisor = await this.userRepository.findById(UserId.fromString(advisorId.toString()));
+        if (advisor) {
+          advisorUser = {
+            id: advisor.id.value,
+            firstName: advisor.firstName,
+            lastName: advisor.lastName,
+            email: advisor.email.value,
+          };
+        }
       }
 
       // Format standardisé compatible avec Express
@@ -141,6 +205,8 @@ export class MessagesService {
           id: conversation.getId(),
           clientId: conversation.getClientId().value,
           advisorId: conversation.getAdvisorId()?.value || null,
+          clientUser,
+          advisorUser,
           isClosed: conversation.getIsClosed(),
           isAssigned: conversation.isAssigned(),
           unreadCount: conversation.getUnreadCount(),
@@ -246,9 +312,12 @@ export class MessagesService {
       // Utiliser le Use Case MarkConversationAsRead
       const markAsReadUseCase = new MarkConversationAsRead(this.messageRepository);
 
+      // Utiliser userId du DTO s'il est fourni, sinon userId du token JWT
+      const userIdToUse = markReadDto.userId || parseInt(userId);
+
       await markAsReadUseCase.execute({
         conversationId: markReadDto.conversationId,
-        userId: parseInt(userId),
+        userId: userIdToUse,
       });
 
       // Format standardisé compatible avec Express

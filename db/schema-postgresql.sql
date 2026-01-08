@@ -28,19 +28,19 @@ DROP TYPE IF EXISTS account_type CASCADE;
 CREATE TYPE account_type AS ENUM ('checking', 'savings', 'investment');
 
 DROP TYPE IF EXISTS transaction_type CASCADE;
-CREATE TYPE transaction_type AS ENUM ('transfer', 'transfer_iban', 'deposit', 'withdrawal', 'interest', 'investment_buy', 'investment_sell');
+CREATE TYPE transaction_type AS ENUM ('TRANSFER', 'TRANSFER_IBAN', 'DEPOSIT', 'WITHDRAWAL', 'INTEREST', 'INVESTMENT_BUY', 'INVESTMENT_SELL');
 
 DROP TYPE IF EXISTS transaction_status CASCADE;
-CREATE TYPE transaction_status AS ENUM ('pending', 'completed', 'failed', 'cancelled');
+CREATE TYPE transaction_status AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED');
 
 DROP TYPE IF EXISTS order_type CASCADE;
-CREATE TYPE order_type AS ENUM ('buy', 'sell');
+CREATE TYPE order_type AS ENUM ('BUY', 'SELL');
 
 DROP TYPE IF EXISTS order_status CASCADE;
-CREATE TYPE order_status AS ENUM ('pending', 'executed', 'cancelled');
+CREATE TYPE order_status AS ENUM ('PENDING', 'EXECUTED', 'CANCELLED');
 
 DROP TYPE IF EXISTS credit_status CASCADE;
-CREATE TYPE credit_status AS ENUM ('active', 'paid_off', 'defaulted');
+CREATE TYPE credit_status AS ENUM ('ACTIVE', 'PAID_OFF', 'DEFAULTED');
 
 -- =============================================
 -- TABLE: users (Utilisateurs)
@@ -107,7 +107,7 @@ CREATE TABLE transactions (
     currency VARCHAR(3) DEFAULT 'EUR',
     type transaction_type NOT NULL,
     description VARCHAR(500),
-    status transaction_status DEFAULT 'pending',
+    status transaction_status DEFAULT 'PENDING',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (from_account_id) REFERENCES accounts(id) ON DELETE SET NULL,
@@ -152,7 +152,7 @@ CREATE TABLE investment_orders (
     price_per_share NUMERIC(10,4) NOT NULL,
     total_amount NUMERIC(15,2) NOT NULL,
     fees NUMERIC(10,2) DEFAULT 1.00,
-    status order_status DEFAULT 'pending',
+    status order_status DEFAULT 'PENDING',
     executed_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -182,7 +182,7 @@ CREATE TABLE credits (
     duration_months INTEGER NOT NULL,
     monthly_payment NUMERIC(10,2) NOT NULL,
     remaining_balance NUMERIC(15,2) NOT NULL,
-    status credit_status DEFAULT 'active',
+    status credit_status DEFAULT 'ACTIVE',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,

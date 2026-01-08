@@ -71,7 +71,6 @@ export class MessagesController {
 
   // GET /api/messages/check-open/:clientId - Vérifier si un client a une conversation ouverte
   @Get('check-open/:clientId')
-  @Roles('advisor', 'director')
   async checkOpenConversation(@Param('clientId') clientId: string) {
     return this.messagesService.checkOpenConversation(clientId);
   }

@@ -16,7 +16,7 @@
 		"dev:next": "npm run dev --workspace=Interface/web/next",
 		"dev:nuxt": "npm run dev --workspace=Interface/web/nuxt",
 		"dev:1": "concurrently \"npm run dev:express\" \"npm run dev:next\"",
-		"dev:2": "concurrently \"npm run dev:nestjs\" \"npm run dev:nuxt\"",
+		"dev:2": "concurrently \"npm run dev:nestjs\" \"npm run dev:next\"",
 		"install:all": "npm install && npm install --workspaces",
 		"docker:up": "docker compose up -d --wait",
 		"docker:down": "docker compose down",

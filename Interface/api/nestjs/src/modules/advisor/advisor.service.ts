@@ -71,18 +71,76 @@ export class AdvisorService {
 
   async getPendingTransactions(advisorId: string) {
     try {
-      const pendingTransactions = await this.transactionRepository.findByStatus(TransactionStatus.PENDING);
+      const pendingTransactions = await this.transactionRepository.findByStatus('PENDING');
 
-      return pendingTransactions.map(transaction => ({
-        id: transaction.getId().getValue(),
-        fromAccountId: transaction.getFromAccountId()?.value || null,
-        toAccountId: transaction.getToAccountId()?.value || null,
-        amount: transaction.getAmount().amount,
-        type: transaction.getType(),
-        status: transaction.getStatus(),
-        description: transaction.getDescription(),
-        createdAt: transaction.getCreatedAt(),
-      }));
+      const transactionsData = [];
+      
+      for (const transaction of pendingTransactions) {
+        let sourceAccount: any = undefined;
+        let destinationAccount: any = undefined;
+
+        const fromId = transaction.getFromAccountId()?.value;
+        const toId = transaction.getToAccountId()?.value;
+
+        // Récupérer les infos du compte source
+        if (fromId) {
+          const acc = await this.accountRepository.findById(transaction.getFromAccountId()!);
+          if (acc) {
+            const user = await this.userRepository.findById(acc.userId);
+            sourceAccount = {
+              id: acc.id.value,
+              accountNumber: acc.id.value,
+              iban: acc.iban.formatted,
+              accountType: acc.accountType,
+              user: user ? {
+                id: user.id.value,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email.value,
+              } : undefined,
+            };
+          }
+        }
+
+        // Récupérer les infos du compte destination (si ce n'est pas un transfert externe)
+        if (toId) {
+          const acc = await this.accountRepository.findById(transaction.getToAccountId()!);
+          if (acc) {
+            const user = await this.userRepository.findById(acc.userId);
+            destinationAccount = {
+              id: acc.id.value,
+              accountNumber: acc.id.value,
+              iban: acc.iban.formatted,
+              accountType: acc.accountType,
+              user: user ? {
+                id: user.id.value,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email.value,
+              } : undefined,
+            };
+          }
+        }
+
+        transactionsData.push({
+          id: transaction.getId().getValue(),
+          fromAccountId: fromId,
+          toAccountId: toId,
+          amount: transaction.getAmount().amount,
+          currency: transaction.getAmount().currency,
+          type: transaction.getType(),
+          status: transaction.getStatus(),
+          description: transaction.getDescription(),
+          createdAt: transaction.getCreatedAt(),
+          sourceAccount,
+          destinationAccount,
+        });
+      }
+
+      return {
+        success: true,
+        data: transactionsData,
+      };
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des transactions en attente');
     }
@@ -106,9 +164,12 @@ export class AdvisorService {
       await this.transactionRepository.update(transaction);
 
       return {
+        success: true,
         message: 'Transaction approuvée avec succès',
-        transactionId: transaction.getId().getValue(),
-        status: transaction.getStatus(),
+        data: {
+          transactionId: transaction.getId().getValue(),
+          status: transaction.getStatus(),
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
@@ -131,23 +192,27 @@ export class AdvisorService {
         throw new BadRequestException('Seules les transactions en attente peuvent être rejetées');
       }
 
-      // Reject transaction
-      transaction.reject();
-      await this.transactionRepository.update(transaction);
-
-      // If there was a debit from source account, refund it
-      if (transaction.getFromAccountId()) {
-        const fromAccount = await this.accountRepository.findById(transaction.getFromAccountId()!);
+      // If there was a debit from source account, refund it BEFORE rejecting
+      const fromAccountId = transaction.getFromAccountId();
+      if (fromAccountId) {
+        const fromAccount = await this.accountRepository.findById(fromAccountId);
         if (fromAccount) {
           fromAccount.credit(transaction.getAmount());
           await this.accountRepository.save(fromAccount);
         }
       }
 
+      // Reject transaction
+      transaction.reject();
+      await this.transactionRepository.update(transaction);
+
       return {
+        success: true,
         message: 'Transaction rejetée avec succès',
-        transactionId: transaction.getId().getValue(),
-        status: transaction.getStatus(),
+        data: {
+          transactionId: transaction.getId().getValue(),
+          status: transaction.getStatus(),
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {

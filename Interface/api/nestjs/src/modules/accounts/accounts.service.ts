@@ -26,6 +26,8 @@ export class AccountsService {
         userId,
         accountName: createAccountDto.accountName,
         accountType: createAccountDto.accountType,
+        initialDeposit: createAccountDto.initialDeposit,
+        currency: createAccountDto.currency,
       });
 
       if (!result.success) {
@@ -73,10 +75,12 @@ export class AccountsService {
       data: {
         id: account.id.value,
         userId: account.userId.value,
-        iban: account.iban.value,
-        accountName: account.accountName,
-        accountType: account.accountType,
+        iban: account.iban.formatted,
+        name: account.accountName,
+        type: account.accountType,
         balance: account.balance.amount,
+        currency: account.balance.currency,
+        interestRate: account.interestRate,
         isActive: account.isActive,
         createdAt: account.createdAt,
         updatedAt: account.updatedAt,
@@ -93,10 +97,12 @@ export class AccountsService {
       success: true,
       data: accounts.map(account => ({
         id: account.id.value,
-        iban: account.iban.value,
-        accountName: account.accountName,
-        accountType: account.accountType,
+        iban: account.iban.formatted,
+        name: account.accountName,
+        type: account.accountType,
         balance: account.balance.amount,
+        currency: account.balance.currency,
+        interestRate: account.interestRate,
         isActive: account.isActive,
         createdAt: account.createdAt,
       })),

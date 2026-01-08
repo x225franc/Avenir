@@ -17,21 +17,26 @@ export class TransactionsService {
 
   async transfer(userId: string, transferDto: TransferDto) {
     try {
-      // 1. Trouver les comptes par IBAN pour récupérer les IDs
-      const fromAccount = await this.accountRepository.findByIban(transferDto.fromIban);
-      const toAccount = await this.accountRepository.findByIban(transferDto.toIban);
+      // 1. Vérifier que le compte source appartient à l'utilisateur
+      const sourceAccount = await this.accountRepository.findById(
+        new AccountId(transferDto.sourceAccountId)
+      );
 
-      if (!fromAccount) {
+      if (!sourceAccount) {
         throw new NotFoundException('Compte source non trouvé');
       }
 
-      if (!toAccount) {
-        throw new NotFoundException('Compte destinataire non trouvé');
+      if (sourceAccount.userId.value !== userId) {
+        throw new BadRequestException('Vous n\'êtes pas autorisé à effectuer ce transfert');
       }
 
-      // 2. Vérifier que l'utilisateur est propriétaire du compte source
-      if (fromAccount.userId.value !== userId) {
-        throw new BadRequestException('Vous n\'êtes pas autorisé à effectuer ce transfert');
+      // 2. Vérifier que le compte destination existe
+      const destinationAccount = await this.accountRepository.findById(
+        new AccountId(transferDto.destinationAccountId)
+      );
+
+      if (!destinationAccount) {
+        throw new NotFoundException('Compte destinataire non trouvé');
       }
 
       // 3. Utiliser le Use Case TransferMoney
@@ -41,10 +46,10 @@ export class TransactionsService {
       );
 
       const result = await transferUseCase.execute({
-        sourceAccountId: fromAccount.id.value,
-        destinationAccountId: toAccount.id.value,
+        sourceAccountId: transferDto.sourceAccountId,
+        destinationAccountId: transferDto.destinationAccountId,
         amount: transferDto.amount,
-        currency: 'EUR',
+        currency: transferDto.currency,
         description: transferDto.description,
       });
 
@@ -81,7 +86,7 @@ export class TransactionsService {
         amount: transaction.getAmount().amount,
         currency: transaction.getAmount().currency,
         type: transaction.getType(),
-        status: transaction.getStatus().toLowerCase(),
+        status: transaction.getStatus(),
         description: transaction.getDescription(),
         createdAt: transaction.getCreatedAt(),
         updatedAt: transaction.getUpdatedAt(),
@@ -133,7 +138,7 @@ export class TransactionsService {
         amount: transaction.getAmount().amount,
         currency: transaction.getAmount().currency,
         type: transaction.getType(),
-        status: transaction.getStatus().toLowerCase(),
+        status: transaction.getStatus(),
         description: transaction.getDescription(),
         createdAt: transaction.getCreatedAt(),
         updatedAt: transaction.getUpdatedAt(),
@@ -164,7 +169,7 @@ export class TransactionsService {
   async transferToExternalIban(userId: string, ibanTransferDto: IbanTransferDto) {
     try {
       // 1. Vérifier que le compte source existe et appartient à l'utilisateur
-      const fromAccount = await this.accountRepository.findById(new AccountId(ibanTransferDto.fromAccountId));
+      const fromAccount = await this.accountRepository.findById(new AccountId(ibanTransferDto.sourceAccountId));
 
       if (!fromAccount) {
         throw new NotFoundException('Compte source non trouvé');
@@ -176,12 +181,12 @@ export class TransactionsService {
 
       // 2. Validation IBAN
       const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,}/;
-      if (!ibanRegex.test(ibanTransferDto.externalIban.toUpperCase())) {
+      if (!ibanRegex.test(ibanTransferDto.destinationIban.toUpperCase())) {
         throw new BadRequestException('Format IBAN invalide');
       }
 
       // 3. Créer l'objet Money pour le montant
-      const amount = new Money(ibanTransferDto.amount, 'EUR');
+      const amount = new Money(ibanTransferDto.amount, ibanTransferDto.currency);
 
       // 4. Vérifier que le compte source a assez de fonds
       if (!fromAccount.hasEnoughBalance(amount)) {
@@ -197,13 +202,10 @@ export class TransactionsService {
         null, // Pas de compte destination pour un IBAN externe
         amount,
         TransactionType.TRANSFER_IBAN,
-        ibanTransferDto.description || `Virement vers ${ibanTransferDto.externalIban.toUpperCase()}`,
+        ibanTransferDto.description || `Virement vers ${ibanTransferDto.destinationIban.toUpperCase()}`,
       );
 
-      // 7. Marquer la transaction comme complétée
-      transaction.complete();
-
-      // 8. Sauvegarder
+      // 7. Sauvegarder (transaction reste en PENDING pour validation par un conseiller)
       await this.accountRepository.save(fromAccount);
       await this.transactionRepository.save(transaction);
 
@@ -213,13 +215,13 @@ export class TransactionsService {
         message: 'Virement externe effectué avec succès',
         data: {
           transactionId: transaction.getId().getValue(),
-          sourceAccountId: ibanTransferDto.fromAccountId,
+          sourceAccountId: ibanTransferDto.sourceAccountId,
           toAccountId: null,
-          destinationIban: ibanTransferDto.externalIban.toUpperCase(),
+          destinationIban: ibanTransferDto.destinationIban.toUpperCase(),
           amount: ibanTransferDto.amount,
-          currency: 'EUR',
+          currency: ibanTransferDto.currency,
           description: ibanTransferDto.description,
-          status: 'completed',
+          status: transaction.getStatus(),
           createdAt: transaction.getCreatedAt(),
         },
       };
