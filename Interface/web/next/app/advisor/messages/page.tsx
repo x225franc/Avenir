@@ -125,29 +125,34 @@ export default function AdvisorMessagesPage() {
         newSocket.on("message:new", (data: { conversationId: string; message: Message }) => {
             const currentSelected = selectedConversationRef.current;
             
-            // Ignorer les messages qu'on a envoyé soi-même (déjà ajoutés localement)
             if (user && data.message.fromUserId === user.id.toString()) {
                 return;
             }
 
-            setConversations((prev) =>
-                prev.map((conv) => {
-                    if (conv.id === data.conversationId) {
-                        return {
-                            ...conv,
-                            messages: [...conv.messages, data.message],
-                            unreadCount: conv.id === currentSelected?.id ? 0 : conv.unreadCount + 1,
-                            lastMessageAt: data.message.createdAt,
-                        };
-                    }
-                    return conv;
-                })
-            );
+            setConversations((prev) => {
+                const convIndex = prev.findIndex((c) => c.id === data.conversationId);
+                
+                // Si conversation inconnue, ne rien faire (attendre conversation:new)
+                if (convIndex === -1) return prev;
+
+                const updated = [...prev];
+                updated[convIndex] = {
+                    ...updated[convIndex],
+                    messages: [...updated[convIndex].messages, data.message],
+                    unreadCount: updated[convIndex].id === currentSelected?.id ? 0 : updated[convIndex].unreadCount + 1,
+                    lastMessageAt: data.message.createdAt,
+                };
+                return updated;
+            });
 
             if (currentSelected?.id === data.conversationId) {
                 setSelectedConversation((prev) => {
                     if (!prev) return null;
-                    return { ...prev, messages: [...prev.messages, data.message], lastMessageAt: data.message.createdAt };
+                    return { 
+                        ...prev, 
+                        messages: [...prev.messages, data.message], 
+                        lastMessageAt: data.message.createdAt 
+                    };
                 });
                 messageApi.markAsRead(data.conversationId, parseInt(user.id));
             }

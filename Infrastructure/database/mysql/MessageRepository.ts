@@ -267,9 +267,10 @@ export class MessageRepository implements IMessageRepository {
 		const connection = await pool.getConnection();
 
 		try {
-			// Chercher les conversations où l'advisor apparaît (en tant que destinataire OU expéditeur)
+			// Récupérer les conversations où cet advisor apparaît (from_user_id OU to_user_id)
+			// Puis filtrer via getConversationInfo pour garder celles où il est actuellement assigné
 			const [rows] = await connection.query<(MessageRow & RowDataPacket)[]>(
-				`SELECT conversation_id, MAX(created_at) as last_message_at
+				`SELECT DISTINCT conversation_id, MAX(created_at) as last_message_at
 				FROM messages 
 				WHERE from_user_id = ? OR to_user_id = ?
 				GROUP BY conversation_id
@@ -277,22 +278,25 @@ export class MessageRepository implements IMessageRepository {
 				[advisorId.value, advisorId.value]
 			);
 
-		const conversations: Conversation[] = [];
-		for (const row of rows) {
-			const conv = await this.getConversationById(row.conversation_id);
-			// Garder les conversations où :
-			// 1. Cet advisor est actuellement assigné OU
-			// 2. La conversation est fermée ET l'advisor y a participé (apparaît dans from_user_id)
-			if (conv) {
-				const isCurrentAdvisor = conv.getAdvisorId()?.value === advisorId.value;
-				const hasParticipated = conv.getIsClosed() && 
-					conv.getMessages().some(m => m.getFromUserId()?.value === advisorId.value);
-				
-				if (isCurrentAdvisor || hasParticipated) {
-					conversations.push(conv);
+			const conversations: Conversation[] = [];
+			for (const row of rows) {
+				const conv = await this.getConversationById(row.conversation_id);
+				if (conv) {
+					const isCurrentlyAssigned = conv.getAdvisorId()?.value === advisorId.value;
+					const isClosedAndParticipated = conv.getIsClosed() && 
+						conv.getMessages().some(m => 
+							m.getFromUserId()?.value === advisorId.value || 
+							m.getToUserId()?.value === advisorId.value
+						);
+					
+					// Garder si advisor actuellement assigné OU si conversation fermée avec participation
+					if (isCurrentlyAssigned || isClosedAndParticipated) {
+						conversations.push(conv);
+					}
 				}
 			}
-		}			return conversations;
+			
+			return conversations;
 		} finally {
 			connection.release();
 		}
