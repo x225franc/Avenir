@@ -25,18 +25,16 @@ export default function Error({ error, reset }: ErrorProps) {
 		<div className="min-h-screen bg-linear-to-br from-red-50 to-rose-100 flex items-center justify-center p-4">
 			<div className="max-w-2xl mx-auto text-center">
 				<div className="bg-white rounded-xl shadow-2xl p-8 border border-red-100">
-				{/* Icône d'erreur */}
 				<div className="mb-6">
 					<div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
 						<i className="fi fi-rr-triangle-warning text-red-600 text-6xl"></i>
 					</div>
-				</div>					{/* Titre */}
+				</div>					
 					<h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-2">
 						<i className="fi fi-rr-exclamation"></i>
 						Erreur Serveur
 					</h1>
 
-					{/* Message */}
 					<div className="mb-6">
 						<p className="text-lg text-gray-600 mb-4">
 							Une erreur inattendue s'est produite. Nous nous excusons pour la gêne occasionnée.
@@ -57,7 +55,6 @@ export default function Error({ error, reset }: ErrorProps) {
 						)}
 					</div>
 
-					{/* Actions */}
 					<div className="space-y-4">
 						<div className="flex flex-col sm:flex-row gap-4 justify-center">
 							<button

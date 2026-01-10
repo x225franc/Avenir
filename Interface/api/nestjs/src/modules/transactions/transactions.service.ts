@@ -57,7 +57,6 @@ export class TransactionsService {
         throw new BadRequestException(result.error || 'Erreur lors du transfert');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Transfert effectué avec succès',
@@ -76,7 +75,6 @@ export class TransactionsService {
   async findByUserId(userId: string) {
     const transactions = await this.transactionRepository.findByUserId(userId);
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       data: transactions.map(transaction => ({
@@ -128,7 +126,6 @@ export class TransactionsService {
   async findByAccountId(accountId: string) {
     const transactions = await this.transactionRepository.findByAccountId(accountId);
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       data: transactions.map(transaction => ({
@@ -153,7 +150,6 @@ export class TransactionsService {
       throw new BadRequestException('Format IBAN invalide');
     }
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       data: {
@@ -209,7 +205,6 @@ export class TransactionsService {
       await this.accountRepository.save(fromAccount);
       await this.transactionRepository.save(transaction);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Virement externe effectué avec succès',

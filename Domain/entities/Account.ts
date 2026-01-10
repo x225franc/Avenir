@@ -34,7 +34,6 @@ export class Account {
 		const now = new Date();
 		return new Account({
 			...props,
-			// ID temporaire (sera remplacé par l'auto_increment de MySQL)
 			id: new AccountId("0"),
 			iban: IBAN.generate(),
 			balance: Money.zero(),
@@ -89,7 +88,6 @@ export class Account {
 		return this.props.updatedAt;
 	}
 
-	// Business methods
 	public rename(newName: string): void {
 		if (!newName || newName.trim().length === 0) {
 			throw new Error("Account name cannot be empty");

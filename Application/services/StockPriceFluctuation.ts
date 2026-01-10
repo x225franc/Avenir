@@ -28,7 +28,7 @@ export class StockPriceFluctuationService extends EventEmitter {
 
 		console.log("🚀 Démarrage du service de fluctuation des prix...");
 		
-		// Première mise à jour immédiate
+		// Première mise à jour 
 		this.updateAllStockPrices();
 
 		// Puis mise à jour toutes les 30 secondes
@@ -111,7 +111,7 @@ export class StockPriceFluctuationService extends EventEmitter {
 				[stockId, finalPrice]
 			);
 
-			// Log détaillé (optionnel, commenter en production)
+			// Log
 			const variationPercent = (variation * 100).toFixed(2);
 			const arrow = variation >= 0 ? "📈" : "📉";
 			console.log(
@@ -129,7 +129,6 @@ export class StockPriceFluctuationService extends EventEmitter {
 					timestamp: new Date().toISOString(),
 				});
 			} catch (err) {
-				// Guard: EventEmitter errors shouldn't break the flow
 				console.debug("Emitter error:", err);
 			}
 		} catch (error) {

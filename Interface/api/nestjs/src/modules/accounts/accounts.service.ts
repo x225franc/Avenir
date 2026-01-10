@@ -34,7 +34,6 @@ export class AccountsService {
         throw new BadRequestException(result.error || 'Erreur lors de la création du compte');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Compte créé avec succès',
@@ -69,7 +68,6 @@ export class AccountsService {
       throw new ForbiddenException('Accès interdit à ce compte');
     }
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       data: {
@@ -92,7 +90,6 @@ export class AccountsService {
     const userIdVO = UserId.fromString(userId);
     const accounts = await this.accountRepository.findByUserId(userIdVO);
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       data: accounts.map(account => ({
@@ -128,7 +125,6 @@ export class AccountsService {
     // save() gère à la fois create et update
     await this.accountRepository.save(account);
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       message: 'Compte mis à jour avec succès',
@@ -158,7 +154,6 @@ export class AccountsService {
 
     await this.accountRepository.delete(account.id);
 
-    // Format standardisé compatible avec Express
     return {
       success: true,
       message: 'Compte supprimé avec succès',

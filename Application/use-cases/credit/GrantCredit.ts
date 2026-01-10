@@ -8,10 +8,6 @@ import { IAccountRepository } from "../../../Domain/repositories/IAccountReposit
 import { IUserRepository } from "../../../Domain/repositories/IUserRepository";
 import { CreditCalculationService } from "../../services/CreditCalculationService";
 
-/**
- * Use Case : GrantCredit
- * Permet à un conseiller d'octroyer un crédit à un client
- */
 export class GrantCredit {
 	constructor(
 		private creditRepository: ICreditRepository,

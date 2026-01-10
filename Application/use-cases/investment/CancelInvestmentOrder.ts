@@ -14,17 +14,6 @@ export interface CancelInvestmentOrderResult {
 	errors: string[];
 }
 
-/**
- * Use Case : Annuler un ordre d'investissement
- *
- * Responsabilités:
- * - Valider les données d'entrée
- * - Vérifier que l'ordre existe
- * - Vérifier que l'utilisateur est propriétaire de l'ordre
- * - Vérifier que l'ordre peut être annulé (statut pending)
- * - Annuler l'ordre
- * - Rembourser les fonds si c'était un ordre d'achat
- */
 export class CancelInvestmentOrder {
 	constructor(
 		private investmentOrderRepository: IInvestmentOrderRepository,

@@ -125,29 +125,34 @@ export default function AdvisorMessagesPage() {
         newSocket.on("message:new", (data: { conversationId: string; message: Message }) => {
             const currentSelected = selectedConversationRef.current;
             
-            // Ignorer les messages qu'on a envoyé soi-même (déjà ajoutés localement)
             if (user && data.message.fromUserId === user.id.toString()) {
                 return;
             }
 
-            setConversations((prev) =>
-                prev.map((conv) => {
-                    if (conv.id === data.conversationId) {
-                        return {
-                            ...conv,
-                            messages: [...conv.messages, data.message],
-                            unreadCount: conv.id === currentSelected?.id ? 0 : conv.unreadCount + 1,
-                            lastMessageAt: data.message.createdAt,
-                        };
-                    }
-                    return conv;
-                })
-            );
+            setConversations((prev) => {
+                const convIndex = prev.findIndex((c) => c.id === data.conversationId);
+                
+                // Si conversation inconnue, ne rien faire (attendre conversation:new)
+                if (convIndex === -1) return prev;
+
+                const updated = [...prev];
+                updated[convIndex] = {
+                    ...updated[convIndex],
+                    messages: [...updated[convIndex].messages, data.message],
+                    unreadCount: updated[convIndex].id === currentSelected?.id ? 0 : updated[convIndex].unreadCount + 1,
+                    lastMessageAt: data.message.createdAt,
+                };
+                return updated;
+            });
 
             if (currentSelected?.id === data.conversationId) {
                 setSelectedConversation((prev) => {
                     if (!prev) return null;
-                    return { ...prev, messages: [...prev.messages, data.message], lastMessageAt: data.message.createdAt };
+                    return { 
+                        ...prev, 
+                        messages: [...prev.messages, data.message], 
+                        lastMessageAt: data.message.createdAt 
+                    };
                 });
                 messageApi.markAsRead(data.conversationId, parseInt(user.id));
             }
@@ -369,15 +374,11 @@ export default function AdvisorMessagesPage() {
         );
     }
 
-    // console.log(advisors);
-    // console.log(user.id);
 
     return (
         <div className="flex flex-col h-screen bg-gray-100 overflow-hidden font-sans">
-            {/* Main Wrapper */}
             <div className="flex-1 flex gap-6 max-w-[1600px] w-full mx-auto md:p-6 p-0 h-full">
                 
-                {/* LEFT SIDEBAR - Listes des conversations */}
                 <div className={`w-full md:w-80 lg:w-96 flex flex-col bg-white md:rounded-2xl md:shadow-xl border border-gray-200 overflow-hidden h-full ${selectedConversation ? 'hidden md:flex' : 'flex'}`}>
                     
                     {/* Header Sidebar */}
@@ -419,7 +420,6 @@ export default function AdvisorMessagesPage() {
                             </div>
                         )}
 
-                        {/* Section: Mes conversations */}
                         {myConversations.length > 0 && (
                             <div className="space-y-1">
                                 <h3 className="px-3 text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">
@@ -440,7 +440,6 @@ export default function AdvisorMessagesPage() {
                             </div>
                         )}
 
-                        {/* Section: Historique */}
                         {closedConversations.length > 0 && (
                             <div className="space-y-1">
                                 <h3 className="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
@@ -459,7 +458,6 @@ export default function AdvisorMessagesPage() {
                             </div>
                         )}
 
-                        {/* Empty State */}
                         {conversations.length === 0 && (
                             <div className="flex flex-col items-center justify-center h-full text-gray-400 p-6">
                                 <Icons.ChatBubble />
@@ -469,11 +467,9 @@ export default function AdvisorMessagesPage() {
                     </div>
                 </div>
 
-                {/* RIGHT SIDE - Chat Area */}
                 <div className={`flex-1 flex flex-col bg-white md:rounded-2xl md:shadow-xl border border-gray-200 overflow-hidden h-full ${!selectedConversation ? 'hidden md:flex' : 'flex'}`}>
                     {selectedConversation ? (
                         <>
-                            {/* Header Chat */}
                             <div className="h-16 border-b border-gray-100 flex items-center justify-between px-6 bg-white/80 backdrop-blur-sm z-10 sticky top-0 shrink-0">
                                 <div className="flex items-center gap-3">
                                     <button onClick={() => setSelectedConversation(null)} className="md:hidden text-gray-500">
@@ -494,7 +490,6 @@ export default function AdvisorMessagesPage() {
                                     </div>
                                 </div>
 
-                                {/* Actions Toolbar */}
                                 <div className="flex items-center gap-2">
                                     {!selectedConversation.isAssigned ? (
                                         <button onClick={handleAssignToMe} className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 text-xs font-bold transition-all shadow-sm shadow-emerald-200">
@@ -515,7 +510,6 @@ export default function AdvisorMessagesPage() {
                                 </div>
                             </div>
 
-                            {/* Messages List */}
                             <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-white relative">
                                 {selectedConversation.messages.map((msg, idx) => {
                                     const isMe = msg.fromUserId === user?.id.toString();
@@ -560,7 +554,6 @@ export default function AdvisorMessagesPage() {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            {/* Input Area */}
                             <div className="p-4 md:p-6 bg-white border-t border-gray-100 z-10 shrink-0">
                                 {selectedConversation.isClosed ? (
                                     <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-center gap-2 text-gray-500 text-sm">
@@ -605,7 +598,6 @@ export default function AdvisorMessagesPage() {
                 </div>
             </div>
 
-            {/* Transfer Modal */}
             {showTransferModal && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md animate-in fade-in zoom-in-95 duration-200">
@@ -618,7 +610,6 @@ export default function AdvisorMessagesPage() {
                             className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3 mb-6"
                         >
                             <option value="">Sélectionner un conseiller...</option>
-                            {/* On convertit les deux ID en String pour être sûr que la comparaison fonctionne */}
                             {advisors
                                 .filter((a) => String(a.id) !== String(user?.id))
                                 .map((advisor) => (
@@ -643,7 +634,6 @@ export default function AdvisorMessagesPage() {
     );
 }
 
-// Sub-component for clean rendering of list items
 function ConversationItem({ conv, isActive, onClick, clientName, statusColor = "", textColor = "text-gray-900", activeColor = "", isClosed = false }: any) {
     const lastMsg = conv.messages[conv.messages.length - 1];
     

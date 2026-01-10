@@ -61,16 +61,6 @@ export interface PositionInfo {
 	gainLossPercentage: number;
 }
 
-/**
- * Use Case : Récupérer le portefeuille d'un utilisateur
- *
- * Responsabilités:
- * - Récupérer tous les ordres exécutés de l'utilisateur
- * - Calculer les positions actuelles (achats - ventes)
- * - Récupérer les prix actuels des actions
- * - Calculer les gains/pertes pour chaque position
- * - Construire le portefeuille complet avec valorisation
- */
 export class GetUserPortfolio {
 	constructor(
 		private investmentOrderRepository: IInvestmentOrderRepository,

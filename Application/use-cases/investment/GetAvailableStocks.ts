@@ -27,14 +27,6 @@ export interface StockInfo {
 	};
 }
 
-/**
- * Use Case : Récupérer les actions disponibles
- *
- * Responsabilités:
- * - Récupérer toutes les actions disponibles à la négociation
- * - Formater les données pour l'interface utilisateur
- * - Inclure les informations sur les frais (1€ par transaction)
- */
 export class GetAvailableStocks {
 	constructor(
 		private stockRepository: IStockRepository,

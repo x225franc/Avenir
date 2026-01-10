@@ -213,10 +213,8 @@ export default function AdminInternalChatPage() {
         <div className="flex flex-col h-screen bg-gray-100 overflow-hidden font-sans">
             <div className="flex-1 flex gap-6 max-w-[1600px] w-full mx-auto md:p-6 p-0 h-full">
                 
-                {/* LEFT SIDEBAR - Liste des membres */}
                 <div className="w-full md:w-80 lg:w-96 flex flex-col bg-white md:rounded-2xl md:shadow-xl border border-gray-200 overflow-hidden h-full md:flex">
                     
-                    {/* Header Sidebar */}
                     <div className="p-5 border-b border-gray-100 bg-white sticky top-0 z-10 shrink-0">
                         <div className="flex items-center justify-between mb-4">
                             <h1 className="text-xl font-bold text-gray-900 tracking-tight">Direction</h1>
@@ -235,7 +233,6 @@ export default function AdminInternalChatPage() {
                         </div>
                     </div>
 
-                    {/* Liste Membres */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
                         {staffMembers.map((member) => (
                             <div key={member.id} className="p-3 flex items-center gap-3 rounded-xl hover:bg-gray-50 transition-colors cursor-default group">
@@ -261,15 +258,10 @@ export default function AdminInternalChatPage() {
                     </div>
                 </div>
 
-                {/* RIGHT SIDE - Chat Group */}
                 <div className="flex-1 flex flex-col bg-white md:rounded-2xl md:shadow-xl border border-gray-200 overflow-hidden h-full">
                     
-                    {/* Header Chat */}
                     <div className="h-16 border-b border-gray-100 flex items-center justify-between px-6 bg-white/80 backdrop-blur-sm z-10 sticky top-0 shrink-0">
                         <div className="flex items-center gap-3">
-                            {/* <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-                                <i className="flaticon-users text-lg"></i>
-                            </div> */}
                             <div>
                                 <h3 className="font-bold text-gray-900 text-sm">Canal Général</h3>
                                 <p className="text-xs text-gray-500">Discussion de groupe • Tous les membres</p>
@@ -277,7 +269,6 @@ export default function AdminInternalChatPage() {
                         </div>
                     </div>
 
-                    {/* Messages Area */}
                     <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-slate-50 relative">
                         {messages.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -321,7 +312,6 @@ export default function AdminInternalChatPage() {
                             })
                         )}
 
-                        {/* Typing Indicator */}
                         {typingUsers.size > 0 && (
                             <div className="flex items-center gap-2 ml-2">
                                 <div className="bg-gray-100 rounded-full px-3 py-2 shadow-sm border border-gray-200">
@@ -338,7 +328,6 @@ export default function AdminInternalChatPage() {
                         <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input Area */}
                     <div className="p-4 md:p-6 bg-white border-t border-gray-100 z-10 shrink-0">
                         <form onSubmit={handleSendMessage} className="relative flex items-center gap-3">
                             <input

@@ -93,7 +93,6 @@ export function NotificationModal({
 		<div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 			<div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in fade-in duration-200">
 				<div className="text-center">
-					{/* Icon */}
 					<div className={`w-16 h-16 ${styles.bgColor} rounded-full flex items-center justify-center mx-auto mb-4`}>
 						<svg
 							className={`w-8 h-8 ${styles.iconColor}`}
@@ -105,17 +104,14 @@ export function NotificationModal({
 						</svg>
 					</div>
 
-					{/* Title */}
 					<h3 className={`text-lg font-semibold ${styles.titleColor} mb-2`}>
 						{title}
 					</h3>
 
-					{/* Message */}
 					<p className={`${styles.messageColor} mb-6`}>
 						{message}
 					</p>
 
-					{/* Actions */}
 					<div className="flex flex-col space-y-3">
 						<button
 							onClick={onClose}

@@ -245,7 +245,6 @@ export default function AdminInvestmentsPage() {
 	return (
 		<div className='min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8'>
 			<div className='max-w-7xl mx-auto'>
-				{/* Header */}
 				<div className='bg-white rounded-lg shadow-lg p-6 mb-8'>
 					<div className='flex items-center justify-between'>
 						<div>
@@ -266,7 +265,6 @@ export default function AdminInvestmentsPage() {
 					</div>
 				</div>
 
-				{/* Messages */}
 				{error && (
 					<div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg'>
 						<p className='text-red-800 flex items-center gap-2'>
@@ -285,7 +283,6 @@ export default function AdminInvestmentsPage() {
 					</div>
 				)}
 
-				{/* Bouton Créer une action */}
 				<div className='mb-8'>
 					<button
 						onClick={() => setShowCreateForm(!showCreateForm)}
@@ -295,7 +292,6 @@ export default function AdminInvestmentsPage() {
 					</button>
 				</div>
 
-				{/* Formulaire de création */}
 				{showCreateForm && (
 					<div className='bg-white rounded-lg shadow-lg p-6 mb-8'>
 						<h2 className='text-xl font-bold text-gray-800 mb-6'>
@@ -304,7 +300,6 @@ export default function AdminInvestmentsPage() {
 
 						<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-								{/* Symbole */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Symbole de l&apos;action *
@@ -324,7 +319,6 @@ export default function AdminInvestmentsPage() {
 									)}
 								</div>
 
-								{/* Nom de l'entreprise */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Nom de l&apos;entreprise *
@@ -344,7 +338,6 @@ export default function AdminInvestmentsPage() {
 									)}
 								</div>
 
-								{/* Prix initial */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Prix initial (€) *
@@ -368,7 +361,6 @@ export default function AdminInvestmentsPage() {
 									</p>
 								</div>
 
-								{/* Disponibilité */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Disponibilité
@@ -386,7 +378,6 @@ export default function AdminInvestmentsPage() {
 								</div>
 							</div>
 
-							{/* Boutons */}
 							<div className='flex gap-4 pt-4 border-t'>
 								<button
 									type='submit'
@@ -410,7 +401,6 @@ export default function AdminInvestmentsPage() {
 					</div>
 				)}
 
-				{/* Liste des actions */}
 				<div className='bg-white rounded-lg shadow-lg p-6'>
 					<h2 className='text-xl font-bold text-gray-800 mb-6'>
 						Actions Existantes ({stocks.length})
@@ -556,7 +546,6 @@ export default function AdminInvestmentsPage() {
 					)}
 				</div>
 
-				{/* Info Rules */}
 				<div className='bg-linear-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg mt-5 p-6 mb-8'>
 					<h3 className='text-lg font-bold text-blue-900 mb-4 flex items-center'>
 						<i className='fi fi-rr-bulb text-2xl mr-2'></i>
@@ -595,7 +584,6 @@ export default function AdminInvestmentsPage() {
 					</div>
 				</div>
 
-				{/* Info importante */}
 				<div className='mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6'>
 					<h3 className='text-blue-900 font-semibold mb-2'>
 						<i className="fi fi-rr-info"></i> Informations importantes

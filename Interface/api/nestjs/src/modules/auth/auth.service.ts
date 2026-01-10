@@ -45,7 +45,6 @@ export class AuthService {
         throw new BadRequestException(result.error || 'Erreur lors de l\'inscription');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Inscription réussie ! Vérifiez votre email.',
@@ -113,7 +112,6 @@ export class AuthService {
         throw new BadRequestException(result.error || 'Token de vérification invalide ou expiré');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: result.message || 'Email vérifié avec succès',
@@ -137,7 +135,6 @@ export class AuthService {
       await requestPasswordResetUseCase.execute(forgotPasswordDto.email);
 
       // Ne pas révéler si l'email existe ou non (sécurité)
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.',
@@ -161,7 +158,6 @@ export class AuthService {
         resetPasswordDto.newPassword
       );
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Mot de passe réinitialisé avec succès',

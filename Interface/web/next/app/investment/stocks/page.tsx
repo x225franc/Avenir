@@ -442,7 +442,6 @@ export default function StocksPage() {
 	return (
 		<div className='min-h-screen bg-gray-50 py-12'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-				{/* Header */}
 				<div className='text-center mb-12'>
 					<h1 className='text-4xl font-bold text-gray-900 mb-4'>
 						Actions Disponibles
@@ -452,7 +451,6 @@ export default function StocksPage() {
 					</p>
 				</div>
 
-				{/* Error Alert */}
 				{error && (
 					<div className='mb-8 bg-red-50 border border-red-200 rounded-lg p-4'>
 						<div className='flex'>
@@ -477,7 +475,6 @@ export default function StocksPage() {
 					</div>
 				)}
 
-				{/* Stocks Grid */}
 				{stocks.length > 0 ? (
 					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
 						{stocks.map((stock) => (
@@ -486,7 +483,6 @@ export default function StocksPage() {
 								className='bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden'
 							>
 								<div className='p-6'>
-									{/* Stock Header */}
 									<div className='flex items-center justify-between mb-4'>
 										<div>
 											<h3 className='text-lg font-bold text-gray-900'>
@@ -515,7 +511,6 @@ export default function StocksPage() {
 										</div>
 									</div>
 
-									{/* Price with variation indicator */}
 									<div className='mb-6'>
 										<div className='flex items-center gap-2'>
 											<div className='text-3xl font-bold text-gray-900'>
@@ -545,7 +540,6 @@ export default function StocksPage() {
 										</div>
 									</div>
 
-									{/* Fees Info */}
 									<div className='bg-blue-50 rounded-lg p-3 mb-6'>
 										<div className='flex items-center justify-between'>
 											<span className='text-sm font-medium text-blue-900'>
@@ -560,7 +554,6 @@ export default function StocksPage() {
 										</p>
 									</div>
 
-									{/* Action Buttons */}
 									<div className='space-y-2'>
 										{stock.isAvailable ? (
 											<button
@@ -596,12 +589,10 @@ export default function StocksPage() {
 				)}
 			</div>
 
-			{/* Modal de placement d'ordre intégrée */}
 			{showOrderModal && selectedStock && (
 				<div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
 					<div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
 						<div className="p-6">
-							{/* Header */}
 							<div className="flex items-center justify-between mb-6">
 								<h2 className="text-xl font-bold text-gray-900">
 									Placer un ordre
@@ -614,9 +605,7 @@ export default function StocksPage() {
 								</button>
 							</div>
 
-							{/* Formulaire de commande */}
 								<form onSubmit={handleSubmitOrder} className="space-y-6">
-									{/* Informations de l'action */}
 									<div className="bg-gray-50 rounded-lg p-4">
 										<div className="flex items-center justify-between">
 											<div>
@@ -632,7 +621,6 @@ export default function StocksPage() {
 										</div>
 									</div>
 
-									{/* Type d'ordre */}
 									<div>
 										<label className="block text-sm font-medium text-gray-700 mb-3">
 											Type d'ordre
@@ -672,7 +660,6 @@ export default function StocksPage() {
 										</div>
 									</div>
 
-									{/* Compte */}
 									<div>
 										<label className="block text-sm font-medium text-gray-700 mb-2">
 											Compte d'investissement
@@ -694,7 +681,6 @@ export default function StocksPage() {
 										</select>
 									</div>
 
-									{/* Quantité */}
 									<div>
 										<label className="block text-sm font-medium text-gray-700 mb-2">
 											Quantité
@@ -715,7 +701,6 @@ export default function StocksPage() {
 										)}
 									</div>
 
-									{/* Récapitulatif */}
 									<div className="bg-blue-50 rounded-lg p-4">
 										<h4 className="font-medium text-blue-900 mb-2">Récapitulatif</h4>
 										<div className="space-y-1 text-sm">
@@ -750,14 +735,12 @@ export default function StocksPage() {
 										</div>
 									</div>
 
-									{/* Erreur */}
 									{orderError && (
 										<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
 											{orderError}
 										</div>
 									)}
 
-									{/* Boutons */}
 									<div className="flex gap-3">
 										<button
 											type="button"
@@ -784,7 +767,6 @@ export default function StocksPage() {
 				</div>
 			)}
 
-			{/* Modal de notification */}
 			<NotificationModal
 				isOpen={showNotification}
 				type={notificationType}

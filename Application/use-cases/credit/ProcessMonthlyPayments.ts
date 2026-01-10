@@ -7,11 +7,6 @@ import { Money } from "../../../Domain/value-objects/Money";
 import { TransactionType } from "../../../Domain/enums/TransactionType";
 import { TransactionStatus } from "../../../Domain/enums/TransactionStatus";
 
-/**
- * Use Case : ProcessMonthlyPayments
- * Traite les paiements mensuels de tous les crédits actifs
- * À exécuter mensuellement via un cron job
- */
 export class ProcessMonthlyPayments {
 	constructor(
 		private creditRepository: ICreditRepository,

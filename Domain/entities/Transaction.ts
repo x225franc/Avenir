@@ -46,7 +46,6 @@ export class Transaction {
   }
 
   private validate(): void {
-    // For TRANSFER, both accounts must be present and different
     if (this.props.type === TransactionType.TRANSFER) {
       if (!this.props.fromAccountId || !this.props.toAccountId) {
         throw new Error(
@@ -60,26 +59,22 @@ export class Transaction {
       }
     }
 
-    // For DEPOSIT, only toAccountId should be present
     if (this.props.type === TransactionType.DEPOSIT) {
       if (!this.props.toAccountId) {
         throw new Error("Deposit requires toAccountId");
       }
     }
 
-    // For WITHDRAWAL, only fromAccountId should be present
     if (this.props.type === TransactionType.WITHDRAWAL) {
       if (!this.props.fromAccountId) {
         throw new Error("Withdrawal requires fromAccountId");
       }
     }
 
-    // Amount must be positive
     if (this.props.amount.amount <= 0) {
       throw new Error("Transaction amount must be positive");
     }
 
-    // Description length validation
     if (this.props.description && this.props.description.length > 500) {
       throw new Error("Description cannot exceed 500 characters");
     }

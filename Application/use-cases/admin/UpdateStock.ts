@@ -9,12 +9,6 @@ export interface UpdateStockDTO {
 	// Note: currentPrice n'est PAS modifiable par l'admin
 	// Le prix est calculé automatiquement par l'équilibre offre/demande
 }
-
-/**
- * Use Case: Mettre à jour une action
- * Le directeur peut modifier le symbole, le nom et la disponibilité
- * MAIS PAS le prix (qui est calculé automatiquement)
- */
 export class UpdateStock {
 	constructor(private readonly stockRepository: IStockRepository) {}
 

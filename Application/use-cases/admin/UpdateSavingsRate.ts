@@ -4,9 +4,6 @@ import { IUserRepository } from "@domain/repositories/IUserRepository";
 import { EmailService } from "@infrastructure/services/email.service";
 import { UserId } from "@domain/value-objects/UserId";
 
-/**
- * Use Case: Mettre à jour le taux d'épargne et notifier les clients
- */
 export class UpdateSavingsRate {
 	constructor(
 		private readonly bankSettingsRepository: IBankSettingsRepository,

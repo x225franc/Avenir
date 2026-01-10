@@ -104,7 +104,6 @@ export class User {
 		return this.props.updatedAt;
 	}
 
-	// Business methods
 	public setVerificationToken(token: string): void {
 		this.props.verificationToken = token;
 		this.props.updatedAt = new Date();
@@ -181,10 +180,8 @@ export class User {
 	}
 
 	public canAccessAccount(accountUserId: UserId): boolean {
-		// Les directeurs peuvent accéder à tous les comptes
 		if (this.isDirector()) return true;
 
-		// Les utilisateurs peuvent accéder à leurs propres comptes
 		return this.props.id.equals(accountUserId);
 	}
 

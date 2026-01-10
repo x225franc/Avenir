@@ -193,7 +193,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 	return (
 		<div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 p-8">
 			<div className="max-w-4xl mx-auto">
-				{/* Header */}
 				<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
 					<div className="flex items-center justify-between">
 						<div>
@@ -214,7 +213,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 					</div>
 				</div>
 
-				{/* Messages */}
 				{error && (
 					<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
 						<p className="text-red-800 flex items-center gap-2">
@@ -233,7 +231,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 					</div>
 				)}
 
-				{/* Info prix */}
 				<div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
 					<h3 className="text-blue-900 font-semibold mb-2 flex items-center gap-2">
 						<i className="fi fi-rr-bulb"></i>
@@ -248,14 +245,12 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 					</p>
 				</div>
 
-				{/* Formulaire d'édition */}
 				<div className="bg-white rounded-lg shadow-lg p-6">
 					<h2 className="text-xl font-bold text-gray-800 mb-6">
 						Informations Modifiables
 					</h2>
 
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-						{/* Symbole */}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">
 								Symbole de l&apos;action *
@@ -275,7 +270,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 							)}
 						</div>
 
-						{/* Nom de l'entreprise */}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">
 								Nom de l&apos;entreprise *
@@ -295,7 +289,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 							)}
 						</div>
 
-						{/* Disponibilité */}
 						<div className="border-t pt-6">
 							<label className="flex items-center space-x-3 cursor-pointer">
 								<input
@@ -315,7 +308,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 							</label>
 						</div>
 
-						{/* Boutons */}
 						<div className="flex gap-4 pt-6 border-t">
 							<button
 								type="submit"
@@ -334,7 +326,6 @@ export default function EditStockPage({ params }: EditStockPageProps) {
 					</form>
 				</div>
 
-				{/* Métadonnées */}
 				<div className="mt-8 bg-gray-50 rounded-lg p-6">
 					<h3 className="text-gray-800 font-semibold mb-4">Métadonnées</h3>
 					<div className="grid grid-cols-2 gap-4 text-sm">

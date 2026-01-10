@@ -142,7 +142,6 @@ export default function Header() {
 		<header className='bg-white shadow-md sticky top-0 z-50'>
 			<nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex justify-between items-center h-16'>
-					{/* Logo */}
 					<Link
 						href={navConfig?.dashboardPath || (user ? "/dashboard" : "/")}
 						className='flex items-center space-x-3'
@@ -179,7 +178,6 @@ export default function Header() {
 							)}
 						</div>
 					</Link>
-					{/* Navigation Links (desktop) */}
 					<div className='hidden lg:flex items-center space-x-8'>
 						{user && navConfig ? (
 							<>
@@ -214,12 +212,6 @@ export default function Header() {
 									);
 								})}
 								<div>
-									{/* <div className="text-sm text-gray-600">
-										
-										<div>
-											Bienvenue <b>{user.lastName}</b>
-										</div>
-									</div> */}
 									<button
 										onClick={handleLogout}
 										className={`px-4 py-2 text-white rounded-lg transition font-medium whitespace-nowrap ${
@@ -252,7 +244,6 @@ export default function Header() {
 						)}
 					</div>
 
-					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setIsMenuOpen(!isMenuOpen)}
 						className='lg:hidden p-2 rounded-lg hover:bg-gray-100 transition'
@@ -289,7 +280,6 @@ export default function Header() {
 					</button>
 				</div>
 
-				{/* Mobile Menu */}
 				{isMenuOpen && (
 					<div className='lg:hidden border-t border-gray-100 py-4 space-y-3'>
 						{user && navConfig ? (

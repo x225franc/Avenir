@@ -101,7 +101,6 @@ export class Conversation {
 		return this.createdAt;
 	}
 
-	// Business logic
 	isAssigned(): boolean {
 		return this.advisorId !== null;
 	}

@@ -5,7 +5,6 @@ export default function Footer() {
 		<footer className="bg-gray-900 text-gray-300 py-12">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="grid md:grid-cols-4 gap-8">
-					{/* Colonne 1 : À propos */}
 					<div>
 						<h3 className="text-white font-bold text-lg mb-4">
 							Banque AVENIR
@@ -37,7 +36,6 @@ export default function Footer() {
 						</ul>
 					</div>
 
-					{/* Colonne 4 : Légal & Support */}
 					<div>
 						<h4 className="text-white font-semibold mb-4">Section 3</h4>
 						<ul className="space-y-2 text-sm">
@@ -50,7 +48,6 @@ export default function Footer() {
 					</div>
 				</div>
 
-				{/* Ligne de séparation */}
 				<div className="border-t border-gray-800 mt-5 pt-5">
 					<div className="flex flex-col md:flex-row justify-between items-center">
 						<p className="text-sm text-center md:text-left">

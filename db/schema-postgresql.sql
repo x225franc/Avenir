@@ -311,9 +311,6 @@ VALUES
 -- Réinitialiser la séquence d'auto-incrémentation
 SELECT setval('users_id_seq', 8, true);
 
--- ========== COMPTES BANCAIRES ==========
--- Les comptes seront crees dynamiquement par l'application
--- Pas de fixtures pour permettre aux utilisateurs de creer leurs propres comptes
 
 -- ========== ACTIONS DISPONIBLES ==========
 INSERT INTO stocks (id, symbol, company_name, current_price, is_available) VALUES
@@ -328,17 +325,6 @@ INSERT INTO stocks (id, symbol, company_name, current_price, is_available) VALUE
 
 SELECT setval('stocks_id_seq', 8, true);
 
--- ========== TRANSACTIONS ==========
--- Les transactions seront creees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec les comptes
-
--- ========== ORDRES D'INVESTISSEMENT ==========
--- Les ordres seront crees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec les comptes
-
--- ========== CREDITS ==========
--- Les credits seront crees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec les comptes
 
 -- ========== NEWS / ACTUALITES ==========
 INSERT INTO news (title, content, author_id, published, created_at) VALUES
@@ -349,10 +335,6 @@ INSERT INTO news (title, content, author_id, published, created_at) VALUES
 ('Nouveau service de credit immobilier', 'Banque AVENIR lance son offre de credit immobilier avec des taux exceptionnels a partir de 3.2%. Contactez nos conseillers pour une simulation gratuite.', 3, TRUE, NOW() - INTERVAL '10 days'),
 ('Securite renforcee sur votre espace client', 'Nous avons mis en place une authentification a deux facteurs pour proteger encore mieux vos donnees. Activez-la des aujourd''hui dans vos parametres.', 1, TRUE, NOW() - INTERVAL '5 days'),
 ('Prochainement : Application mobile', 'Notre application mobile sera disponible courant mars. Restez connectes pour ne rien manquer de son lancement !', 1, FALSE, NOW() - INTERVAL '1 day');
-
--- ========== MESSAGES CLIENT-CONSEILLER ==========
--- Les messages seront crees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec la logique metier
 
 
 -- ========== MESSAGES INTERNES STAFF ==========

@@ -44,7 +44,6 @@ export class CreditsService {
         throw new BadRequestException(result.message);
       }
 
-      // Format standardisé compatible avec Express
       return result;
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
@@ -67,7 +66,6 @@ export class CreditsService {
         throw new BadRequestException('Erreur lors de la récupération des crédits');
       }
 
-      // Format standardisé compatible avec Express
       return result;
     } catch (error) {
       throw new BadRequestException((error as Error).message || 'Erreur lors de la récupération des crédits');
@@ -111,7 +109,6 @@ export class CreditsService {
         calculateDto.durationMonths
       );
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         ...totalCost,

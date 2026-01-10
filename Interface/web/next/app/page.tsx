@@ -46,7 +46,6 @@ export default function Home() {
 				<meta name="author" content="AVENIR" />
 
 				<meta property="og:type" content="website" />
-				{/* <meta property="og:url" content="https://avenir-bank.fr/" /> */}
 				<meta property="og:title" content="AVENIR | Gérez vos liquidités, épargne et investissements" />
 				<meta property="og:description" content="Gérez vos liquidités, épargne et investissements avec AVENIR." />
 				<meta property="og:image" content="/og-image.jpg" />

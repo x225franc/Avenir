@@ -36,7 +36,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          {/* UiShellProvider wraps LayoutWrapper to provide context */}
           <UiShellProvider initialVisibility={{ showHeader: true, showFooter: true }}>
             <LayoutWrapper>
               {children}

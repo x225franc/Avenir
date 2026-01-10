@@ -47,7 +47,6 @@ export class InvestmentsService {
         throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: { orderId: result.orderId },
@@ -78,7 +77,6 @@ export class InvestmentsService {
         throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: result.message,
@@ -105,7 +103,6 @@ export class InvestmentsService {
         throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: result.stocks,
@@ -130,7 +127,6 @@ export class InvestmentsService {
         throw new BadRequestException(result.errors?.join(', ') || result.message);
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: result.portfolio,
@@ -145,8 +141,6 @@ export class InvestmentsService {
     const userIdVO = UserId.fromString(userId);
     const orders = await this.investmentOrderRepository.findByUserId(userIdVO);
 
-    // Format standardisé compatible avec Express
-    // toJSON() retourne toutes les propriétés de l'ordre (id, stockId, orderType, quantity, etc.)
     return {
       success: true,
       data: orders.map(order => order.toJSON()),
@@ -158,7 +152,6 @@ export class InvestmentsService {
     try {
       const fee = await this.bankSettingsRepository.getInvestmentFee();
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: { fee },

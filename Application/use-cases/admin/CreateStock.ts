@@ -9,10 +9,6 @@ export interface CreateStockDTO {
 	isAvailable?: boolean;
 }
 
-/**
- * Use Case: Créer une nouvelle action
- * Seul le directeur peut créer des actions
- */
 export class CreateStock {
 	constructor(private readonly stockRepository: IStockRepository) {}
 

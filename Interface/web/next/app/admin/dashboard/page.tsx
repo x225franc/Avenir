@@ -63,9 +63,7 @@ export default function AdminDashboard() {
 		<div className='min-h-screen bg-linear-to-br from-purple-50 to-purple-100'>
 
 
-			{/* Main Content */}
 			<main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
-				{/* Welcome Section */}
 				<div className='bg-linear-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-8 text-white mb-8'>
 					<h2 className='text-3xl font-bold mb-2'>
 						Bienvenue, {user?.firstName} !
@@ -75,7 +73,6 @@ export default function AdminDashboard() {
 					</p>
 				</div>
 
-				{/* Quick Actions */}
 				<div className='grid grid-cols-1 md:grid-cols-5 gap-6 mb-8'>
 					<a
 						href='/admin/users'
@@ -102,9 +99,6 @@ export default function AdminDashboard() {
 							<div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center'>
 								<i className="fi fi-rr-newspaper text-2xl text-purple-600"></i>
 							</div>
-							{/* <span className='text-2xl font-bold text-gray-900'>
-								{news.length}
-							</span> */}
 						</div>
 						<h3 className='text-lg font-semibold text-gray-900 mb-1'>
 							Actualités
@@ -160,7 +154,6 @@ export default function AdminDashboard() {
 				</a>
 				</div>
 
-				{/* Recent News */}
 				<div className='bg-white rounded-xl shadow-md p-6'>
 					<div className='flex items-center justify-between mb-6'>
 						<h3 className='text-xl font-bold text-gray-900'>
@@ -217,7 +210,6 @@ export default function AdminDashboard() {
 													{item.published ? "Publiée" : "Brouillon"}
 												</span>
 											</div>
-											{/* Author name and role */}
 											<div className='text-xs text-gray-500 mb-1'>
 												{item.authorName ? (
 													<span>

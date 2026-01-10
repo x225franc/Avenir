@@ -2,11 +2,6 @@ import { IStockRepository } from "@domain/repositories/IStockRepository";
 import { IInvestmentOrderRepository } from "@domain/repositories/IInvestmentOrderRepository";
 import { StockId } from "@domain/value-objects/StockId";
 
-/**
- * Use Case: Supprimer une action
- * Seul le directeur peut supprimer des actions
- * Note: Refusé si des utilisateurs détiennent encore cette action
- */
 export class DeleteStock {
 	constructor(
 		private readonly stockRepository: IStockRepository,

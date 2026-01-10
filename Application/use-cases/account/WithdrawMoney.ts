@@ -11,16 +11,6 @@ export interface WithdrawMoneyDTO {
   description?: string;
 }
 
-/**
- * Use Case: Retirer de l'argent d'un compte
- * 
- * Responsabilités:
- * - Valider les données d'entrée
- * - Vérifier que le compte existe et est actif
- * - Vérifier que le solde est suffisant
- * - Débiter le compte
- * - Enregistrer la transaction de retrait
- */
 export class WithdrawMoney {
   constructor(
     private accountRepository: IAccountRepository,

@@ -19,16 +19,7 @@ export interface CreateAccountResult {
 	error?: string;
 }
 
-/**
- * Use Case: Création d'un nouveau compte bancaire
- * 
- * Responsabilités:
- * - Valider les données d'entrée
- * - Vérifier que l'utilisateur existe
- * - Créer l'entité Account (IBAN généré automatiquement)
- * - Sauvegarder dans le repository
- * - Appliquer un dépôt initial si fourni
- */
+
 export class CreateAccount {
 	constructor(
 		private accountRepository: IAccountRepository,

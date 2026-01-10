@@ -32,7 +32,6 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la création de l actualité');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Actualité créée avec succès',
@@ -79,7 +78,6 @@ export class NewsService {
         } catch {}
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: result.news!.map(news => ({
@@ -121,7 +119,6 @@ export class NewsService {
         }
       } catch {}
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: {
@@ -171,7 +168,6 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la mise à jour de l actualité');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Actualité mise à jour avec succès',
@@ -215,7 +211,6 @@ export class NewsService {
         throw new BadRequestException(result.error || 'Erreur lors de la suppression de l actualité');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Actualité supprimée avec succès',

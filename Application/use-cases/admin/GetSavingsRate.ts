@@ -1,8 +1,5 @@
 import { IBankSettingsRepository } from "@domain/repositories/IBankSettingsRepository";
 
-/**
- * Use Case: Récupérer le taux d'épargne actuel
- */
 export class GetSavingsRate {
 	constructor(
 		private readonly bankSettingsRepository: IBankSettingsRepository

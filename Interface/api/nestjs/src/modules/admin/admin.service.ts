@@ -50,7 +50,6 @@ export class AdminService {
         totalVolume += userAccounts.reduce((sum: number, account) => sum + account.balance.amount, 0);
       }
 
-      // Format standardisé compatible avec Express (pas dans Express mais c'est une API de stats)
       return {
         success: true,
         data: {
@@ -74,7 +73,6 @@ export class AdminService {
       // Return only advisors and directors (staff members)
       const teamMembers = users.filter(u => u.role === UserRole.ADVISOR || u.role === UserRole.DIRECTOR);
 
-      // Format standardisé compatible avec Express (pas dans Express mais c'est une API de team)
       return {
         success: true,
         data: teamMembers.map(user => ({
@@ -96,7 +94,6 @@ export class AdminService {
     try {
       const users = await this.userRepository.findAll();
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: users.map(user => user.toJSON()),
@@ -133,7 +130,6 @@ export class AdminService {
       // Save user
       await this.userRepository.save(user);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Utilisateur créé avec succès',
@@ -158,7 +154,6 @@ export class AdminService {
         throw new NotFoundException('Utilisateur non trouvé');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: user.toJSON(),
@@ -205,7 +200,6 @@ export class AdminService {
 
       await this.userRepository.save(user);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Utilisateur mis à jour avec succès',
@@ -230,7 +224,6 @@ export class AdminService {
 
       await this.userRepository.delete(userIdVO);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Utilisateur supprimé avec succès',
@@ -255,7 +248,6 @@ export class AdminService {
       user.banUser();
       await this.userRepository.save(user);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Utilisateur banni avec succès',
@@ -281,7 +273,6 @@ export class AdminService {
       user.unbanUser();
       await this.userRepository.save(user);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Utilisateur débanni avec succès',
@@ -311,7 +302,6 @@ export class AdminService {
         throw new BadRequestException(result.message || 'Erreur lors de la récupération des actions');
       }
 
-      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
         success: true,
         data: result.data,
@@ -337,7 +327,6 @@ export class AdminService {
         throw new BadRequestException(result.message);
       }
 
-      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
         success: true,
         message: result.message,
@@ -369,7 +358,6 @@ export class AdminService {
         throw new BadRequestException(result.message);
       }
 
-      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
         success: true,
         message: result.message,
@@ -396,7 +384,6 @@ export class AdminService {
         throw new BadRequestException(result.message);
       }
 
-      // Format standardisé compatible avec Express (pas dans Express mais c'est une API d'admin)
       return {
         success: true,
         message: result.message,
@@ -426,7 +413,6 @@ export class AdminService {
         throw new BadRequestException(result.errors.join(', ') || 'Erreur lors de l\'application des intérêts');
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Application des intérêts exécutée avec succès',
@@ -457,7 +443,6 @@ export class AdminService {
         });
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Test des intérêts quotidiens exécuté avec succès',
@@ -479,7 +464,6 @@ export class AdminService {
       const oldRate = await this.bankSettingsRepository.getSavingsRate();
       await this.bankSettingsRepository.setSavingsRate(updateSavingsRateDto.rate);
 
-      // Format standardisé compatible avec Express (Express retourne plus d'infos mais simplifié ici)
       return {
         success: true,
         message: 'Taux d\'épargne mis à jour avec succès',
@@ -497,7 +481,6 @@ export class AdminService {
     try {
       const rate = await this.bankSettingsRepository.getSavingsRate();
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: {
@@ -512,7 +495,6 @@ export class AdminService {
   }
 
   async getCronStatus() {
-    // Format standardisé compatible avec Express
     return {
       success: true,
       data: {

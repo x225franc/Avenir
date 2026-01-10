@@ -74,10 +74,31 @@ export class MessageController {
 				createdAt: message.getCreatedAt(),
 			};
 
+			// Déterminer si c'est une nouvelle conversation
+			let isNewConversation = false;
+			try {
+				const existingConv = await this.getConversationUseCase.execute({ conversationId });
+				// C'est une nouvelle conversation si elle n'a qu'un seul message (celui qu'on vient d'ajouter)
+				isNewConversation = existingConv ? existingConv.getMessages().length === 1 : true;
+			} catch {
+				isNewConversation = true;
+			}
+
 			// Émettre le message via WebSocket
 			try {
 				const socketService = getMessageSocketService();
+				
+				// Émettre le message à la conversation (client + advisor si assigné)
 				socketService.emitNewMessage(conversationId, messageData);
+
+				// Si nouvelle conversation, notifier TOUS les advisors
+				if (isNewConversation) {
+					socketService.emitNewConversation({
+						id: conversationId,
+						clientId: fromUserId,
+						message: content,
+					});
+				}
 			} catch (socketError) {
 				console.error("Error emitting message via WebSocket:", socketError);
 			}

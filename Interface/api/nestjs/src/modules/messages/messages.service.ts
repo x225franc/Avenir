@@ -57,7 +57,6 @@ export class MessagesService {
         isSystem: false,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Message envoyé',
@@ -148,7 +147,6 @@ export class MessagesService {
         })
       );
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: enrichedConversations,
@@ -198,7 +196,6 @@ export class MessagesService {
         }
       }
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: {
@@ -244,7 +241,6 @@ export class MessagesService {
         advisorId: assignDto.advisorId,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Conversation assignée avec succès',
@@ -271,7 +267,6 @@ export class MessagesService {
         currentAdvisorId: transferDto.currentAdvisorId,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Conversation transférée avec succès',
@@ -294,7 +289,6 @@ export class MessagesService {
         advisorId: closeDto.advisorId || 0,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Conversation clôturée avec succès',
@@ -320,7 +314,6 @@ export class MessagesService {
         userId: userIdToUse,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Conversation marquée comme lue',
@@ -339,7 +332,6 @@ export class MessagesService {
         clientId: parseInt(clientId),
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: { hasOpenConversation },

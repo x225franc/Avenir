@@ -11,15 +11,6 @@ export interface DepositMoneyDTO {
   description?: string;
 }
 
-/**
- * Use Case: Déposer de l'argent sur un compte
- * 
- * Responsabilités:
- * - Valider les données d'entrée
- * - Vérifier que le compte existe et est actif
- * - Créditer le compte
- * - Enregistrer la transaction de dépôt
- */
 export class DepositMoney {
   constructor(
     private accountRepository: IAccountRepository,

@@ -29,21 +29,6 @@ export interface PlaceInvestmentOrderResult {
 	message: string;
 	errors: string[];
 }
-
-/**
- * Use Case : Placer un ordre d'investissement
- *
- * Responsabilités:
- * - Valider les données d'entrée
- * - Vérifier que l'utilisateur possède le compte
- * - Vérifier que le compte est un compte d'investissement actif
- * - Vérifier que l'action existe et est disponible
- * - Pour les achats : vérifier que le solde est suffisant
- * - Pour les ventes : vérifier que l'utilisateur possède suffisamment d'actions
- * - Créer l'ordre d'investissement
- * - Exécuter immédiatement l'ordre (débiter/créditer le compte)
- * - Enregistrer la transaction correspondante
- */
 export class PlaceInvestmentOrder {
 	constructor(
 		private accountRepository: IAccountRepository,

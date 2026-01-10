@@ -237,10 +237,6 @@ VALUES
 (7, 'client4@avenir-bank.fr', @password_hash, 'Emma', 'Simon', '0613141516', '32 Place Bellecour, Lyon 69002', 'client', TRUE),
 (8, 'client5@avenir-bank.fr', @password_hash, 'Hugo', 'Laurent', '0617181920', '91 Cours Lafayette, Toulouse 31000', 'client', TRUE);
 
--- ========== COMPTES BANCAIRES ==========
--- Les comptes seront crees dynamiquement par l'application
--- Pas de fixtures pour permettre aux utilisateurs de creer leurs propres comptes
-
 -- ========== ACTIONS DISPONIBLES ==========
 INSERT INTO `stocks` (`id`, `symbol`, `company_name`, `current_price`, `is_available`) VALUES
 (1, 'AAPL', 'Apple Inc.', 150.25, TRUE),
@@ -252,18 +248,6 @@ INSERT INTO `stocks` (`id`, `symbol`, `company_name`, `current_price`, `is_avail
 (7, 'NVDA', 'NVIDIA Corporation', 450.20, TRUE),
 (8, 'NFLX', 'Netflix Inc.', 420.15, TRUE);
 
--- ========== TRANSACTIONS ==========
--- Les transactions seront creees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec les comptes
-
--- ========== ORDRES D'INVESTISSEMENT ==========
--- Les ordres seront crees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec les comptes
-
--- ========== CREDITS ==========
--- Les credits seront crees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec les comptes
-
 -- ========== NEWS / ACTUALITES ==========
 INSERT INTO `news` (`title`, `content`, `author_id`, `published`, `created_at`) VALUES
 ('Bienvenue chez Banque AVENIR', 'Nous sommes ravis de vous accueillir dans notre nouvelle plateforme bancaire en ligne. Decouvrez tous nos services : comptes courants, epargne, investissements et credits.', 1, TRUE, DATE_SUB(NOW(), INTERVAL 60 DAY)),
@@ -273,10 +257,6 @@ INSERT INTO `news` (`title`, `content`, `author_id`, `published`, `created_at`) 
 ('Nouveau service de credit immobilier', 'Banque AVENIR lance son offre de credit immobilier avec des taux exceptionnels a partir de 3.2%. Contactez nos conseillers pour une simulation gratuite.', 3, TRUE, DATE_SUB(NOW(), INTERVAL 10 DAY)),
 ('Securite renforcee sur votre espace client', 'Nous avons mis en place une authentification a deux facteurs pour proteger encore mieux vos donnees. Activez-la des aujourd''hui dans vos parametres.', 1, TRUE, DATE_SUB(NOW(), INTERVAL 5 DAY)),
 ('Prochainement : Application mobile', 'Notre application mobile sera disponible courant mars. Restez connectes pour ne rien manquer de son lancement !', 1, FALSE, DATE_SUB(NOW(), INTERVAL 1 DAY));
-
--- ========== MESSAGES CLIENT-CONSEILLER ==========
--- Les messages seront crees dynamiquement par l'application
--- Pas de fixtures pour eviter les conflits avec la logique metier
 
 
 -- ========== MESSAGES INTERNES STAFF ==========

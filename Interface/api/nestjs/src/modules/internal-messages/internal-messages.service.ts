@@ -25,7 +25,6 @@ export class InternalMessagesService {
         dto.recipientId
       );
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: {
@@ -52,7 +51,6 @@ export class InternalMessagesService {
 
       const messages = await getMessagesUseCase.execute(userId, type, otherUserId);
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: messages.map(message => ({
@@ -76,7 +74,6 @@ export class InternalMessagesService {
       const getStaffUseCase = new GetStaffMembers(this.userRepository);
       const staffMembers = await getStaffUseCase.execute();
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         data: staffMembers.map(user => ({

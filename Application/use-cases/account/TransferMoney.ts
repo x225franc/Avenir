@@ -19,21 +19,6 @@ export interface TransferMoneyResult {
 	error?: string;
 }
 
-/**
- * Use Case: Transfert d'argent entre deux comptes
- * 
- * Responsabilités:
- * - Valider les données d'entrée
- * - Vérifier que le compte source existe et est actif
- * - Vérifier que le compte destination existe et est actif
- * - Vérifier que le solde est suffisant
- * - Débiter le compte source
- * - Créditer le compte destination
- * - Enregistrer la transaction (dans une transaction SQL pour garantir l'atomicité)
- * 
- * Important: Utilise une transaction SQL pour garantir que les deux opérations
- * (débit + crédit) sont atomiques (tout ou rien)
- */
 export class TransferMoney {
 	constructor(
 		private accountRepository: IAccountRepository,

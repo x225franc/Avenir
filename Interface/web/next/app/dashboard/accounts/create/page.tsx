@@ -127,7 +127,6 @@ export default function CreateAccountPage() {
 	return (
 		<div className="min-h-screen bg-gray-50 py-8">
 			<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-				{/* Header */}
 				<div className="mb-8">
 					<Link
 						href="/dashboard/accounts"
@@ -144,16 +143,13 @@ export default function CreateAccountPage() {
 					</p>
 				</div>
 
-				{/* Error Message */}
 				{error && (
 					<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
 						<p className="text-red-800">{error}</p>
 					</div>
 				)}
 
-				{/* Form */}
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-					{/* Account Type Selection */}
 					<div>
 						<label className="block text-sm font-semibold text-gray-900 mb-3">
 							Type de compte *
@@ -196,7 +192,6 @@ export default function CreateAccountPage() {
 						)}
 					</div>
 
-					{/* Account Name */}
 					<div>
 						<label
 							htmlFor="accountName"
@@ -218,7 +213,6 @@ export default function CreateAccountPage() {
 						)}
 					</div>
 
-					{/* Initial Deposit (Optional) */}
 					<div>
 						<label
 							htmlFor="initialDeposit"
@@ -250,7 +244,6 @@ export default function CreateAccountPage() {
 						</p>
 					</div>
 
-					{/* Submit Button */}
 					<div className="flex items-center space-x-4">
 						<button
 							type="submit"
@@ -268,7 +261,6 @@ export default function CreateAccountPage() {
 					</div>
 				</form>
 
-				{/* Info Box */}
 				<div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
 					<div className="flex items-start space-x-3">
 						<i className="fi fi-rr-bulb text-blue-600 text-xl shrink-0 mt-0.5"></i>

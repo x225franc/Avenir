@@ -2,10 +2,6 @@ import { IStockRepository } from "@domain/repositories/IStockRepository";
 import { IInvestmentOrderRepository } from "@domain/repositories/IInvestmentOrderRepository";
 import { StockId } from "@domain/value-objects/StockId";
 
-/**
- * Use Case: Récupérer toutes les actions avec le nombre d'actions détenues
- * Accessible au directeur et aux clients (pour affichage)
- */
 export class GetAllStocks {
 	constructor(
 		private readonly stockRepository: IStockRepository,

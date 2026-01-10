@@ -37,7 +37,6 @@ export class OperationsService {
         description: depositDto.description,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Dépôt effectué avec succès',
@@ -83,7 +82,6 @@ export class OperationsService {
         description: withdrawDto.description,
       });
 
-      // Format standardisé compatible avec Express
       return {
         success: true,
         message: 'Retrait effectué avec succès',
